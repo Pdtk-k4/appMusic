@@ -1,8 +1,14 @@
 package com.example.dahitamusic.Model;
 
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 import java.io.Serializable;
 
-public class BaiHat implements Serializable {
+public class BaiHat implements Parcelable {
     private String idBaiHat;
     private String anhBaiHat;
     private String caSi;
@@ -27,6 +33,30 @@ public class BaiHat implements Serializable {
         this.idTheLoai = idTheLoai;
         this.luotThich = luotThich;
     }
+
+    protected BaiHat(Parcel in) {
+        idBaiHat = in.readString();
+        anhBaiHat = in.readString();
+        caSi = in.readString();
+        tenBaiHat = in.readString();
+        linkNhac = in.readString();
+        idAlbum = in.readString();
+        idPlaylist = in.readString();
+        idTheLoai = in.readString();
+        luotThich = in.readInt();
+    }
+
+    public static final Creator<BaiHat> CREATOR = new Creator<BaiHat>() {
+        @Override
+        public BaiHat createFromParcel(Parcel in) {
+            return new BaiHat(in);
+        }
+
+        @Override
+        public BaiHat[] newArray(int size) {
+            return new BaiHat[size];
+        }
+    };
 
     public String getIdBaiHat() {
         return idBaiHat;
@@ -98,5 +128,23 @@ public class BaiHat implements Serializable {
 
     public void setLuotThich(int luotThich) {
         this.luotThich = luotThich;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel parcel, int i) {
+        parcel.writeString(idBaiHat);
+        parcel.writeString(anhBaiHat);
+        parcel.writeString(caSi);
+        parcel.writeString(tenBaiHat);
+        parcel.writeString(linkNhac);
+        parcel.writeString(idAlbum);
+        parcel.writeString(idPlaylist);
+        parcel.writeString(idTheLoai);
+        parcel.writeInt(luotThich);
     }
 }

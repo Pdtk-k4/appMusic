@@ -1,6 +1,8 @@
 package com.example.dahitamusic.Model;
 
-public class Playlist {
+import java.io.Serializable;
+
+public class Playlist implements Serializable {
     private String idPlaylist;
     private String idTheLoai;
     private String idChuDe;

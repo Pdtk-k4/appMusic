@@ -7,4 +7,5 @@
     <color name="background">#F4F4F4</color>
     <color name="textWhite">#F4F4F4</color>
     <color name="blueDark">#00008B</color>
+    <color name="color_menu">#FF6200EE</color>
 </resources>
