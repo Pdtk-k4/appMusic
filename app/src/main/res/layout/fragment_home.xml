@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true"
+    android:scrollbars="none"
+    tools:context=".Fragment.HomeFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <LinearLayout
+        android:id="@+id/linear_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/background"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toStartOf="@+id/icon_seach"
+                android:text="@string/trang_chu"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/icon_seach"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/baseline_search_24" />
+        </RelativeLayout>
+        
+        <fragment
+            android:id="@+id/fagment_quangcao"
+            android:name="com.example.dahitamusic.Fragment.QuangCaoFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <fragment
+            android:id="@+id/fagment_goi_y"
+            android:name="com.example.dahitamusic.Fragment.BaiHatFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <fragment
+            android:id="@+id/fagment_playlist2"
+            android:name="com.example.dahitamusic.Fragment.Playlist2Fragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <fragment
+            android:id="@+id/fagment_chill"
+            android:name="com.example.dahitamusic.Fragment.PlaylistFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+</ScrollView>

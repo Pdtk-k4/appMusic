@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Fragment.PlaylistFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:paddingStart="15dp"
+        tools:ignore="RtlSymmetry">
+
+        <TextView
+            android:id="@+id/txt_chill"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/chill"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="7dp"
+            android:layout_toEndOf="@id/txt_chill"
+            android:src="@drawable/baseline_arrow_forward_ios_24" />
+    </RelativeLayout>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPagerPlaylist"
+        android:layout_width="wrap_content"
+        android:layout_height="150dp"
+        android:layout_marginTop="10dp"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"/>
+
+</LinearLayout>

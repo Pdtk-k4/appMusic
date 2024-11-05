@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "995882510187",
+    "project_id": "dahitamusic",
+    "storage_bucket": "dahitamusic.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:995882510187:android:9d685e36eb813e50d54e2e",
+        "android_client_info": {
+          "package_name": "com.example.dahitamusic"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCik5gCr9qB3q3oZ1my8eviTHqmyeHqpgM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
