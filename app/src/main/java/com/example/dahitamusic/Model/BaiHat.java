@@ -67,7 +67,7 @@ public class BaiHat implements Parcelable {
     }
 
     public String getAnhBaiHat() {
-        return anhBaiHat;
+        return this.anhBaiHat;
     }
 
     public void setAnhBaiHat(String anhBaiHat) {

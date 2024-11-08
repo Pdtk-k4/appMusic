@@ -66,4 +66,8 @@ dependencies {
     implementation ("com.squareup.picasso:picasso:2.8")
 
     implementation ("me.relex:circleindicator:2.1.6")
+
+    implementation ("de.hdodenhof:circleimageview:3.1.0")
+
+    implementation ("com.google.android.exoplayer:exoplayer:2.18.1")
 }

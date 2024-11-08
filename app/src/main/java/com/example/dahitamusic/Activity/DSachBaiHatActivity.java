@@ -3,6 +3,7 @@ package com.example.dahitamusic.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -37,7 +38,6 @@ import java.util.List;
 public class DSachBaiHatActivity extends AppCompatActivity {
 
     ActivityDsachBaiHatBinding binding;
-    QuangCao quangCao;
     Playlist playlist;
     DatabaseReference mData;
     @Override
@@ -51,6 +51,8 @@ public class DSachBaiHatActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         dataIntent();
         init();
         if(playlist != null && !playlist.getIdPlaylist().equals("")){
@@ -64,7 +66,7 @@ public class DSachBaiHatActivity extends AppCompatActivity {
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<BaiHat> baiHatList = new ArrayList<>();
+                ArrayList<BaiHat> baiHatList = new ArrayList<>();
                 for (DataSnapshot datasnapshot : snapshot.getChildren()) {
                     BaiHat baiHat = datasnapshot.getValue(BaiHat.class);
                     if (baiHat != null) {
@@ -81,7 +83,7 @@ public class DSachBaiHatActivity extends AppCompatActivity {
             }
         });
     }
-    private void displaySongs(List<BaiHat> baiHatList) {
+    private void displaySongs(ArrayList<BaiHat> baiHatList) {
         if (baiHatList.isEmpty()) {
             Toast.makeText(this, "Không có bài hát nào để hiển thị", Toast.LENGTH_SHORT).show();
         } else {

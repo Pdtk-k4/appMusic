@@ -44,9 +44,9 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.SongViewHold
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, PlayMusicActivity.class);
+                Intent intent = new Intent(view.getContext(), PlayMusicActivity.class);
                 intent.putExtra("BaiHat", baiHat);
-                context.startActivity(intent);
+                view.getContext().startActivity(intent);
             }
         });
     }
@@ -66,8 +66,6 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.SongViewHold
             songTitle = itemView.findViewById(R.id.txt_name_song);
             songArtist = itemView.findViewById(R.id.txt_name_casi);
             songImage = itemView.findViewById(R.id.img_song);
-
-            
         }
     }
 }

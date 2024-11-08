@@ -63,7 +63,7 @@ public class Playlist_Adapter extends RecyclerView.Adapter<Playlist_Adapter.Play
     public void updatePlaylists(List<Playlist> playlists) {
         this.mListPlaylist.clear();
         this.mListPlaylist.addAll(playlists);
-        notifyDataSetChanged(); // Thông báo cho adapter rằng dữ liệu đã thay đổi
+        notifyDataSetChanged();
     }
 
     public static class PlaylistViewHolder extends RecyclerView.ViewHolder {
