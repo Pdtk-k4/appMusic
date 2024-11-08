@@ -11,14 +11,12 @@
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/background"
         android:layout_above="@+id/bottomnavigation"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomnavigation"
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:background="@color/background"
         android:layout_alignParentBottom="true"
         app:menu="@menu/bottom_nav_menu"
         app:itemTextColor="@color/coler_menu"

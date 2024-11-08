@@ -16,13 +16,14 @@ import com.example.dahitamusic.Model.BaiHat;
 import com.example.dahitamusic.R;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.SongViewHolder> {
-    private final List<BaiHat> songs;
+    private final ArrayList<BaiHat> songs;
     private Context context;
 
-    public SongsAdapter(List<BaiHat> songs, Context context) {
+    public SongsAdapter(ArrayList<BaiHat> songs, Context context) {
         this.songs = songs;
         this.context = context;
     }
@@ -41,13 +42,11 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.SongViewHold
         holder.songArtist.setText(baiHat.getCaSi());
         Picasso.get().load(baiHat.getAnhBaiHat()).into(holder.songImage);
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), PlayMusicActivity.class);
-                intent.putExtra("BaiHat", baiHat);
-                view.getContext().startActivity(intent);
-            }
+        holder.itemView.setOnClickListener(view -> {
+            Intent intent = new Intent(context, PlayMusicActivity.class);
+            intent.putExtra("BaiHat", songs); // Truyền toàn bộ danh sách bài hát
+            intent.putExtra("position", position); // Truyền vị trí của bài hát được chọn
+            context.startActivity(intent);
         });
     }
 
