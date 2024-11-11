@@ -17,12 +17,14 @@ public class BaiHat implements Parcelable {
     private String idAlbum;
     private String idPlaylist;
     private String idTheLoai;
+    private String anhQuangCao;
+    private String idQuangCao;
     private int luotThich;
 
     public BaiHat() {
     }
 
-    public BaiHat(String idBaiHat, String anhBaiHat, String caSi, String tenBaiHat, String linkNhac, String idAlbum, String idPlaylist, String idTheLoai, int luotThich) {
+    public BaiHat(String idBaiHat, String anhBaiHat, String caSi, String tenBaiHat, String linkNhac, String idAlbum, String idPlaylist, String idTheLoai, String anhQuangCao, String idQuangCao, int luotThich) {
         this.idBaiHat = idBaiHat;
         this.anhBaiHat = anhBaiHat;
         this.caSi = caSi;
@@ -31,7 +33,25 @@ public class BaiHat implements Parcelable {
         this.idAlbum = idAlbum;
         this.idPlaylist = idPlaylist;
         this.idTheLoai = idTheLoai;
+        this.anhQuangCao = anhQuangCao;
+        this.idQuangCao = idQuangCao;
         this.luotThich = luotThich;
+    }
+
+    public String getAnhQuangCao() {
+        return anhQuangCao;
+    }
+
+    public void setAnhQuangCao(String anhQuangCao) {
+        this.anhQuangCao = anhQuangCao;
+    }
+
+    public String getIdQuangCao() {
+        return idQuangCao;
+    }
+
+    public void setIdQuangCao(String idQuangCao) {
+        this.idQuangCao = idQuangCao;
     }
 
     protected BaiHat(Parcel in) {

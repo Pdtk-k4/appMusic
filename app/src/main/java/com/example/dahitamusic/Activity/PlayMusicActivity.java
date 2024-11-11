@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.StrictMode;
 import android.util.Log;
-import android.view.View;
 import android.widget.SeekBar;
 
 import androidx.activity.EdgeToEdge;
@@ -29,8 +28,6 @@ import com.example.dahitamusic.databinding.ActivityPlayMusicBinding;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.Player;
-import com.google.android.exoplayer2.ui.StyledPlayerView;
-import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -131,7 +128,7 @@ public class PlayMusicActivity extends AppCompatActivity {
         }
     }
 
-    private void updateSongAndImage(int position) {
+    public void updateSongAndImage(int position) {
         if (position >= 0 && position < mangbaihat.size()) {
             BaiHat baiHat = mangbaihat.get(position);
             // Cập nhật lại tên bài hát và ca sĩ
@@ -146,7 +143,6 @@ public class PlayMusicActivity extends AppCompatActivity {
             initializePlayer(baiHat.getLinkNhac());
         }
     }
-
 
     private void eventClick() {
 
@@ -190,15 +186,15 @@ public class PlayMusicActivity extends AppCompatActivity {
 
         binding.imgbtnshuffle.setOnClickListener(v -> {
             if (shuffle) {
-                // Nếu shuffle đang bật, tắt nó và đặt màu trắng cho biểu tượng
+                // Nếu shuffle đang bật, tắt đi và chuyển thành màu trắng
                 binding.imgbtnshuffle.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
                 shuffle = false;
             } else {
-                // Nếu shuffle chưa bật, bật nó và đặt màu xanh cho biểu tượng
+                // Nếu shuffle chưa bật, bật lên và chuyển màu tím
                 binding.imgbtnshuffle.setColorFilter(Color.parseColor("#8342BD"), PorterDuff.Mode.SRC_ATOP);  // Màu tím
                 shuffle = true;
 
-                // Tắt repeat nếu nó đang bật
+                // Tắt repeat nếu đang bật
                 if (repeat) {
                     repeat = false;
                     binding.imgbtnrepeat.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
@@ -212,7 +208,7 @@ public class PlayMusicActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (fromUser && exoPlayer != null) {
-                    // Cập nhật thời gian hiện tại của bài hát khi người dùng kéo SeekBar
+                    // Cập nhật thời gian hiện tại của bài hát khi kéo SeekBar
                     binding.txtTimesong.setText(formatTime(progress));
                 }
             }
@@ -295,6 +291,11 @@ public class PlayMusicActivity extends AppCompatActivity {
     private void getDataIntent() {
         Intent intent = getIntent();
         if (intent != null) {
+            if (intent.hasExtra("cakhuc")){
+                // Lấy bài hát từ Intent
+                BaiHat baiHat = intent.getParcelableExtra("cakhuc");
+                mangbaihat.add(baiHat);
+            }
             if (intent.hasExtra("BaiHat")) {
                 // Lấy danh sách bài hát từ Intent
                 mangbaihat = intent.getParcelableArrayListExtra("BaiHat");
@@ -303,6 +304,7 @@ public class PlayMusicActivity extends AppCompatActivity {
                 // Lấy vị trí bài hát từ Intent
                 position = intent.getIntExtra("position", 0);
             }
+
         }
     }
 
@@ -312,7 +314,11 @@ public class PlayMusicActivity extends AppCompatActivity {
     private Runnable updateSeekBar;
 
     private void initializePlayer(String songUrl) {
-        exoPlayer = new ExoPlayer.Builder(this).build();
+
+        // Kiểm tra nếu ExoPlayer đã được khởi tạo
+        if (exoPlayer == null) {
+            exoPlayer = new ExoPlayer.Builder(this).build();
+        }
 
         MediaItem mediaItem = MediaItem.fromUri(songUrl);
         exoPlayer.setMediaItem(mediaItem);
@@ -323,16 +329,30 @@ public class PlayMusicActivity extends AppCompatActivity {
             @Override
             public void onPlaybackStateChanged(int state) {
                 if (state == Player.STATE_READY) {
+                    // Cập nhật SeekBar và thời gian cho bài hát hiện tại
                     long duration = exoPlayer.getDuration();
                     binding.seekbarsong.setMax((int) duration);
                     binding.txtTimesong1.setText(formatTime(duration));
                     startSeekBarUpdate();
                 } else if (state == Player.STATE_ENDED) {
-                    exoPlayer.seekTo(0);
-                    exoPlayer.pause();
-                    binding.imgbtncircledplay.setImageResource(R.drawable.play_button_icon);
-                    if (diaNhacFragment != null) {
-                        diaNhacFragment.pauseAnimation();
+                    // Kiểm tra xem có bật chế độ repeat hay không
+                    if (repeat) {
+                        // Nếu repeat bật, phát lại bài hát hiện tại
+                        exoPlayer.seekTo(0);
+                        exoPlayer.play();
+                    } else {
+                        // Nếu repeat tắt, chuyển sang bài hát tiếp theo
+                        if (shuffle) {
+                            // Nếu bật shuffle, phát một bài ngẫu nhiên
+                            position = new Random().nextInt(mangbaihat.size());
+                        } else {
+                            // Không bật shuffle, phát bài hát tiếp theo trong danh sách
+                            position++;
+                            if (position >= mangbaihat.size()) {
+                                position = 0; // Quay lại bài đầu tiên nếu đến cuối danh sách
+                            }
+                        }
+                        updateSongAndImage(position); // Chuyển sang bài hát mới và cập nhật UI
                     }
                 }
             }
@@ -346,7 +366,7 @@ public class PlayMusicActivity extends AppCompatActivity {
                 if (exoPlayer != null && exoPlayer.isPlaying()) {
                     binding.seekbarsong.setProgress((int) exoPlayer.getCurrentPosition());
                     binding.txtTimesong.setText(formatTime(exoPlayer.getCurrentPosition()));
-                    seekBarHandler.postDelayed(this, 1000);
+                    seekBarHandler.postDelayed(this, 300);
                 }
             }
         };
@@ -367,5 +387,4 @@ public class PlayMusicActivity extends AppCompatActivity {
         }
         seekBarHandler.removeCallbacks(updateSeekBar); // Ngừng cập nhật SeekBar
     }
-
 }

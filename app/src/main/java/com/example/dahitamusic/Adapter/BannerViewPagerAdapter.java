@@ -6,13 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.dahitamusic.Activity.DSachBaiHatActivity;
-import com.example.dahitamusic.Model.QuangCao;
+import com.example.dahitamusic.Activity.PlayMusicActivity;
+import com.example.dahitamusic.Model.BaiHat;
 import com.example.dahitamusic.R;
 import com.squareup.picasso.Picasso;
 
@@ -20,10 +19,10 @@ import java.util.List;
 
 public class BannerViewPagerAdapter extends RecyclerView.Adapter<BannerViewPagerAdapter.BannerViewHolder> {
 
-    private List<QuangCao> mlistQuangCao;
+    private List<BaiHat> mListBaiHat;
 
-    public BannerViewPagerAdapter(List<QuangCao> mlistQuangCao) {
-        this.mlistQuangCao = mlistQuangCao;
+    public BannerViewPagerAdapter(List<BaiHat> mListBaiHat) {
+        this.mListBaiHat = mListBaiHat;
     }
 
     @NonNull
@@ -35,18 +34,15 @@ public class BannerViewPagerAdapter extends RecyclerView.Adapter<BannerViewPager
 
     @Override
     public void onBindViewHolder(@NonNull BannerViewHolder holder, int position) {
-        QuangCao quangCao = mlistQuangCao.get(position);
-        if (quangCao == null) {
-            return;
-        }
+        BaiHat baiHat = mListBaiHat.get(position);
 
-        Picasso.get().load(quangCao.getAnhQuangCao()).into(holder.imageView);
+        Picasso.get().load(baiHat.getAnhQuangCao()).into(holder.imageView);
 
-        holder.imageView.setOnClickListener(new View.OnClickListener() {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), DSachBaiHatActivity.class);
-                intent.putExtra("QuangCao", quangCao); // Truyền QuangCao qua Intent
+                Intent intent = new Intent(view.getContext(), PlayMusicActivity.class);
+                intent.putExtra("cakhuc", baiHat);
                 view.getContext().startActivity(intent);
             }
         });
@@ -66,8 +62,8 @@ public class BannerViewPagerAdapter extends RecyclerView.Adapter<BannerViewPager
 
     @Override
     public int getItemCount() {
-        if (mlistQuangCao != null) {
-            return mlistQuangCao.size();
+        if (mListBaiHat != null) {
+            return mListBaiHat.size();
         }
         return 0;
     }

@@ -1,5 +1,6 @@
 package com.example.dahitamusic.Fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.dahitamusic.Activity.PlayMusicActivity;
+import com.example.dahitamusic.Adapter.PlayListSongAdapter;
 import com.example.dahitamusic.Adapter.SongsAdapter;
 import com.example.dahitamusic.databinding.FragmentPlayListSongBinding;
 
@@ -29,7 +31,7 @@ public class PlayListSongFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private FragmentPlayListSongBinding binding;
-    private SongsAdapter songsAdapter;;
+    private PlayListSongAdapter playListSongAdapter;
 
     public PlayListSongFragment() {
         // Required empty public constructor
@@ -66,11 +68,14 @@ public class PlayListSongFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentPlayListSongBinding.inflate(inflater, container, false);
+
         if(PlayMusicActivity.mangbaihat.size() > 0){
-            songsAdapter = new SongsAdapter(PlayMusicActivity.mangbaihat, getActivity());
+            playListSongAdapter = new PlayListSongAdapter(PlayMusicActivity.mangbaihat, getActivity());
             binding.recyclerViewPlaybaihat.setLayoutManager(new LinearLayoutManager(getActivity()));
-            binding.recyclerViewPlaybaihat.setAdapter(songsAdapter);
+            binding.recyclerViewPlaybaihat.setAdapter(playListSongAdapter);
         };
+
+
         return binding.getRoot();
     }
 }

@@ -10,7 +10,6 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -20,10 +19,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.dahitamusic.Adapter.SongsAdapter;
 import com.example.dahitamusic.Model.BaiHat;
 import com.example.dahitamusic.Model.Playlist;
-import com.example.dahitamusic.Model.QuangCao;
 import com.example.dahitamusic.R;
 import com.example.dahitamusic.databinding.ActivityDsachBaiHatBinding;
-import com.example.dahitamusic.databinding.ActivityMainBinding;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,7 +30,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class DSachBaiHatActivity extends AppCompatActivity {
 

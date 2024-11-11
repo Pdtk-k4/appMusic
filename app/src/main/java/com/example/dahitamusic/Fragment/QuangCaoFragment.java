@@ -1,7 +1,5 @@
 package com.example.dahitamusic.Fragment;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,17 +12,16 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.dahitamusic.Adapter.BannerViewPagerAdapter;
-import com.example.dahitamusic.Model.QuangCao;
+import com.example.dahitamusic.Model.BaiHat;
 import com.example.dahitamusic.databinding.FragmentQuangCaoBinding;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -45,12 +42,12 @@ public class QuangCaoFragment extends Fragment {
     private FragmentQuangCaoBinding binding;
     private DatabaseReference mData;
     private BannerViewPagerAdapter bannerViewPagerAdapter;
-    private List<QuangCao> mListQuangCao;
+    private List<BaiHat> mListBaiHat;
     private Handler handler = new Handler();
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            if (binding.viewPager.getCurrentItem() == mListQuangCao.size() - 1) {
+            if (binding.viewPager.getCurrentItem() == mListBaiHat.size() - 1) {
                 binding.viewPager.setCurrentItem(0);
             } else {
                 binding.viewPager.setCurrentItem(binding.viewPager.getCurrentItem() + 1);
@@ -96,8 +93,8 @@ public class QuangCaoFragment extends Fragment {
         // Inflate the layout for this fragment
         binding = FragmentQuangCaoBinding.inflate(inflater, container, false);
 
-        mListQuangCao = new ArrayList<>();
-        bannerViewPagerAdapter = new BannerViewPagerAdapter(mListQuangCao);
+        mListBaiHat = new ArrayList<>();
+        bannerViewPagerAdapter = new BannerViewPagerAdapter(mListBaiHat);
 
         binding.viewPager.setAdapter(bannerViewPagerAdapter);
         binding.circleIndicator.setViewPager(binding.viewPager);
@@ -119,18 +116,19 @@ public class QuangCaoFragment extends Fragment {
     }
 
     public void loadImgQuangCao() {
-        mData = FirebaseDatabase.getInstance().getReference("QuangCao");
-        mData.addValueEventListener(new ValueEventListener() {
+        mData = FirebaseDatabase.getInstance().getReference("BaiHat");
+        Query query = mData.orderByChild("idQuangCao").equalTo("qc");
+        query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                mListQuangCao.clear(); // Xoá danh sách trước khi thêm mới
+                mListBaiHat.clear(); // Xoá danh sách trước khi thêm mới
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    QuangCao quangCao = dataSnapshot.getValue(QuangCao.class);
-                    if (quangCao != null) {
-                        mListQuangCao.add(quangCao); // Thêm từng đối tượng vào danh sách
+                    BaiHat baiHat = dataSnapshot.getValue(BaiHat.class);
+                    if (baiHat != null) {
+                        mListBaiHat.add(baiHat); // Thêm từng đối tượng vào danh sách
                     }
                 }
-                loadRandomBanner();
+//                loadRandomBanner();
                 bannerViewPagerAdapter.notifyDataSetChanged();
                 binding.circleIndicator.setViewPager(binding.viewPager);// Cập nhật adapter
             }
@@ -141,30 +139,30 @@ public class QuangCaoFragment extends Fragment {
         });
     }
 
-    // Phương thức để lấy ngẫu nhiên 5 bài hát mỗi ngày
-    private void loadRandomBanner() {
-        SharedPreferences prefs = requireContext().getSharedPreferences("DailySongs", Context.MODE_PRIVATE);
-        int savedDay = prefs.getInt("day", -1);
-
-        // Lấy ngày hiện tại
-        int currentDay = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
-
-        if (savedDay != currentDay) {
-            // Nếu ngày đã thay đổi, lấy ngẫu nhiên 5 bài hát
-            if (mListQuangCao.size() > 5) {
-                Collections.shuffle(mListQuangCao); // Trộn danh sách ngẫu nhiên
-                List<QuangCao> randomList = mListQuangCao.subList(0, 5); // Lấy 5 bài hát đầu tiên sau khi trộn
-                bannerViewPagerAdapter = new BannerViewPagerAdapter(randomList);
-            }
-
-            // Cập nhật lại adapter và indicator
-            binding.viewPager.setAdapter(bannerViewPagerAdapter);
-            binding.circleIndicator.setViewPager(binding.viewPager);
-
-            // Lưu ngày hiện tại
-            prefs.edit().putInt("day", currentDay).apply();
-        }
-    }
+//    // Phương thức để lấy ngẫu nhiên 5 bài hát mỗi ngày
+//    private void loadRandomBanner() {
+//        SharedPreferences prefs = requireContext().getSharedPreferences("DailySongs", Context.MODE_PRIVATE);
+//        int savedDay = prefs.getInt("day", -1);
+//
+//        // Lấy ngày hiện tại
+//        int currentDay = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
+//
+//        if (savedDay != currentDay) {
+//            // Nếu ngày đã thay đổi, lấy ngẫu nhiên 5 bài hát
+//            if (mListQuangCao.size() > 5) {
+//                Collections.shuffle(mListQuangCao); // Trộn danh sách ngẫu nhiên
+//                List<QuangCao> randomList = mListQuangCao.subList(0, 5); // Lấy 5 bài hát đầu tiên sau khi trộn
+//                bannerViewPagerAdapter = new BannerViewPagerAdapter(randomList);
+//            }
+//
+//            // Cập nhật lại adapter và indicator
+//            binding.viewPager.setAdapter(bannerViewPagerAdapter);
+//            binding.circleIndicator.setViewPager(binding.viewPager);
+//
+//            // Lưu ngày hiện tại
+//            prefs.edit().putInt("day", currentDay).apply();
+//        }
+//    }
 
     @Override
     public void onPause() {
