@@ -99,7 +99,7 @@ public class loginFiseBase extends AppCompatActivity {
                             finish(); // Kết thúc Activity hiện tại để không thể quay lại trang login bằng nút back
                         } else {
                             // Thông báo lỗi đăng nhập
-                            Toast.makeText(getApplicationContext(), "Đăng nhập không thành công", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), " sai tk hay mk r", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
