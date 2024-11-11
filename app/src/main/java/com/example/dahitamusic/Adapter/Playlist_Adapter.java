@@ -19,7 +19,8 @@ import java.util.List;
 
 public class Playlist_Adapter extends RecyclerView.Adapter<Playlist_Adapter.PlaylistViewHolder> {
 
-    private final List<Playlist> mListPlaylist;;
+    private final List<Playlist> mListPlaylist;
+    ;
 
     public Playlist_Adapter(List<Playlist> mListPlaylist) {
         this.mListPlaylist = mListPlaylist;
@@ -54,10 +55,7 @@ public class Playlist_Adapter extends RecyclerView.Adapter<Playlist_Adapter.Play
 
     @Override
     public int getItemCount() {
-        if (mListPlaylist != null) {
-            return mListPlaylist.size();
-        }
-        return 0;
+        return Math.min(mListPlaylist.size(), 6);
     }
 
     public void updatePlaylists(List<Playlist> playlists) {
@@ -74,7 +72,7 @@ public class Playlist_Adapter extends RecyclerView.Adapter<Playlist_Adapter.Play
         public PlaylistViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.img_playlist);
-            textView = itemView.findViewById(R.id.txt_nameplaylist);
+            textView = itemView.findViewById(R.id.txt_tenplaylist);
         }
     }
 }

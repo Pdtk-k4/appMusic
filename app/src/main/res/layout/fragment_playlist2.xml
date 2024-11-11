@@ -1,40 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:layout_height="wrap_content"
+    android:paddingEnd="15dp"
+    android:paddingStart="15dp"
+    android:paddingTop="15dp"
     tools:context=".Fragment.Playlist2Fragment">
 
     <RelativeLayout
+        android:id="@+id/recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingStart="15dp"
-        tools:ignore="RtlSymmetry">
+        android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/txt_ctbcngh"
+            android:id="@+id/txt_playlist_ctbmn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/ctbmnghe"
             android:textSize="15sp"
-            android:textStyle="bold" />
+            android:text="@string/ctbmnghe"
+            android:textStyle="bold"
+            android:textColor="@color/black"/>
 
-        <ImageView
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="7dp"
-            android:layout_toEndOf="@id/txt_ctbcngh"
-            android:src="@drawable/baseline_arrow_forward_ios_24" />
+        <TextView
+            android:id="@+id/txt_xemthem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/xemthem"
+            android:layout_alignParentEnd="true"
+            android:textStyle="bold"/>
     </RelativeLayout>
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewPagerPlaylist2"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview_playlist"
         android:layout_width="wrap_content"
-        android:layout_height="150dp"
-        android:layout_marginTop="10dp"
-        android:paddingStart="15dp"
-        android:paddingEnd="15dp"/>
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/recyclerview"
+        android:layout_marginTop="10dp">
+    </androidx.recyclerview.widget.RecyclerView>
 
-</LinearLayout>
+</RelativeLayout>

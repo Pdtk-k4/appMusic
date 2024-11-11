@@ -22,6 +22,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -128,6 +129,7 @@ public class QuangCaoFragment extends Fragment {
                         mListBaiHat.add(baiHat); // Thêm từng đối tượng vào danh sách
                     }
                 }
+                Collections.shuffle(mListBaiHat);
 //                loadRandomBanner();
                 bannerViewPagerAdapter.notifyDataSetChanged();
                 binding.circleIndicator.setViewPager(binding.viewPager);// Cập nhật adapter

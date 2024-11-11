@@ -62,5 +62,11 @@
             android:name="com.example.dahitamusic.Fragment.PlaylistFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
+
+        <fragment
+            android:id="@+id/fagment_album_hot"
+            android:name="com.example.dahitamusic.Fragment.AlbumFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
     </LinearLayout>
 </ScrollView>

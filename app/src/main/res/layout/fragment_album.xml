@@ -6,19 +6,19 @@
     android:paddingEnd="15dp"
     android:paddingStart="15dp"
     android:paddingTop="15dp"
-    tools:context=".Fragment.PlaylistFragment">
+    tools:context=".Fragment.AlbumFragment">
 
     <RelativeLayout
-        android:id="@+id/recyclerview"
+        android:id="@+id/recyclerviealbum"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
+        
         <TextView
-            android:id="@+id/txt_playlist_chill"
+            android:id="@+id/txt_albumhot"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="15sp"
-            android:text="@string/chill"
+            android:text="@string/album_hot"
             android:textStyle="bold"
             android:textColor="@color/black"/>
 
@@ -32,10 +32,10 @@
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerview_playlist"
+        android:id="@+id/recyclerview_album"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/recyclerview"
+        android:layout_below="@+id/recyclerviealbum"
         android:layout_marginTop="10dp">
     </androidx.recyclerview.widget.RecyclerView>
 

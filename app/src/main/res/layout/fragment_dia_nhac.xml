@@ -57,7 +57,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
                 android:gravity="center"
-                android:textColor="@color/xam"
+                android:textColor="@color/xam_nhat"
                 android:textSize="12sp"
                 android:textStyle="bold"/>
 

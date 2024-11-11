@@ -8,7 +8,7 @@
     android:layout_gravity="center">
 
     <LinearLayout
-        android:id="@+id/linearlayoutcarviewplaylist"
+        android:id="@+id/linearlayoutcarviewalbum"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -19,14 +19,14 @@
             app:cardCornerRadius="5dp">
 
             <ImageView
-                android:id="@+id/img_playlist"
+                android:id="@+id/img_album"
                 android:layout_width="110dp"
                 android:layout_height="110dp"
                 android:scaleType="centerCrop"/>
         </androidx.cardview.widget.CardView>
 
         <TextView
-            android:id="@+id/txt_tenplaylist"
+            android:id="@+id/txt_tenalbum"
             android:maxWidth="110dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -35,6 +35,15 @@
             android:ellipsize="end"
             android:textSize="11sp"
             android:textColor="@color/black"/>
+
+        <TextView
+            android:id="@+id/txt_tencasialbum"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textSize="11sp"
+            android:textColor="@color/xam"/>
 
     </LinearLayout>
 </LinearLayout>

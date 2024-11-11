@@ -62,10 +62,7 @@ public class BannerViewPagerAdapter extends RecyclerView.Adapter<BannerViewPager
 
     @Override
     public int getItemCount() {
-        if (mListBaiHat != null) {
-            return mListBaiHat.size();
-        }
-        return 0;
+        return Math.min(mListBaiHat.size(), 5);
     }
 
     public class BannerViewHolder extends RecyclerView.ViewHolder {

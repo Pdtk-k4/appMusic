@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 
@@ -21,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -79,18 +81,13 @@ public class Playlist2Fragment extends Fragment {
                              Bundle savedInstanceState) {
         binding = FragmentPlaylist2Binding.inflate(inflater, container, false);
 
-        binding.viewPagerPlaylist2.setOffscreenPageLimit(10);
-        binding.viewPagerPlaylist2.setClipToPadding(true);
-        binding.viewPagerPlaylist2.setClipChildren(true);
-
-        CompositePageTransformer compositePageTransformer = new CompositePageTransformer();
-        compositePageTransformer.addTransformer(new MarginPageTransformer(10));
-        binding.viewPagerPlaylist2.setPageTransformer(compositePageTransformer);
-
-
         mListPlaylist = new ArrayList<>();
         playlist_adapter = new Playlist_Adapter(mListPlaylist);
-        binding.viewPagerPlaylist2.setAdapter(playlist_adapter);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        binding.recyclerviewPlaylist.setLayoutManager(linearLayoutManager);
+        binding.recyclerviewPlaylist.setAdapter(playlist_adapter);
 
         loadImgPlaylist();
         // Inflate the layout for this fragment
@@ -109,7 +106,9 @@ public class Playlist2Fragment extends Fragment {
                         mListPlaylist.add(playlist);
                     }
                 }
-                //loadRandomPlaylist(); // Gọi phương thức lấy playlist ngẫu nhiên
+
+                Collections.shuffle(mListPlaylist);
+
                 playlist_adapter.notifyDataSetChanged(); // Cập nhật adapter
             }
 
@@ -119,32 +118,6 @@ public class Playlist2Fragment extends Fragment {
             }
         });
     }
-
-
-//    // Phương thức để lấy ngẫu nhiên 5 bài hát mỗi ngày
-//    private void loadRandomPlaylist() {
-//        SharedPreferences prefs = requireContext().getSharedPreferences("DailySongs", Context.MODE_PRIVATE);
-//        int savedDay = prefs.getInt("day", -1);
-//        int currentDay = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
-//
-//        if (savedDay != currentDay) {
-//            // Nếu ngày đã thay đổi, lấy ngẫu nhiên 6 playlist
-//            if (mListPlaylist.size() >= 6) { // Kiểm tra có ít nhất 6 playlist
-//                Collections.shuffle(mListPlaylist); // Xáo trộn danh sách
-//                List<Playlist> randomList = mListPlaylist.subList(0, 6); // Lấy 6 playlist đầu tiên
-//                playlist_adapter.updatePlaylists(randomList); // Cập nhật adapter với danh sách ngẫu nhiên
-//            } else {
-//                // Nếu không đủ 6 playlist, có thể cập nhật toàn bộ danh sách
-//                playlist_adapter.updatePlaylists(mListPlaylist);
-//            }
-//
-//            prefs.edit().putInt("day", currentDay).apply();
-//        } else {
-//            // Nếu ngày không thay đổi, giữ nguyên adapter hiện tại
-//            playlist_adapter.notifyDataSetChanged(); // Cập nhật UI nếu có sự thay đổi nào
-//        }
-//    }
-
 
     @Override
     public void onPause() {
