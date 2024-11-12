@@ -43,7 +43,7 @@ public class Playlist_Adapter extends RecyclerView.Adapter<Playlist_Adapter.Play
         Picasso.get().load(playlist.getAnhPlaylist()).into(holder.imageView);
         holder.textView.setText(playlist.getTenPlaylist());
 
-        holder.imageView.setOnClickListener(new View.OnClickListener() {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(view.getContext(), DSachBaiHatActivity.class);

@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dahitamusic.Adapter.SongsAdapter;
+import com.example.dahitamusic.Model.Album;
 import com.example.dahitamusic.Model.BaiHat;
 import com.example.dahitamusic.Model.Playlist;
 import com.example.dahitamusic.R;
@@ -35,6 +36,7 @@ public class DSachBaiHatActivity extends AppCompatActivity {
 
     ActivityDsachBaiHatBinding binding;
     Playlist playlist;
+    Album album;
     DatabaseReference mData;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,11 +54,14 @@ public class DSachBaiHatActivity extends AppCompatActivity {
         dataIntent();
         init();
         if(playlist != null && !playlist.getIdPlaylist().equals("")){
-            getData(playlist.getIdPlaylist());
+            getPlaylist(playlist.getIdPlaylist());
+        }
+        if(album != null && !album.getIdAlbum().equals("")){
+            getAlbum(album.getIdAlbum());
         }
     }
 
-    private void getData(String idPlaylist) {
+    private void getPlaylist(String idPlaylist) {
         mData = FirebaseDatabase.getInstance().getReference("BaiHat");
         Query query = mData.orderByChild("idPlaylist").equalTo(idPlaylist);
         query.addValueEventListener(new ValueEventListener() {
@@ -79,6 +84,31 @@ public class DSachBaiHatActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void getAlbum(String idAlbum) {
+        mData = FirebaseDatabase.getInstance().getReference("BaiHat");
+        Query query = mData.orderByChild("idAlbum").equalTo(idAlbum);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                ArrayList<BaiHat> baiHatList = new ArrayList<>();
+                for (DataSnapshot datasnapshot : snapshot.getChildren()) {
+                    BaiHat baiHat = datasnapshot.getValue(BaiHat.class);
+                    if (baiHat != null) {
+                        baiHatList.add(baiHat);
+                    }
+                }
+                Log.d("DSachBaiHatActivity", "Số bài hát đã lấy được: " + baiHatList.size());
+                displaySongs(baiHatList);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(DSachBaiHatActivity.this, "Lỗi khi lấy dữ liệu: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private void displaySongs(ArrayList<BaiHat> baiHatList) {
         if (baiHatList.isEmpty()) {
             Toast.makeText(this, "Không có bài hát nào để hiển thị", Toast.LENGTH_SHORT).show();
@@ -98,8 +128,11 @@ public class DSachBaiHatActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             if (playlist != null) {
                 getSupportActionBar().setTitle(playlist.getTenPlaylist());
-
                 Picasso.get().load(playlist.getAnhPlaylist()).into(binding.imgplaylist);
+            }
+            if (album != null) {
+                getSupportActionBar().setTitle(album.getTenAlbum());
+                Picasso.get().load(album.getAnhAlbum()).into(binding.imgplaylist);
             }
         }
 
@@ -115,7 +148,10 @@ public class DSachBaiHatActivity extends AppCompatActivity {
             if (intent.hasExtra("Playlist")) {
                 playlist = (Playlist) intent.getSerializableExtra("Playlist");
                 Toast.makeText(this, playlist.getIdTheLoai(), Toast.LENGTH_SHORT).show();
-
+            }
+            if (intent.hasExtra("Album")) {
+                album = (Album) intent.getSerializableExtra("Album");
+                Toast.makeText(this, album.getTenAlbum(), Toast.LENGTH_SHORT).show();
             }
         }
     }

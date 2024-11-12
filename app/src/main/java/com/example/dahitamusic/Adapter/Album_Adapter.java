@@ -1,6 +1,7 @@
 package com.example.dahitamusic.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.dahitamusic.Activity.DSachBaiHatActivity;
 import com.example.dahitamusic.Model.Album;
 import com.example.dahitamusic.R;
 import com.squareup.picasso.Picasso;
@@ -38,6 +40,15 @@ public class Album_Adapter extends RecyclerView.Adapter<Album_Adapter.AlbumViewH
         holder.txtTenAlbum.setText(album.getTenAlbum());
         holder.txtTenCaSiAlbum.setText(album.getTenCaSiAlbum());
         Picasso.get().load(album.getAnhAlbum()).into(holder.imgAlbum);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(view.getContext(), DSachBaiHatActivity.class);
+                intent.putExtra("Album", album);
+                view.getContext().startActivity(intent);
+            }
+        });
 
     }
 

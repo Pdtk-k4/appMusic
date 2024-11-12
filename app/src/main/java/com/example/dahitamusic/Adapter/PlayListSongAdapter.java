@@ -52,7 +52,7 @@ public class PlayListSongAdapter extends RecyclerView.Adapter<PlayListSongAdapte
 
     @Override
     public int getItemCount() {
-        return songs.size();
+        return Math.min(songs.size(), 10);
     }
 
     // ViewHolder class

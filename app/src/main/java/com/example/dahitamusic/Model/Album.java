@@ -1,21 +1,32 @@
 package com.example.dahitamusic.Model;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Album {
+public class Album implements Serializable {
 
     private String tenAlbum;
     private String tenCaSiAlbum;
     private String anhAlbum;
+    private String idAlbum;
 
     public Album() {
     }
 
-    public Album(String tenAlbum, String tenCaSiAlbum, String anhAlbum) {
+    public Album(String tenAlbum, String tenCaSiAlbum, String anhAlbum, String idAlbum) {
         this.tenAlbum = tenAlbum;
         this.tenCaSiAlbum = tenCaSiAlbum;
         this.anhAlbum = anhAlbum;
+        this.idAlbum = idAlbum;
+    }
+
+    public String getIdAlbum() {
+        return idAlbum;
+    }
+
+    public void setIdAlbum(String idAlbum) {
+        this.idAlbum = idAlbum;
     }
 
     public String getTenCaSiAlbum() {

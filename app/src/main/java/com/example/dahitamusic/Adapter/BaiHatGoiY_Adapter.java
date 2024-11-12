@@ -1,6 +1,7 @@
 package com.example.dahitamusic.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.dahitamusic.Activity.PlayMusicActivity;
 import com.example.dahitamusic.Model.BaiHat;
 import com.example.dahitamusic.R;
 import com.squareup.picasso.Picasso;
@@ -38,6 +40,13 @@ public class BaiHatGoiY_Adapter extends RecyclerView.Adapter<BaiHatGoiY_Adapter.
         holder.txt_tenbaihat.setText(baiHat.getTenBaiHat());
         holder.txt_casi.setText(baiHat.getCaSi());
         Picasso.get().load(baiHat.getAnhBaiHat()).into(holder.img_baihat);
+
+        holder.itemView.setOnClickListener(view -> {
+            Intent intent = new Intent(context, PlayMusicActivity.class);
+            intent.putExtra("BaiHat", mangbaihat); // Truyền toàn bộ danh sách bài hát
+            intent.putExtra("position", position); // Truyền vị trí của bài hát được chọn
+            context.startActivity(intent);
+        });
     }
 
     @Override
