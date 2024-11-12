@@ -15,7 +15,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
         app:civ_border_width="3dp"
-        app:civ_border_color="@color/xam"/>
+        app:civ_border_color="@color/xam_nhat"/>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

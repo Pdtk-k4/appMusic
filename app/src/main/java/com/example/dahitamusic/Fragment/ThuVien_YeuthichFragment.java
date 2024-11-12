@@ -2,24 +2,20 @@ package com.example.dahitamusic.Fragment;
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.dahitamusic.R;
-import com.example.dahitamusic.databinding.FragmentLibaryBinding;
-import com.google.android.material.navigation.NavigationBarView;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link LibaryFragment#newInstance} factory method to
+ * Use the {@link ThuVien_YeuthichFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class LibaryFragment extends Fragment {
+public class ThuVien_YeuthichFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -29,9 +25,8 @@ public class LibaryFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private FragmentLibaryBinding binding;
 
-    public LibaryFragment() {
+    public ThuVien_YeuthichFragment() {
         // Required empty public constructor
     }
 
@@ -41,21 +36,16 @@ public class LibaryFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment LibaryFragment.
+     * @return A new instance of fragment ThuVien_YeuthichFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static LibaryFragment newInstance(String param1, String param2) {
-        LibaryFragment fragment = new LibaryFragment();
+    public static ThuVien_YeuthichFragment newInstance(String param1, String param2) {
+        ThuVien_YeuthichFragment fragment = new ThuVien_YeuthichFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
     }
 
     @Override
@@ -70,25 +60,7 @@ public class LibaryFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        binding = FragmentLibaryBinding.inflate(inflater, container, false);
-
-        replaceFragment(new ThuVien_PlaylistFragment());
-        binding.bottomnavigation.setOnItemSelectedListener(item -> {
-            if (item.getItemId() == R.id.playlist) {
-                replaceFragment(new ThuVien_PlaylistFragment());
-            } else if (item.getItemId() == R.id.album) {
-                replaceFragment(new ThuVien_AlbumFragment());
-            } else if (item.getItemId() == R.id.yeuthich) {
-                replaceFragment(new ThuVien_YeuthichFragment());
-            }
-            return true;
-        });
-        return binding.getRoot();
-    }
-
-    private void replaceFragment(Fragment fragment) {
-        getChildFragmentManager().beginTransaction()
-                .replace(R.id.fagment_layout, fragment)
-                .commit();
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_thu_vien__yeuthich, container, false);
     }
 }

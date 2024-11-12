@@ -11,11 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.dahitamusic.Adapter.BaiHatGoiY_Adapter;
-import com.example.dahitamusic.Model.Album;
+import com.example.dahitamusic.Adapter.ThuVien_Playlist_Adapter;
 import com.example.dahitamusic.Model.BaiHat;
+import com.example.dahitamusic.Model.Playlist;
 import com.example.dahitamusic.R;
 import com.example.dahitamusic.databinding.FragmentBaiHatBinding;
-import com.example.dahitamusic.databinding.FragmentPlayListSongBinding;
+import com.example.dahitamusic.databinding.FragmentThuVienPlaylistBinding;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,10 +28,10 @@ import java.util.Collections;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link BaiHatFragment#newInstance} factory method to
+ * Use the {@link ThuVien_PlaylistFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class BaiHatFragment extends Fragment {
+public class ThuVien_PlaylistFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -40,12 +41,12 @@ public class BaiHatFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private ArrayList<BaiHat> mangbaihat;
-    private BaiHatGoiY_Adapter baihatgoiy_adapter;
-    private FragmentBaiHatBinding binding;
+    private ArrayList<Playlist> mangPlaylist;
+    private ThuVien_Playlist_Adapter thuVien_Playlist_Adapter;
+    private FragmentThuVienPlaylistBinding binding;
     private DatabaseReference mData;
 
-    public BaiHatFragment() {
+    public ThuVien_PlaylistFragment() {
         // Required empty public constructor
     }
 
@@ -55,11 +56,11 @@ public class BaiHatFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment BaiHatFragment.
+     * @return A new instance of fragment ThuVien_PlaylistFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static BaiHatFragment newInstance(String param1, String param2) {
-        BaiHatFragment fragment = new BaiHatFragment();
+    public static ThuVien_PlaylistFragment newInstance(String param1, String param2) {
+        ThuVien_PlaylistFragment fragment = new ThuVien_PlaylistFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -79,35 +80,35 @@ public class BaiHatFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        binding = FragmentBaiHatBinding.inflate(inflater, container, false);
+        binding = FragmentThuVienPlaylistBinding.inflate(inflater, container, false);
 
-        mangbaihat = new ArrayList<>();
-        baihatgoiy_adapter = new BaiHatGoiY_Adapter(mangbaihat, getActivity());
-        binding.recyclerviewBaihatgoiy.setLayoutManager(new LinearLayoutManager(getActivity()));
-        binding.recyclerviewBaihatgoiy.setAdapter(baihatgoiy_adapter);
+        mangPlaylist = new ArrayList<>();
+        thuVien_Playlist_Adapter = new ThuVien_Playlist_Adapter(mangPlaylist, getActivity());
+        binding.recyclerview.setLayoutManager(new LinearLayoutManager(getActivity()));
+        binding.recyclerview.setAdapter(thuVien_Playlist_Adapter);
 
-        loadBaiHatGoiY();
+        loadPlaylistgoiy();
         return binding.getRoot();
+
     }
 
-    public void loadBaiHatGoiY() {
-        mData = FirebaseDatabase.getInstance().getReference("BaiHat");
+    public void loadPlaylistgoiy() {
+        mData = FirebaseDatabase.getInstance().getReference("Playlist");
         mData.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                mangbaihat.clear();
+                mangPlaylist.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    BaiHat baiHat = dataSnapshot.getValue(BaiHat.class);
-                    if (baiHat != null) {
-                        mangbaihat.add(baiHat);
+                    Playlist playlist = dataSnapshot.getValue(Playlist.class);
+                    if (playlist != null) {
+                        mangPlaylist.add(playlist);
                     }
                 }
 
                 // Trộn ngẫu nhiên danh sách album
-                Collections.shuffle(mangbaihat);
+                Collections.shuffle(mangPlaylist);
 
-                baihatgoiy_adapter.notifyDataSetChanged(); // Cập nhật adapter
+                thuVien_Playlist_Adapter.notifyDataSetChanged(); // Cập nhật adapter
             }
 
             @Override

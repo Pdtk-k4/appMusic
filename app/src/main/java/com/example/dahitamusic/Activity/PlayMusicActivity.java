@@ -87,8 +87,10 @@ public class PlayMusicActivity extends AppCompatActivity {
         playListSongFragment = new PlayListSongFragment();
         diaNhacFragment = new DiaNhacFragment();
 
-        fragments.add(playListSongFragment);
         fragments.add(diaNhacFragment);
+        fragments.add(playListSongFragment);
+
+
         viewPagerPlaySongAdapter = new ViewPagerPlaySongAdapter(PlayMusicActivity.this, fragments);
 
         binding.viewpagerplaynhac.setAdapter(viewPagerPlaySongAdapter);
@@ -162,21 +164,22 @@ public class PlayMusicActivity extends AppCompatActivity {
                         diaNhacFragment.resumeAnimation(); // Bắt đầu xoay ảnh khi play
                     }
                 }
+                startSeekBarUpdate();
             }
         });
 
         //xủ lý repeat và shuffle(lặp lại và random)
         binding.imgbtnrepeat.setOnClickListener(v -> {
             if (repeat) {
-                // Nếu repeat đang bật, tắt nó và đặt màu trắng cho biểu tượng
+                // Nếu repeat đang bật, tắt đi và chuyển trắng
                 binding.imgbtnrepeat.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
                 repeat = false;
             } else {
-                // Nếu repeat chưa bật, bật nó và đặt màu xanh cho biểu tượng
+                // Nếu repeat chưa bật, bật lên và chuyển sang tím
                 binding.imgbtnrepeat.setColorFilter(Color.parseColor("#8342BD"), PorterDuff.Mode.SRC_ATOP);  // Màu tím
                 repeat = true;
 
-                // Tắt shuffle nếu nó đang bật
+                // Tắt shuffle nếu đang bật
                 if (shuffle) {
                     shuffle = false;
                     binding.imgbtnshuffle.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
@@ -291,7 +294,7 @@ public class PlayMusicActivity extends AppCompatActivity {
     private void getDataIntent() {
         Intent intent = getIntent();
         if (intent != null) {
-            if (intent.hasExtra("cakhuc")){
+            if (intent.hasExtra("cakhuc")) {
                 // Lấy bài hát từ Intent
                 BaiHat baiHat = intent.getParcelableExtra("cakhuc");
                 mangbaihat.add(baiHat);

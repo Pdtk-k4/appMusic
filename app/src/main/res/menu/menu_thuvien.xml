@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="@string/playlist" android:id="@+id/playlist" />
+    <item android:title="@string/album" android:id="@+id/album" />
+    <item android:title="@string/yeuthich" android:id="@+id/yeuthich" />
+</menu>

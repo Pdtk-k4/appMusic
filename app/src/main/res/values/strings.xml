@@ -9,7 +9,7 @@
     <string name="profile">Cá nhân</string>
     <string name="trang_chu">Trang chủ</string>
     <string name="goi_y_cho_ban">Gợi ý cho bạn</string>
-    <string name="lam_moi">Làm mớin</string>
+    <string name="lam_moi">Làm mới</string>
     <string name="chill">Chill</string>
     <string name="ctbmnghe">Có thể bạn muốn nghe</string>
     <string name="back">Trở lại</string>
@@ -17,5 +17,11 @@
     <string name="timesong">00:00</string>
     <string name="album_hot">Album Hot</string>
     <string name="xemthem">Xem thêm</string>
+    <string name="chude_theloai">Chủ đề và thể loại</string>
+    <string name="playlist">Playlist</string>
+    <string name="taoplaylist">Tạo playlist</string>
+    <string name="playlistgoiy">Playlist gợi ý</string>
+    <string name="album">Album</string>
+    <string name="yeuthich">Yêu thích</string>
 
 </resources>

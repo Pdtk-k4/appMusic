@@ -25,56 +25,11 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-//        replaceFragment(new HomeFragment());
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
-//        Menu_Adapter menuAdapter = new Menu_Adapter(this);
-//        binding.viewPager.setAdapter(menuAdapter);
-//        binding.viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-//            @Override
-//            public void onPageSelected(int position) {
-//                super.onPageSelected(position);
-//                switch (position) {
-//                    case 0:
-//                        binding.bottomnavigation.getMenu().findItem(R.id.home).setChecked(true);
-//                        break;
-//                    case 1:
-//                        binding.bottomnavigation.getMenu().findItem(R.id.radio).setChecked(true);
-//                        break;
-//                    case 2:
-//                        binding.bottomnavigation.getMenu().findItem(R.id.library).setChecked(true);
-//                        break;
-//                    case 3:
-//                        binding.bottomnavigation.getMenu().findItem(R.id.profile).setChecked(true);
-//                        break;
-//                }
-//            }
-//        });
-//
-//        binding.bottomnavigation.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-//            @Override
-//            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-//                int itemId = item.getItemId();
-//                if (itemId == R.id.home) {
-//                    binding.viewPager.setCurrentItem(0);
-//                } else if (itemId == R.id.radio) {
-//                    binding.viewPager.setCurrentItem(1);
-//                } else if (itemId == R.id.library) {
-//                    binding.viewPager.setCurrentItem(2);
-//                } else if (itemId == R.id.profile) {
-//                    binding.viewPager.setCurrentItem(3);
-//                } else {
-//                    return false;
-//                }
-//                return true;
-//            }
-//        });
-//    }
-//    // Mặc định hiển thị Fragment Home
         replaceFragment(new HomeFragment());
 
         binding.bottomnavigation.setOnItemSelectedListener(item -> {

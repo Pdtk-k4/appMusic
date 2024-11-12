@@ -1,71 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="15dp"
+    android:paddingTop="15dp"
+    android:paddingEnd="15dp"
     tools:context=".Fragment.BaiHatFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <LinearLayout
-        android:id="@id/linear_layout"
+    <RelativeLayout
+        android:id="@+id/recyclerviewgoiybaihat"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="15dp">
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/txt_baihatgoiy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/goi_y_cho_ban"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:textStyle="bold" />
 
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/btn_loadsong">
 
-            <TextView
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toStartOf="@id/linear_layout_load_song"
-                android:text="@string/goi_y_cho_ban"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+                android:gravity="center"
+                android:layout_centerInParent="true"
+                android:paddingEnd="7sp">
 
-            <LinearLayout
-                android:id="@+id/linear_layout_load_song"
-                android:layout_width="95dp"
-                android:layout_height="28dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:background="@drawable/btn_loadsong"
-                android:orientation="horizontal"
-                android:padding="5dp">
+                <ImageView
+                    android:id="@+id/img_iconload"
+                    android:layout_width="match_parent"
+                    android:layout_height="12dp"
+                    android:layout_centerInParent="true"
+                    android:layout_toStartOf="@+id/txt_lammoi"
+                    android:src="@drawable/load"
+                    app:tint="@android:color/black"/>
 
-                <LinearLayout
+                <TextView
+                    android:id="@+id/txt_lammoi"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginStart="5dp">
-
-                    <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:layout_gravity="center"
-                        android:layout_marginEnd="6dp"
-                        android:src="@drawable/load" />
-
-                    <TextView
-                        android:id="@+id/txt_loadSong"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Làm mới"
-                        android:textSize="12sp"
-                        android:textStyle="bold"/>
-
-                </LinearLayout>
-            </LinearLayout>
+                    android:layout_centerInParent="true"
+                    android:text="@string/lam_moi"
+                    android:textSize="10sp"
+                    android:textColor="@color/black"
+                    tools:ignore="SmallSp" />
+            </RelativeLayout>
         </RelativeLayout>
 
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/view_pager_song"
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_marginTop="10dp"/>
-    </LinearLayout>
+    </RelativeLayout>
 
-</FrameLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview_baihatgoiy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/recyclerviewgoiybaihat"
+        android:layout_marginTop="10dp">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+</RelativeLayout>

@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.dahitamusic.Model.BaiHat;
@@ -84,7 +85,6 @@ public class DiaNhacFragment extends Fragment {
         objectAnimator.setRepeatCount(ValueAnimator.INFINITE);
         objectAnimator.setRepeatMode(ValueAnimator.RESTART);
         objectAnimator.setInterpolator(new LinearInterpolator());
-
         return view;
     }
 
@@ -104,6 +104,7 @@ public class DiaNhacFragment extends Fragment {
             }
         });
     }
+
 
     // Hàm nhập tên bài hát
     public void setTenBaiHat(String tenBaiHat) {
