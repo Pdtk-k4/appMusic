@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
@@ -14,6 +15,8 @@ import com.example.dahitamusic.Adapter.BaiHatGoiY_Adapter;
 import com.example.dahitamusic.Model.Album;
 import com.example.dahitamusic.Model.BaiHat;
 import com.example.dahitamusic.R;
+import com.example.dahitamusic.ViewModel.AlbumViewModel;
+import com.example.dahitamusic.ViewModel.BaiHatViewModel;
 import com.example.dahitamusic.databinding.FragmentBaiHatBinding;
 import com.example.dahitamusic.databinding.FragmentPlayListSongBinding;
 import com.google.firebase.database.DataSnapshot;
@@ -40,10 +43,12 @@ public class BaiHatFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private ArrayList<BaiHat> mangbaihat;
+    private ArrayList<BaiHat> mbaihat;
+    private ArrayList<BaiHat> mbaihathienthi;
     private BaiHatGoiY_Adapter baihatgoiy_adapter;
     private FragmentBaiHatBinding binding;
     private DatabaseReference mData;
+    private BaiHatViewModel viewModel;
 
     public BaiHatFragment() {
         // Required empty public constructor
@@ -81,13 +86,25 @@ public class BaiHatFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentBaiHatBinding.inflate(inflater, container, false);
+        viewModel = new ViewModelProvider(requireActivity()).get(BaiHatViewModel.class);
 
-        mangbaihat = new ArrayList<>();
-        baihatgoiy_adapter = new BaiHatGoiY_Adapter(mangbaihat, getActivity());
+        mbaihat = new ArrayList<>();
+        mbaihathienthi = new ArrayList<>();
+        baihatgoiy_adapter = new BaiHatGoiY_Adapter(mbaihathienthi, getActivity());
         binding.recyclerviewBaihatgoiy.setLayoutManager(new LinearLayoutManager(getActivity()));
         binding.recyclerviewBaihatgoiy.setAdapter(baihatgoiy_adapter);
 
-        loadBaiHatGoiY();
+        // Kiểm tra nếu dữ liệu đã có trong ViewModel rồi thì không tải lại từ Firebase
+        if (viewModel.getBaiHats().getValue() != null && !viewModel.getBaiHats().getValue().isEmpty()) {
+            // Dữ liệu đã có trong ViewModel, chỉ cần sử dụng lại
+            mbaihathienthi.clear();
+            mbaihathienthi.addAll(viewModel.getBaiHats().getValue());
+            baihatgoiy_adapter.notifyDataSetChanged();
+        } else {
+            // Dữ liệu chưa có trong ViewModel, cần tải từ Firebase
+            loadBaiHatGoiY();
+        }
+
         return binding.getRoot();
     }
 
@@ -96,16 +113,21 @@ public class BaiHatFragment extends Fragment {
         mData.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                mangbaihat.clear();
+                mbaihat.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     BaiHat baiHat = dataSnapshot.getValue(BaiHat.class);
                     if (baiHat != null) {
-                        mangbaihat.add(baiHat);
+                        mbaihat.add(baiHat);
                     }
                 }
 
                 // Trộn ngẫu nhiên danh sách album
-                Collections.shuffle(mangbaihat);
+                Collections.shuffle(mbaihat);
+
+                // Cập nhật ViewModel và danh sách hiển thị
+                viewModel.setBaiHats(mbaihat);
+                mbaihathienthi.clear();
+                mbaihathienthi.addAll(mbaihat);
 
                 baihatgoiy_adapter.notifyDataSetChanged(); // Cập nhật adapter
             }

@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
@@ -14,6 +15,8 @@ import com.example.dahitamusic.Adapter.Album_Adapter;
 import com.example.dahitamusic.Model.Album;
 import com.example.dahitamusic.Model.Playlist;
 import com.example.dahitamusic.R;
+import com.example.dahitamusic.ViewModel.AlbumViewModel;
+import com.example.dahitamusic.ViewModel.PlayListViewModel;
 import com.example.dahitamusic.databinding.FragmentAlbumBinding;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -43,7 +46,9 @@ public class AlbumFragment extends Fragment {
     private FragmentAlbumBinding binding;
     private DatabaseReference mData;
     private Album_Adapter album_adapter;
-    private List<Album> mListAlbum;
+    private ArrayList<Album> mListAlbum;
+    private ArrayList<Album> mAlbumHienThi;
+    private AlbumViewModel viewModel;
 
     public AlbumFragment() {
         // Required empty public constructor
@@ -80,15 +85,26 @@ public class AlbumFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentAlbumBinding.inflate(inflater, container, false);
+        viewModel = new ViewModelProvider(requireActivity()).get(AlbumViewModel.class);
 
         mListAlbum = new ArrayList<>();
-        album_adapter = new Album_Adapter(getActivity(), (ArrayList<Album>) mListAlbum);
+        mAlbumHienThi = new ArrayList<>();
+        album_adapter = new Album_Adapter(getActivity(), mAlbumHienThi);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         binding.recyclerviewAlbum.setLayoutManager(linearLayoutManager);
         binding.recyclerviewAlbum.setAdapter(album_adapter);
 
-        loadAlbum();
+        // Kiểm tra nếu dữ liệu đã có trong ViewModel rồi thì không tải lại từ Firebase
+        if (viewModel.getAlbums().getValue() != null && !viewModel.getAlbums().getValue().isEmpty()) {
+            // Dữ liệu đã có trong ViewModel, chỉ cần sử dụng lại
+            mAlbumHienThi.clear();
+            mAlbumHienThi.addAll(viewModel.getAlbums().getValue());
+            album_adapter.notifyDataSetChanged();
+        } else {
+            // Dữ liệu chưa có trong ViewModel, cần tải từ Firebase
+            loadAlbum();
+        }
 
         return binding.getRoot();
     }
@@ -108,6 +124,12 @@ public class AlbumFragment extends Fragment {
 
                 // Trộn ngẫu nhiên danh sách album
                 Collections.shuffle(mListAlbum);
+
+                // Cập nhật ViewModel và danh sách hiển thị
+                viewModel.setAlbums(mListAlbum);
+                mAlbumHienThi.clear();
+                mAlbumHienThi.addAll(mListAlbum);
+
 
                 album_adapter.notifyDataSetChanged(); // Cập nhật adapter
             }

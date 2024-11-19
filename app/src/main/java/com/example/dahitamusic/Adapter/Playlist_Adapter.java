@@ -40,7 +40,7 @@ public class Playlist_Adapter extends RecyclerView.Adapter<Playlist_Adapter.Play
         if (playlist == null) {
             return;
         }
-        Picasso.get().load(playlist.getAnhPlaylist()).into(holder.imageView);
+        Picasso.get().load(playlist.getAnhPlaylist()).placeholder(R.drawable.img_default).into(holder.imageView);
         holder.textView.setText(playlist.getTenPlaylist());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {

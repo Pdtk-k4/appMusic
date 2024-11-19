@@ -39,7 +39,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.SongViewHold
         BaiHat baiHat = songs.get(position);
         holder.songTitle.setText(baiHat.getTenBaiHat());
         holder.songArtist.setText(baiHat.getCaSi());
-        Picasso.get().load(baiHat.getAnhBaiHat()).into(holder.songImage);
+        Picasso.get().load(baiHat.getAnhBaiHat()).placeholder(R.drawable.img_default).into(holder.songImage);
 
         holder.itemView.setOnClickListener(view -> {
             Intent intent = new Intent(context, PlayMusicActivity.class);

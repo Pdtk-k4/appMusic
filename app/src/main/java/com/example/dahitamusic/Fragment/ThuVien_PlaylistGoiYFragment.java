@@ -3,20 +3,22 @@ package com.example.dahitamusic.Fragment;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.viewpager2.widget.CompositePageTransformer;
-import androidx.viewpager2.widget.MarginPageTransformer;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.dahitamusic.Adapter.Playlist_Adapter;
+import com.example.dahitamusic.Adapter.ThuVien_Playlist_Adapter;
 import com.example.dahitamusic.Model.Playlist;
+import com.example.dahitamusic.R;
 import com.example.dahitamusic.ViewModel.PlayListViewModel;
-import com.example.dahitamusic.databinding.FragmentPlaylist2Binding;
+import com.example.dahitamusic.databinding.FragmentThuVienPlaylistBinding;
+import com.example.dahitamusic.databinding.FragmentThuVienPlaylistGoiYBinding;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -26,14 +28,13 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link Playlist2Fragment#newInstance} factory method to
+ * Use the {@link ThuVien_PlaylistGoiYFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Playlist2Fragment extends Fragment {
+public class ThuVien_PlaylistGoiYFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -43,14 +44,14 @@ public class Playlist2Fragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private FragmentPlaylist2Binding binding;
-    private DatabaseReference mData;
-    private Playlist_Adapter playlist_adapter;
-    private ArrayList<Playlist> mListPlaylist;
+    private ArrayList<Playlist> mangPlaylist;
     private ArrayList<Playlist> mangPlaylistHienThi;
+    private ThuVien_Playlist_Adapter thuVien_Playlist_Adapter;
+    private FragmentThuVienPlaylistGoiYBinding binding;
+    private DatabaseReference mData;
     private PlayListViewModel viewModel;
 
-    public Playlist2Fragment() {
+    public ThuVien_PlaylistGoiYFragment() {
         // Required empty public constructor
     }
 
@@ -60,11 +61,11 @@ public class Playlist2Fragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment PlaylistFragment.
+     * @return A new instance of fragment ThuVien_PlaylistGoiYFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static Playlist2Fragment newInstance(String param1, String param2) {
-        Playlist2Fragment fragment = new Playlist2Fragment();
+    public static ThuVien_PlaylistGoiYFragment newInstance(String param1, String param2) {
+        ThuVien_PlaylistGoiYFragment fragment = new ThuVien_PlaylistGoiYFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -84,54 +85,59 @@ public class Playlist2Fragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        binding = FragmentPlaylist2Binding.inflate(inflater, container, false);
+        binding = FragmentThuVienPlaylistGoiYBinding.inflate(inflater, container, false);
         viewModel = new ViewModelProvider(requireActivity()).get(PlayListViewModel.class);
 
-        mListPlaylist = new ArrayList<>();
+        mangPlaylist = new ArrayList<>();
         mangPlaylistHienThi = new ArrayList<>();
-        playlist_adapter = new Playlist_Adapter(mangPlaylistHienThi);
+        thuVien_Playlist_Adapter = new ThuVien_Playlist_Adapter(mangPlaylistHienThi, getActivity(), new ThuVien_Playlist_Adapter.IClickListner() {
+            @Override
+            public void onClick(Playlist playlist) {
+                clickIconHeart(playlist);
+            }
+        });
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        binding.recyclerviewPlaylist.setLayoutManager(linearLayoutManager);
-        binding.recyclerviewPlaylist.setAdapter(playlist_adapter);
+        binding.recyclerview.setLayoutManager(new LinearLayoutManager(getActivity()));
+        binding.recyclerview.setAdapter(thuVien_Playlist_Adapter);
 
         // Kiểm tra nếu dữ liệu đã có trong ViewModel rồi thì không tải lại từ Firebase
         if (viewModel.getPlaylists().getValue() != null && !viewModel.getPlaylists().getValue().isEmpty()) {
             // Dữ liệu đã có trong ViewModel, chỉ cần sử dụng lại
             mangPlaylistHienThi.clear();
             mangPlaylistHienThi.addAll(viewModel.getPlaylists().getValue());
-            playlist_adapter.notifyDataSetChanged();
+            thuVien_Playlist_Adapter.notifyDataSetChanged();
         } else {
             // Dữ liệu chưa có trong ViewModel, cần tải từ Firebase
-            loadImgPlaylist(false);
+            loadPlaylistgoiy();
         }
-        // Inflate the layout for this fragment
+
         return binding.getRoot();
     }
 
-    public void loadImgPlaylist(boolean yeuThich) {
+    private void loadPlaylistgoiy() {
         mData = FirebaseDatabase.getInstance().getReference("Playlist");
-        Query query = mData.orderByChild("yeuThich").equalTo(yeuThich);
-        query.addValueEventListener(new ValueEventListener() {
+        Query query = mData.orderByChild("yeuThich").equalTo(false);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                mListPlaylist.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     Playlist playlist = dataSnapshot.getValue(Playlist.class);
-                    if (playlist != null) {
-                        mListPlaylist.add(playlist);
+                    if (playlist != null && !playlist.getYeuThich()) {
+                        mangPlaylist.add(playlist);
                     }
                 }
 
-                Collections.shuffle(mListPlaylist);
+                // Trộn dữ liệu ngay trước khi lưu vào ViewModel
+                Collections.shuffle(mangPlaylist);
 
                 // Cập nhật ViewModel và danh sách hiển thị
-                viewModel.setPlaylists(mListPlaylist);
+                viewModel.setPlaylists(mangPlaylist);
                 mangPlaylistHienThi.clear();
-                mangPlaylistHienThi.addAll(mListPlaylist);
+                mangPlaylistHienThi.addAll(mangPlaylist);
 
-                playlist_adapter.notifyDataSetChanged(); // Cập nhật adapter
+                // Thông báo adapter
+                thuVien_Playlist_Adapter.notifyDataSetChanged();
+
             }
 
             @Override
@@ -141,8 +147,21 @@ public class Playlist2Fragment extends Fragment {
         });
     }
 
+
+    private void clickIconHeart(Playlist playlist) {
+        mData = FirebaseDatabase.getInstance().getReference("Playlist");
+
+        playlist.setYeuThich(true);
+        mData.child(playlist.getIdPlaylist()).updateChildren(playlist.toMap());
+
+        viewModel.setPlaylists(mangPlaylistHienThi);
+        mangPlaylistHienThi.remove(playlist);
+        thuVien_Playlist_Adapter.notifyDataSetChanged();
+    }
+
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

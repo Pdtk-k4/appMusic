@@ -36,7 +36,7 @@ public class BannerViewPagerAdapter extends RecyclerView.Adapter<BannerViewPager
     public void onBindViewHolder(@NonNull BannerViewHolder holder, int position) {
         BaiHat baiHat = mListBaiHat.get(position);
 
-        Picasso.get().load(baiHat.getAnhQuangCao()).into(holder.imageView);
+        Picasso.get().load(baiHat.getAnhQuangCao()).placeholder(R.drawable.img_default).into(holder.imageView);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

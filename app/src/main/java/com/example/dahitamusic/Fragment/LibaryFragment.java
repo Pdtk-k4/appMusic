@@ -4,12 +4,14 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.dahitamusic.Adapter.ViewPager_ThuVien_Adapter;
 import com.example.dahitamusic.R;
 import com.example.dahitamusic.databinding.FragmentLibaryBinding;
 import com.google.android.material.navigation.NavigationBarView;
@@ -72,23 +74,41 @@ public class LibaryFragment extends Fragment {
                              Bundle savedInstanceState) {
         binding = FragmentLibaryBinding.inflate(inflater, container, false);
 
-        replaceFragment(new ThuVien_PlaylistFragment());
+        setUpViewpager();
         binding.bottomnavigation.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.playlist) {
-                replaceFragment(new ThuVien_PlaylistFragment());
+                binding.viewPager.setCurrentItem(0);
             } else if (item.getItemId() == R.id.album) {
-                replaceFragment(new ThuVien_AlbumFragment());
+                binding.viewPager.setCurrentItem(1);
             } else if (item.getItemId() == R.id.yeuthich) {
-                replaceFragment(new ThuVien_YeuthichFragment());
+                binding.viewPager.setCurrentItem(2);
             }
             return true;
         });
+
         return binding.getRoot();
     }
 
-    private void replaceFragment(Fragment fragment) {
-        getChildFragmentManager().beginTransaction()
-                .replace(R.id.fagment_layout, fragment)
-                .commit();
+    private void setUpViewpager(){
+        ViewPager_ThuVien_Adapter viewPager_thuVien_adapter = new ViewPager_ThuVien_Adapter(getChildFragmentManager(),getLifecycle());
+        binding.viewPager.setAdapter(viewPager_thuVien_adapter);
+
+        binding.viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                switch (position) {
+                    case 0:
+                        binding.bottomnavigation.setSelectedItemId(R.id.playlist);
+                        break;
+                    case 1:
+                        binding.bottomnavigation.setSelectedItemId(R.id.album);
+                        break;
+                    case 2:
+                        binding.bottomnavigation.setSelectedItemId(R.id.yeuthich);
+                        break;
+                }
+            }
+        });
     }
 }

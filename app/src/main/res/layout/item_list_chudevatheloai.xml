@@ -21,8 +21,13 @@
             <ImageView
                 android:id="@+id/img_chudevatheloai"
                 android:layout_width="110dp"
-                android:layout_height="60dp"
+                android:layout_height="65dp"
                 android:scaleType="centerCrop"/>
+            <View
+                android:layout_width="110dp"
+                android:layout_height="65dp"
+                android:background="@android:color/black"
+                android:alpha="0.1" />
         </androidx.cardview.widget.CardView>
     </LinearLayout>
 </LinearLayout>

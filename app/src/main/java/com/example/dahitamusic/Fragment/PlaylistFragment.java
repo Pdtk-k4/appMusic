@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 
 import com.example.dahitamusic.Adapter.Playlist_Adapter;
 import com.example.dahitamusic.Model.Playlist;
+import com.example.dahitamusic.ViewModel.PlayListViewModel;
 import com.example.dahitamusic.databinding.FragmentPlaylistBinding;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -44,7 +46,9 @@ public class PlaylistFragment extends Fragment {
     private FragmentPlaylistBinding binding;
     private DatabaseReference mData;
     private Playlist_Adapter playlist_adapter;
-    private List<Playlist> mListPlaylist;
+    private ArrayList<Playlist> mListPlaylist;
+    private ArrayList<Playlist> mangPlaylistHienThi;
+    private PlayListViewModel viewModel;
 
     public PlaylistFragment() {
         // Required empty public constructor
@@ -81,15 +85,27 @@ public class PlaylistFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentPlaylistBinding.inflate(inflater, container, false);
+        viewModel = new ViewModelProvider(requireActivity()).get(PlayListViewModel.class);
 
         mListPlaylist = new ArrayList<>();
-        playlist_adapter = new Playlist_Adapter(mListPlaylist);
+        mangPlaylistHienThi = new ArrayList<>();
+        playlist_adapter = new Playlist_Adapter(mangPlaylistHienThi);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         binding.recyclerviewPlaylist.setLayoutManager(linearLayoutManager);
         binding.recyclerviewPlaylist.setAdapter(playlist_adapter);
 
-        loadImgPlaylist("chill");
+        // Kiểm tra nếu dữ liệu đã có trong ViewModel rồi thì không tải lại từ Firebase
+        if (viewModel.getPlaylists().getValue() != null && !viewModel.getPlaylists().getValue().isEmpty()) {
+            // Dữ liệu đã có trong ViewModel, chỉ cần sử dụng lại
+            mangPlaylistHienThi.clear();
+            mangPlaylistHienThi.addAll(viewModel.getPlaylists().getValue());
+            playlist_adapter.notifyDataSetChanged();
+        } else {
+            // Dữ liệu chưa có trong ViewModel, cần tải từ Firebase
+            loadImgPlaylist("chill");
+        }
+
         // Inflate the layout for this fragment
         return binding.getRoot();
     }
@@ -109,6 +125,12 @@ public class PlaylistFragment extends Fragment {
                 }
 
                 Collections.shuffle(mListPlaylist);
+
+                // Cập nhật ViewModel và danh sách hiển thị
+                viewModel.setPlaylists(mListPlaylist);
+                mangPlaylistHienThi.clear();
+                mangPlaylistHienThi.addAll(mListPlaylist);
+
 
                 playlist_adapter.notifyDataSetChanged(); // Cập nhật adapter
             }

@@ -1,73 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingStart="15dp"
-    android:paddingTop="15dp"
-    android:paddingEnd="15dp"
+    android:fillViewport="true"
+    android:scrollbars="none"
     tools:context=".Fragment.ThuVien_PlaylistFragment">
 
-    <RelativeLayout
-        android:id="@+id/btn_tao_playlist"
-        android:layout_width="120dp"
-        android:layout_height="40dp"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/btn_loadsong">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:gravity="center">
-
-            <ImageView
-                android:id="@+id/img_iconload"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_centerInParent="true"
-                android:layout_toStartOf="@+id/txt_lammoi"
-                android:src="@drawable/baseline_1k_plus_24"
-                app:tint="@android:color/black" />
-
-            <TextView
-                android:id="@+id/txt_lammoi"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="@string/taoplaylist"
-                android:textColor="@color/black"
-                android:textSize="14sp"
-                android:layout_marginStart="5dp"
-                tools:ignore="SmallSp" />
-        </RelativeLayout>
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/recyclerviealbum"
+    <LinearLayout
+        android:id="@+id/linear_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_below="@+id/btn_tao_playlist">
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/txt_playlistgoiy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/playlistgoiy"
-            android:textColor="@color/black"
-            android:textSize="15sp"
-            android:textStyle="bold" />
-    </RelativeLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/recyclerviealbum"
-        android:layout_marginTop="10dp">
-
-    </androidx.recyclerview.widget.RecyclerView>
-
-</RelativeLayout>
+        <fragment
+            android:id="@+id/fagment_playlistyeuthich"
+            android:name="com.example.dahitamusic.Fragment.ThuVien_PlaylistYeuThichFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <fragment
+            android:id="@+id/fagment_playlistgoiy"
+            android:name="com.example.dahitamusic.Fragment.ThuVien_PlaylistGoiYFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+</ScrollView>

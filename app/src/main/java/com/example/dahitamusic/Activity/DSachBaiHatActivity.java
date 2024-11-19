@@ -128,11 +128,11 @@ public class DSachBaiHatActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             if (playlist != null) {
                 getSupportActionBar().setTitle(playlist.getTenPlaylist());
-                Picasso.get().load(playlist.getAnhPlaylist()).into(binding.imgplaylist);
+                Picasso.get().load(playlist.getAnhPlaylist()).placeholder(R.drawable.img_default).into(binding.imgplaylist);
             }
             if (album != null) {
                 getSupportActionBar().setTitle(album.getTenAlbum());
-                Picasso.get().load(album.getAnhAlbum()).into(binding.imgplaylist);
+                Picasso.get().load(album.getAnhAlbum()).placeholder(R.drawable.img_default).into(binding.imgplaylist);
             }
         }
 

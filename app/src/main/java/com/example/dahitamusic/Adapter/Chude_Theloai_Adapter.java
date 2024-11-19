@@ -35,7 +35,7 @@ public class Chude_Theloai_Adapter extends RecyclerView.Adapter<Chude_Theloai_Ad
     @Override
     public void onBindViewHolder(@NonNull ChuDeTheLoaiViewHolder holder, int position) {
         TheLoai theLoai = mangChudeTheLoai.get(position);
-        Picasso.get().load(theLoai.getAnhTheLoai()).into(holder.imgChudeTheLoai);
+        Picasso.get().load(theLoai.getAnhTheLoai()).placeholder(R.drawable.img_default).into(holder.imgChudeTheLoai);
 
     }
 

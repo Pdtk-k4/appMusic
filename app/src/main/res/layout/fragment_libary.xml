@@ -38,12 +38,10 @@
         app:menu="@menu/menu_thuvien"
         app:itemTextColor="@color/coler_menu"/>
 
-    <FrameLayout
-        android:id="@+id/fagment_layout"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/bottomnavigation">
-
-    </FrameLayout>
+        android:layout_below="@+id/bottomnavigation"/>
 
 </RelativeLayout>

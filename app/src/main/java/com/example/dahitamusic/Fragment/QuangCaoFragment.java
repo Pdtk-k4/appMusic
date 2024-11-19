@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Handler;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 
 import com.example.dahitamusic.Adapter.BannerViewPagerAdapter;
 import com.example.dahitamusic.Model.BaiHat;
+import com.example.dahitamusic.ViewModel.BaiHatViewModel;
 import com.example.dahitamusic.databinding.FragmentQuangCaoBinding;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -43,7 +45,7 @@ public class QuangCaoFragment extends Fragment {
     private FragmentQuangCaoBinding binding;
     private DatabaseReference mData;
     private BannerViewPagerAdapter bannerViewPagerAdapter;
-    private List<BaiHat> mListBaiHat;
+    private ArrayList<BaiHat> mListBaiHat;
     private Handler handler = new Handler();
     private Runnable runnable = new Runnable() {
         @Override
@@ -102,8 +104,6 @@ public class QuangCaoFragment extends Fragment {
 
         loadImgQuangCao();
 
-//        handler.postDelayed(runnable, 4000);
-
         //thời gian chuyển ảnh
         binding.viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
@@ -129,8 +129,6 @@ public class QuangCaoFragment extends Fragment {
                         mListBaiHat.add(baiHat); // Thêm từng đối tượng vào danh sách
                     }
                 }
-                Collections.shuffle(mListBaiHat);
-//                loadRandomBanner();
                 bannerViewPagerAdapter.notifyDataSetChanged();
                 binding.circleIndicator.setViewPager(binding.viewPager);// Cập nhật adapter
             }

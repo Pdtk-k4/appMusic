@@ -70,4 +70,5 @@ dependencies {
     implementation ("de.hdodenhof:circleimageview:3.1.0")
 
     implementation ("com.google.android.exoplayer:exoplayer:2.18.1")
+
 }

@@ -24,6 +24,12 @@
                     android:id="@+id/img_song"
                     android:layout_width="50dp"
                     android:layout_height="50dp" />
+
+                <View
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:alpha="0.1"
+                    android:background="@android:color/black" />
             </androidx.cardview.widget.CardView>
 
             <LinearLayout

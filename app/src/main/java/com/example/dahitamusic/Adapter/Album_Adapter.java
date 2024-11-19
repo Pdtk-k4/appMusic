@@ -39,7 +39,7 @@ public class Album_Adapter extends RecyclerView.Adapter<Album_Adapter.AlbumViewH
         Album album = mangAlbum.get(position);
         holder.txtTenAlbum.setText(album.getTenAlbum());
         holder.txtTenCaSiAlbum.setText(album.getTenCaSiAlbum());
-        Picasso.get().load(album.getAnhAlbum()).into(holder.imgAlbum);
+        Picasso.get().load(album.getAnhAlbum()).placeholder(R.drawable.img_default).into(holder.imgAlbum);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

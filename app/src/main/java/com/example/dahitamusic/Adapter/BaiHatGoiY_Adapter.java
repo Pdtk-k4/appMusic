@@ -39,7 +39,7 @@ public class BaiHatGoiY_Adapter extends RecyclerView.Adapter<BaiHatGoiY_Adapter.
         BaiHat baiHat = mangbaihat.get(position);
         holder.txt_tenbaihat.setText(baiHat.getTenBaiHat());
         holder.txt_casi.setText(baiHat.getCaSi());
-        Picasso.get().load(baiHat.getAnhBaiHat()).into(holder.img_baihat);
+        Picasso.get().load(baiHat.getAnhBaiHat()).placeholder(R.drawable.img_default).into(holder.img_baihat);
 
         holder.itemView.setOnClickListener(view -> {
             Intent intent = new Intent(context, PlayMusicActivity.class);
