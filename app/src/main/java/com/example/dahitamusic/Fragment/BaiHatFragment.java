@@ -82,8 +82,7 @@ public class BaiHatFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentBaiHatBinding.inflate(inflater, container, false);
         viewModel = new ViewModelProvider(requireActivity()).get(BaiHatViewModel.class);
@@ -105,6 +104,16 @@ public class BaiHatFragment extends Fragment {
             loadBaiHatGoiY();
         }
 
+        binding.txtLammoi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Collections.shuffle(mbaihat);
+                viewModel.setBaiHats(mbaihat);
+                mbaihathienthi.clear();
+                mbaihathienthi.addAll(mbaihat);
+                baihatgoiy_adapter.notifyDataSetChanged();
+            }
+        });
         return binding.getRoot();
     }
 
@@ -120,15 +129,12 @@ public class BaiHatFragment extends Fragment {
                         mbaihat.add(baiHat);
                     }
                 }
-
                 // Trộn ngẫu nhiên danh sách album
                 Collections.shuffle(mbaihat);
-
                 // Cập nhật ViewModel và danh sách hiển thị
                 viewModel.setBaiHats(mbaihat);
                 mbaihathienthi.clear();
                 mbaihathienthi.addAll(mbaihat);
-
                 baihatgoiy_adapter.notifyDataSetChanged(); // Cập nhật adapter
             }
 

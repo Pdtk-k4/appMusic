@@ -19,12 +19,12 @@ public class BaiHat implements Parcelable {
     private String idTheLoai;
     private String anhQuangCao;
     private String idQuangCao;
-    private int luotThich;
+    private boolean yeuThich;
 
     public BaiHat() {
     }
 
-    public BaiHat(String idBaiHat, String anhBaiHat, String caSi, String tenBaiHat, String linkNhac, String idAlbum, String idPlaylist, String idTheLoai, String anhQuangCao, String idQuangCao, int luotThich) {
+    public BaiHat(String idBaiHat, String anhBaiHat, String caSi, String tenBaiHat, String linkNhac, String idAlbum, String idPlaylist, String idTheLoai, String anhQuangCao, String idQuangCao, boolean yeuThich) {
         this.idBaiHat = idBaiHat;
         this.anhBaiHat = anhBaiHat;
         this.caSi = caSi;
@@ -35,23 +35,7 @@ public class BaiHat implements Parcelable {
         this.idTheLoai = idTheLoai;
         this.anhQuangCao = anhQuangCao;
         this.idQuangCao = idQuangCao;
-        this.luotThich = luotThich;
-    }
-
-    public String getAnhQuangCao() {
-        return anhQuangCao;
-    }
-
-    public void setAnhQuangCao(String anhQuangCao) {
-        this.anhQuangCao = anhQuangCao;
-    }
-
-    public String getIdQuangCao() {
-        return idQuangCao;
-    }
-
-    public void setIdQuangCao(String idQuangCao) {
-        this.idQuangCao = idQuangCao;
+        this.yeuThich = yeuThich;
     }
 
     protected BaiHat(Parcel in) {
@@ -63,7 +47,9 @@ public class BaiHat implements Parcelable {
         idAlbum = in.readString();
         idPlaylist = in.readString();
         idTheLoai = in.readString();
-        luotThich = in.readInt();
+        anhQuangCao = in.readString();
+        idQuangCao = in.readString();
+        yeuThich = in.readByte() != 0;
     }
 
     public static final Creator<BaiHat> CREATOR = new Creator<BaiHat>() {
@@ -87,7 +73,7 @@ public class BaiHat implements Parcelable {
     }
 
     public String getAnhBaiHat() {
-        return this.anhBaiHat;
+        return anhBaiHat;
     }
 
     public void setAnhBaiHat(String anhBaiHat) {
@@ -142,12 +128,28 @@ public class BaiHat implements Parcelable {
         this.idTheLoai = idTheLoai;
     }
 
-    public int getLuotThich() {
-        return luotThich;
+    public String getAnhQuangCao() {
+        return anhQuangCao;
     }
 
-    public void setLuotThich(int luotThich) {
-        this.luotThich = luotThich;
+    public void setAnhQuangCao(String anhQuangCao) {
+        this.anhQuangCao = anhQuangCao;
+    }
+
+    public String getIdQuangCao() {
+        return idQuangCao;
+    }
+
+    public void setIdQuangCao(String idQuangCao) {
+        this.idQuangCao = idQuangCao;
+    }
+
+    public boolean isYeuThich() {
+        return yeuThich;
+    }
+
+    public void setYeuThich(boolean yeuThich) {
+        this.yeuThich = yeuThich;
     }
 
     @Override
@@ -165,6 +167,8 @@ public class BaiHat implements Parcelable {
         parcel.writeString(idAlbum);
         parcel.writeString(idPlaylist);
         parcel.writeString(idTheLoai);
-        parcel.writeInt(luotThich);
+        parcel.writeString(anhQuangCao);
+        parcel.writeString(idQuangCao);
+        parcel.writeByte((byte) (yeuThich ? 1 : 0));
     }
 }
