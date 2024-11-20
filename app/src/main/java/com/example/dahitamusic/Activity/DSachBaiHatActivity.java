@@ -13,10 +13,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dahitamusic.Adapter.SongsAdapter;
+import com.example.dahitamusic.Fragment.HomeFragment;
+import com.example.dahitamusic.Fragment.LibaryFragment;
+import com.example.dahitamusic.Fragment.ProfileFragment;
+import com.example.dahitamusic.Fragment.RadioFragment;
 import com.example.dahitamusic.Model.Album;
 import com.example.dahitamusic.Model.BaiHat;
 import com.example.dahitamusic.Model.Playlist;
@@ -38,6 +43,7 @@ public class DSachBaiHatActivity extends AppCompatActivity {
     Playlist playlist;
     Album album;
     DatabaseReference mData;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,13 +59,14 @@ public class DSachBaiHatActivity extends AppCompatActivity {
         StrictMode.setThreadPolicy(policy);
         dataIntent();
         init();
-        if(playlist != null && !playlist.getIdPlaylist().equals("")){
+        if (playlist != null && !playlist.getIdPlaylist().equals("")) {
             getPlaylist(playlist.getIdPlaylist());
         }
-        if(album != null && !album.getIdAlbum().equals("")){
+        if (album != null && !album.getIdAlbum().equals("")) {
             getAlbum(album.getIdAlbum());
         }
     }
+
 
     private void getPlaylist(String idPlaylist) {
         mData = FirebaseDatabase.getInstance().getReference("BaiHat");
@@ -121,7 +128,6 @@ public class DSachBaiHatActivity extends AppCompatActivity {
     }
 
 
-
     private void init() {
         setSupportActionBar(binding.toolbardanhsach);
         if (getSupportActionBar() != null) {
@@ -146,11 +152,11 @@ public class DSachBaiHatActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent != null) {
             if (intent.hasExtra("Playlist")) {
-                playlist = (Playlist) intent.getSerializableExtra("Playlist");
+                playlist = intent.getParcelableExtra("Playlist");
                 Toast.makeText(this, playlist.getIdTheLoai(), Toast.LENGTH_SHORT).show();
             }
             if (intent.hasExtra("Album")) {
-                album = (Album) intent.getSerializableExtra("Album");
+                album = (Album) intent.getParcelableExtra("Album");
                 Toast.makeText(this, album.getTenAlbum(), Toast.LENGTH_SHORT).show();
             }
         }

@@ -1,10 +1,15 @@
 package com.example.dahitamusic.Model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Playlist implements Serializable {
+public class Playlist implements Parcelable {
     private String idPlaylist;
     private String idTheLoai;
     private String idChuDe;
@@ -30,6 +35,28 @@ public class Playlist implements Serializable {
         this.anhPlaylist = anhPlaylist;
         this.yeuThich = yeuThich;
     }
+
+    protected Playlist(Parcel in) {
+        idPlaylist = in.readString();
+        idTheLoai = in.readString();
+        idChuDe = in.readString();
+        tenPlaylist = in.readString();
+        anhPlaylist = in.readString();
+        yeuThich = in.readByte() != 0;
+        createPlaylisYeuThich = in.readByte() != 0;
+    }
+
+    public static final Creator<Playlist> CREATOR = new Creator<Playlist>() {
+        @Override
+        public Playlist createFromParcel(Parcel in) {
+            return new Playlist(in);
+        }
+
+        @Override
+        public Playlist[] newArray(int size) {
+            return new Playlist[size];
+        }
+    };
 
     public boolean isCreatePlaylisYeuThich() {
         return createPlaylisYeuThich;
@@ -91,5 +118,21 @@ public class Playlist implements Serializable {
         HashMap<String, Object> result = new HashMap<>();
         result.put("yeuThich", yeuThich);
         return result;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel parcel, int i) {
+        parcel.writeString(idPlaylist);
+        parcel.writeString(idTheLoai);
+        parcel.writeString(idChuDe);
+        parcel.writeString(tenPlaylist);
+        parcel.writeString(anhPlaylist);
+        parcel.writeByte((byte) (yeuThich ? 1 : 0));
+        parcel.writeByte((byte) (createPlaylisYeuThich ? 1 : 0));
     }
 }

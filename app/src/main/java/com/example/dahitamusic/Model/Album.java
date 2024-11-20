@@ -1,10 +1,15 @@
 package com.example.dahitamusic.Model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Album implements Serializable {
+public class Album implements Parcelable {
 
     private String tenAlbum;
     private String tenCaSiAlbum;
@@ -20,6 +25,25 @@ public class Album implements Serializable {
         this.anhAlbum = anhAlbum;
         this.idAlbum = idAlbum;
     }
+
+    protected Album(Parcel in) {
+        tenAlbum = in.readString();
+        tenCaSiAlbum = in.readString();
+        anhAlbum = in.readString();
+        idAlbum = in.readString();
+    }
+
+    public static final Creator<Album> CREATOR = new Creator<Album>() {
+        @Override
+        public Album createFromParcel(Parcel in) {
+            return new Album(in);
+        }
+
+        @Override
+        public Album[] newArray(int size) {
+            return new Album[size];
+        }
+    };
 
     public String getIdAlbum() {
         return idAlbum;
@@ -51,6 +75,19 @@ public class Album implements Serializable {
 
     public void setAnhAlbum(String anhAlbum) {
         this.anhAlbum = anhAlbum;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel parcel, int i) {
+        parcel.writeString(tenAlbum);
+        parcel.writeString(tenCaSiAlbum);
+        parcel.writeString(anhAlbum);
+        parcel.writeString(idAlbum);
     }
 
     //    @Override

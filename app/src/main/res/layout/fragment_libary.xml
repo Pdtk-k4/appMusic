@@ -6,35 +6,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Fragment.LibaryFragment">
 
-    <RelativeLayout
-        android:id="@+id/relative_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="15dp">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toStartOf="@+id/icon_seach"
-            android:text="@string/library"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <ImageView
-            android:id="@+id/icon_seach"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:src="@drawable/baseline_search_24" />
-    </RelativeLayout>
-
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomnavigation"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_below="@+id/relative_layout"
         app:menu="@menu/menu_thuvien"
         app:itemTextColor="@color/coler_menu"/>
 
