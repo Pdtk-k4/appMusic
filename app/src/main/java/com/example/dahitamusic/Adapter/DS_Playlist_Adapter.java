@@ -54,8 +54,8 @@ public class DS_Playlist_Adapter extends  RecyclerView.Adapter<DS_Playlist_Adapt
     }
 
     public class dsPlaylistViewHolder extends RecyclerView.ViewHolder {
-        private ImageView imageView;
-        private TextView textView;
+        private ImageView imageView, icon_heart;
+        private TextView textView ;
         public dsPlaylistViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.img_playlist);

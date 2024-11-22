@@ -2,6 +2,7 @@ package com.example.dahitamusic.Activity;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -37,6 +39,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class DSachBaiHatActivity extends AppCompatActivity {
 
@@ -44,6 +47,7 @@ public class DSachBaiHatActivity extends AppCompatActivity {
     private Playlist playlist;
     private Album album;
     private DatabaseReference mData;
+    private ValueEventListener playlistListener, albumListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +71,7 @@ public class DSachBaiHatActivity extends AppCompatActivity {
         if (album != null && !album.getIdAlbum().equals("")) {
             getAlbum(album.getIdAlbum());
         }
+        clickIconHeart(playlist);
     }
 
 
@@ -85,6 +90,7 @@ public class DSachBaiHatActivity extends AppCompatActivity {
                 }
                 Log.d("DSachBaiHatActivity", "Số bài hát đã lấy được: " + baiHatList.size());
                 displaySongs(baiHatList);
+                eventClick(baiHatList);
             }
 
             @Override
@@ -109,6 +115,7 @@ public class DSachBaiHatActivity extends AppCompatActivity {
                 }
                 Log.d("DSachBaiHatActivity", "Số bài hát đã lấy được: " + baiHatList.size());
                 displaySongs(baiHatList);
+                eventClick(baiHatList);
             }
 
             @Override
@@ -157,6 +164,76 @@ public class DSachBaiHatActivity extends AppCompatActivity {
             if (intent.hasExtra("Album")) {
                 album = (Album) intent.getParcelableExtra("Album");
                 Toast.makeText(this, album.getTenAlbum(), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void eventClick(ArrayList<BaiHat> baiHatList) {
+        if (baiHatList == null || baiHatList.isEmpty()) {
+            Toast.makeText(this, "Không có bài hát nào để phát", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        binding.btnPhatngaynhien.setOnClickListener(view -> {
+            Collections.shuffle(baiHatList);
+            Intent intent = new Intent(DSachBaiHatActivity.this, PlayMusicActivity.class);
+            intent.putExtra("BaiHat", baiHatList);
+            startActivity(intent);
+        });
+    }
+
+
+    private void clickIconHeart(Playlist playlist) {
+        if (playlist != null) {
+            mData = FirebaseDatabase.getInstance().getReference("Playlist");
+            if (playlist.getYeuThich()) {
+                binding.imgLike.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.heart_pink));
+                binding.imgLike.setColorFilter(Color.parseColor("#F05080"), PorterDuff.Mode.SRC_ATOP);
+            } else {
+                binding.imgLike.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.heart));
+                binding.imgLike.clearColorFilter();
+            }
+
+            binding.imgLike.setOnClickListener(v -> {
+                boolean currentState = playlist.getYeuThich();
+                playlist.setYeuThich(!currentState); // Thay đổi trạng thái yêu thích
+
+                if (playlist.getYeuThich()) {
+                    binding.imgLike.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.heart_pink));
+                    binding.imgLike.setColorFilter(Color.parseColor("#F05080"), PorterDuff.Mode.SRC_ATOP);
+
+                    // Hiển thị thông báo: Đã thêm playlist vào thư viện
+                    showCenteredToast("Đã thêm playlist vào thư viện");
+                } else {
+                    binding.imgLike.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.heart));
+                    binding.imgLike.clearColorFilter();
+
+                    // Hiển thị thông báo: Đã xóa playlist khỏi thư viện
+                    showCenteredToast("Đã xóa playlist khỏi thư viện");
+                }
+            });
+        } else {
+            Log.e("DSachBaiHatActivity", "Playlist is null in clickIconHeart");
+        }
+    }
+
+    // Phương thức hiển thị Toast ở giữa màn hình
+    private void showCenteredToast(String message) {
+        Toast toast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
+        toast.setGravity(android.view.Gravity.CENTER, 0, 0); // Đặt Toast ở giữa màn hình
+        toast.show();
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mData != null) {
+            if (playlistListener != null) {
+                mData.removeEventListener(playlistListener);
+            }
+            if (albumListener != null) {
+                mData.removeEventListener(albumListener);
             }
         }
     }
