@@ -3,4 +3,20 @@
     <style name="BottomNavTextStyle">
         <item name="android:textSize">11sp</item>
     </style>
+
+    <style name="ExpandedTitleTextStyle">
+        <item name="android:textSize">20sp</item> <!-- Kích thước chữ -->
+        <item name="android:textColor">@android:color/white</item> <!-- Màu chữ -->
+        <item name="android:fontFamily">sans-serif</item> <!-- Phông chữ -->
+        <item name="android:textStyle">bold</item> <!-- Chữ đậm -->
+    </style>
+
+    <!-- Style cho tiêu đề khi thu gọn -->
+    <style name="CollapsedTitleTextStyle">
+        <item name="android:textSize">17sp</item> <!-- Kích thước chữ -->
+        <item name="android:textColor">@android:color/black</item> <!-- Màu chữ -->
+        <item name="android:fontFamily">sans-serif-medium</item> <!-- Phông chữ -->
+        <item name="android:textStyle">bold</item> <!-- Chữ đậm -->
+    </style>
+
 </resources>

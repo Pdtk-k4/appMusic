@@ -25,5 +25,9 @@
     <string name="album">Album</string>
     <string name="yeuthich">Yêu thích</string>
     <string name="dexuat">Đề xuất cho bạn</string>
+    <string name="like">Thích</string>
+    <string name="download">Tải xuống</string>
+    <string name="phatngaungien">PHÁT NGẪU NHIÊN</string>
+
 
 </resources>

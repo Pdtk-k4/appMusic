@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -39,10 +40,10 @@ import java.util.ArrayList;
 
 public class DSachBaiHatActivity extends AppCompatActivity {
 
-    ActivityDsachBaiHatBinding binding;
-    Playlist playlist;
-    Album album;
-    DatabaseReference mData;
+    private ActivityDsachBaiHatBinding binding;
+    private Playlist playlist;
+    private Album album;
+    private DatabaseReference mData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +60,7 @@ public class DSachBaiHatActivity extends AppCompatActivity {
         StrictMode.setThreadPolicy(policy);
         dataIntent();
         init();
+
         if (playlist != null && !playlist.getIdPlaylist().equals("")) {
             getPlaylist(playlist.getIdPlaylist());
         }
@@ -141,9 +143,6 @@ public class DSachBaiHatActivity extends AppCompatActivity {
                 Picasso.get().load(album.getAnhAlbum()).placeholder(R.drawable.img_default).into(binding.imgplaylist);
             }
         }
-
-        binding.collapsingtoolbar.setExpandedTitleColor(Color.BLACK);
-        binding.collapsingtoolbar.setCollapsedTitleTextColor(Color.BLACK);
         binding.toolbardanhsach.setNavigationOnClickListener(v -> finish());
     }
 
