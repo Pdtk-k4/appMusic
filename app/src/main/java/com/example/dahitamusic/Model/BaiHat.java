@@ -7,6 +7,8 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 public class BaiHat implements Parcelable {
     private String idBaiHat;
@@ -150,6 +152,12 @@ public class BaiHat implements Parcelable {
 
     public void setYeuThich(boolean yeuThich) {
         this.yeuThich = yeuThich;
+    }
+
+    public Map<String, Object> toMap(){
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("yeuThich", yeuThich);
+        return result;
     }
 
     @Override

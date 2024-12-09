@@ -28,7 +28,7 @@ public class DS_Playlist_Adapter extends  RecyclerView.Adapter<DS_Playlist_Adapt
     @NonNull
     @Override
     public dsPlaylistViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_dansach_playlis_album, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_danhsach_playlist, parent, false);
         return new dsPlaylistViewHolder(view);
     }
 
@@ -54,7 +54,7 @@ public class DS_Playlist_Adapter extends  RecyclerView.Adapter<DS_Playlist_Adapt
     }
 
     public class dsPlaylistViewHolder extends RecyclerView.ViewHolder {
-        private ImageView imageView, icon_heart;
+        private ImageView imageView;
         private TextView textView ;
         public dsPlaylistViewHolder(@NonNull View itemView) {
             super(itemView);

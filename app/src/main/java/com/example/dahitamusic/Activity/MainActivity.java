@@ -42,114 +42,113 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        setSupportActionBar(binding.toolbar);
-        getSupportActionBar().setTitle("");
+//        setSupportActionBar(binding.toolbar);
+//        getSupportActionBar().setTitle("");
+//
+//
+//        binding.toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+//            @Override
+//            public boolean onMenuItemClick(MenuItem item) {
+//                if (item.getItemId() == R.id.search) {
+//                    replaceFragment(new TimKiemFragment(), getString(R.string.none), "Tìm Kiếm");
+//                    return true;
+//                }
+//                return false;
+//            }
+//        });
 
-
-        binding.toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                if (item.getItemId() == R.id.search) {
-                    replaceFragment(new TimKiemFragment(), getString(R.string.none), "Tìm Kiếm");
-                    return true;
-                }
-                return false;
-            }
-        });
-
-        replaceFragment(new HomeFragment(), getString(R.string.trang_chu), "Home");
+        replaceFragment(new HomeFragment());
         binding.bottomnavigation.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.home) {
-                replaceFragment(new HomeFragment(), getString(R.string.trang_chu), "Home");
+                replaceFragment(new HomeFragment());
             } else if (item.getItemId() == R.id.radio) {
-                replaceFragment(new RadioFragment(), getString(R.string.radio), "Radio");
+                replaceFragment(new RadioFragment());
             } else if (item.getItemId() == R.id.library) {
-                replaceFragment(new LibaryFragment(), getString(R.string.library), "Library");
+                replaceFragment(new LibaryFragment());
             } else if (item.getItemId() == R.id.profile) {
-                replaceFragment(new ProfileFragment(), getString(R.string.profile), "Profile");
+                replaceFragment(new ProfileFragment());
             } else {
                 return false;
             }
             return true;
         });
-
-        replaceFragment(new HomeFragment(), getString(R.string.trang_chu), "Home"); // Mặc định là Home
+        
     }
 
-    private void replaceFragment(Fragment fragment, String title, String tag) {
+    private void replaceFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.view_pager, fragment)
                 .commit();
 
-        binding.toolbar.setTitle(title);
-        currentFragmentTag = tag; // Lưu trạng thái menu hiện tại
+//        binding.toolbar.setTitle(title);
+//        currentFragmentTag = tag; // Lưu trạng thái menu hiện tại
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.toolbar, menu);
-
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        searchView = (SearchView) menu.findItem(R.id.search).getActionView();
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                // Xử lý khi người dùng nhấn tìm kiếm
-                Log.d("SearchQuery", "aaa: " + query);
-                TimKiemFragment timKiemFragment = new TimKiemFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString("searchQuery", query);
-                timKiemFragment.setArguments(bundle);
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.view_pager, timKiemFragment)
-                        .addToBackStack(null)
-                        .commit();
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                if (newText.isEmpty()) {
-                    // Trở lại fragment trước đó dựa trên tag hiện tại
-                    switch (currentFragmentTag) {
-                        case "Home":
-                            replaceFragment(new HomeFragment(), getString(R.string.trang_chu), "Home");
-                            break;
-                        case "Radio":
-                            replaceFragment(new RadioFragment(), getString(R.string.radio), "Radio");
-                            break;
-                        case "Library":
-                            replaceFragment(new LibaryFragment(), getString(R.string.library), "Library");
-                            break;
-                        case "Profile":
-                            replaceFragment(new ProfileFragment(), getString(R.string.profile), "Profile");
-                            break;
-                        default:
-                            replaceFragment(new HomeFragment(), getString(R.string.trang_chu), "Home");
-                            break;
-                    }
-                } else {
-                    // Nếu có từ khóa tìm kiếm, cập nhật TimKiemFragment với từ khóa mới
-                    TimKiemFragment timKiemFragment = new TimKiemFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putString("searchQuery", newText); // Truyền query vào fragment
-                    timKiemFragment.setArguments(bundle);
-                    getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.view_pager, timKiemFragment)
-                            .addToBackStack(null)
-                            .commit();
-                }
-                return true;
-            }
-
-        });
-
-
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.toolbar, menu);
+//
+//        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+//        searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+//        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+//
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                // Xử lý khi người dùng nhấn tìm kiếm
+//                Log.d("SearchQuery", "aaa: " + query);
+//                TimKiemFragment timKiemFragment = new TimKiemFragment();
+//                Bundle bundle = new Bundle();
+//                bundle.putString("searchQuery", query);
+//                timKiemFragment.setArguments(bundle);
+//                getSupportFragmentManager()
+//                        .beginTransaction()
+//                        .replace(R.id.view_pager, timKiemFragment)
+//                        .addToBackStack(null)
+//                        .commit();
+//                return true;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                if (newText.isEmpty()) {
+//                    // Trở lại fragment trước đó dựa trên tag hiện tại
+//                    switch (currentFragmentTag) {
+//                        case "Home":
+//                            replaceFragment(new HomeFragment(), getString(R.string.trang_chu), "Home");
+//                            break;
+//                        case "Radio":
+//                            replaceFragment(new RadioFragment(), getString(R.string.radio), "Radio");
+//                            break;
+//                        case "Library":
+//                            replaceFragment(new LibaryFragment(), getString(R.string.library), "Library");
+//                            break;
+//                        case "Profile":
+//                            replaceFragment(new ProfileFragment(), getString(R.string.profile), "Profile");
+//                            break;
+//                        default:
+//                            replaceFragment(new HomeFragment(), getString(R.string.trang_chu), "Home");
+//                            break;
+//                    }
+//                } else {
+//                    // Nếu có từ khóa tìm kiếm, cập nhật TimKiemFragment với từ khóa mới
+//                    TimKiemFragment timKiemFragment = new TimKiemFragment();
+//                    Bundle bundle = new Bundle();
+//                    bundle.putString("searchQuery", newText); // Truyền query vào fragment
+//                    timKiemFragment.setArguments(bundle);
+//                    getSupportFragmentManager()
+//                            .beginTransaction()
+//                            .replace(R.id.view_pager, timKiemFragment)
+//                            .addToBackStack(null)
+//                            .commit();
+//                }
+//                return true;
+//            }
+//
+//        });
+//
+//
+//        return true;
+//    }
 
 }

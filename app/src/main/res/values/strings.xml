@@ -28,6 +28,16 @@
     <string name="like">Thích</string>
     <string name="download">Tải xuống</string>
     <string name="phatngaungien">PHÁT NGẪU NHIÊN</string>
+    <string name="themvaothuvien">Thêm vào thư viện</string>
+    <string name="themvaoplaylist">Thêm vào playlist</string>
+
+    <string name="dathemvaothuvien">Đã thêm vào thư viện</string>
+
+    <string name="huy">Hủy</string>
+
+    <string name="quocgia">Quốc gia</string>
+    <string name="theloai">Thể loại</string>
+    <string name="chude">Chủ đề</string>
 
 
 </resources>

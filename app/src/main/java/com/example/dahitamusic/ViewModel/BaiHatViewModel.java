@@ -9,17 +9,13 @@ import com.example.dahitamusic.Model.BaiHat;
 import java.util.ArrayList;
 
 public class BaiHatViewModel extends ViewModel {
-    private MutableLiveData<ArrayList<BaiHat>> baihats;
+    private final MutableLiveData<ArrayList<BaiHat>> baiHats = new MutableLiveData<>(new ArrayList<>());
 
-    public BaiHatViewModel() {
-        baihats = new MutableLiveData<>();
+    public MutableLiveData<ArrayList<BaiHat>> getBaiHats() {
+        return baiHats;
     }
 
-    public LiveData<ArrayList<BaiHat>> getBaiHats() {
-        return baihats;
-    }
-
-    public void setBaiHats(ArrayList<BaiHat> baihats) {
-        this.baihats.setValue(baihats);
+    public void setBaiHats(ArrayList<BaiHat> baiHatList) {
+        baiHats.setValue(baiHatList);
     }
 }

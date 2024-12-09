@@ -13,6 +13,15 @@
         android:theme="@style/Theme.DahitaMusic"
         tools:targetApi="31">
         <activity
+            android:name=".Activity.ChuDeTheLoaiActivity"
+            android:exported="false" />
+<!--        <activity-->
+<!--            android:name=".Activity.ChudeTheloaiActivity"-->
+<!--            android:exported="false" />-->
+        <activity
+            android:name=".Activity.DS_ChudevaTheLoaiActivity"
+            android:exported="false" />
+        <activity
             android:name=".Activity.DSPlaylistAndAlbumActivity"
             android:exported="false" />
         <activity

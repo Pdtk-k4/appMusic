@@ -6,11 +6,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Fragment.LibaryFragment">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_scrollFlags="scroll|enterAlways"
+        app:menu="@menu/toolbar">
+
+    </androidx.appcompat.widget.Toolbar>
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomnavigation"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         app:menu="@menu/menu_thuvien"
+        android:layout_below="@+id/toolbar"
         app:itemTextColor="@color/coler_menu"/>
 
     <androidx.viewpager2.widget.ViewPager2

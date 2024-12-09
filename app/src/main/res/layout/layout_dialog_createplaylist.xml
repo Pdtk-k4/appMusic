@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp"
-        android:background="@color/white">
+        android:background="@drawable/bg_dialog">
 
         <ImageView
             android:id="@+id/img_close"

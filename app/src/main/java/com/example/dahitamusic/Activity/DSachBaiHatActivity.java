@@ -199,12 +199,14 @@ public class DSachBaiHatActivity extends AppCompatActivity {
                 playlist.setYeuThich(!currentState); // Thay đổi trạng thái yêu thích
 
                 if (playlist.getYeuThich()) {
+                    mData.child(playlist.getIdPlaylist()).updateChildren(playlist.toMap());
                     binding.imgLike.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.heart_pink));
                     binding.imgLike.setColorFilter(Color.parseColor("#F05080"), PorterDuff.Mode.SRC_ATOP);
 
                     // Hiển thị thông báo: Đã thêm playlist vào thư viện
                     showCenteredToast("Đã thêm playlist vào thư viện");
                 } else {
+                    mData.child(playlist.getIdPlaylist()).updateChildren(playlist.toMap());
                     binding.imgLike.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.heart));
                     binding.imgLike.clearColorFilter();
 

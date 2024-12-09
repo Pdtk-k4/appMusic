@@ -1,14 +1,23 @@
 package com.example.dahitamusic.Fragment;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.dahitamusic.R;
+import com.example.dahitamusic.databinding.FragmentProfileBinding;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,6 +34,7 @@ public class ProfileFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private FragmentProfileBinding binding;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -60,12 +70,40 @@ public class ProfileFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.toolbar, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.search);
+        searchItem.setOnMenuItemClickListener(item -> {
+            // Thay thế Fragment hiện tại bằng SearchFragment
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.view_pager, new TimKiemFragment())
+                    .addToBackStack(null)
+                    .commit();
+            return true;
+        });
+
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false);
+        binding = FragmentProfileBinding.inflate(inflater, container, false);
+
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        if (activity != null) {
+            activity.setSupportActionBar(binding.toolbar);
+            if (activity.getSupportActionBar() != null) {
+                activity.getSupportActionBar().setTitle("Cá nhân");
+            }
+        }
+
+        return binding.getRoot();
     }
 }

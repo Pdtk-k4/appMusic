@@ -1,8 +1,13 @@
 package com.example.dahitamusic.Fragment;
 
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -10,6 +15,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.dahitamusic.Adapter.BaiHatGoiY_Adapter;
 import com.example.dahitamusic.Model.Album;
@@ -24,6 +34,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -79,24 +90,27 @@ public class BaiHatFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        viewModel = new ViewModelProvider(requireActivity()).get(BaiHatViewModel.class);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentBaiHatBinding.inflate(inflater, container, false);
-        viewModel = new ViewModelProvider(requireActivity()).get(BaiHatViewModel.class);
 
         mbaihat = new ArrayList<>();
         mbaihathienthi = new ArrayList<>();
-        baihatgoiy_adapter = new BaiHatGoiY_Adapter(mbaihathienthi, getActivity());
+        baihatgoiy_adapter = new BaiHatGoiY_Adapter(mbaihathienthi, getActivity(), new BaiHatGoiY_Adapter.IClickListner() {
+            @Override
+            public void onClick(BaiHat baiHat) {
+                clickIconMoreOnpenDialog(baiHat);
+            }
+        });
         binding.recyclerviewBaihatgoiy.setLayoutManager(new LinearLayoutManager(getActivity()));
         binding.recyclerviewBaihatgoiy.setAdapter(baihatgoiy_adapter);
 
         // Kiểm tra nếu dữ liệu đã có trong ViewModel rồi thì không tải lại từ Firebase
         if (viewModel.getBaiHats().getValue() != null && !viewModel.getBaiHats().getValue().isEmpty()) {
-            // Dữ liệu đã có trong ViewModel, chỉ cần sử dụng lại
-            mbaihathienthi.clear();
             mbaihathienthi.addAll(viewModel.getBaiHats().getValue());
             baihatgoiy_adapter.notifyDataSetChanged();
         } else {
@@ -107,11 +121,18 @@ public class BaiHatFragment extends Fragment {
         binding.txtLammoi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Collections.shuffle(mbaihat);
-                viewModel.setBaiHats(mbaihat);
-                mbaihathienthi.clear();
-                mbaihathienthi.addAll(mbaihat);
-                baihatgoiy_adapter.notifyDataSetChanged();
+                if (viewModel.getBaiHats().getValue() != null && !viewModel.getBaiHats().getValue().isEmpty()) {
+                    ArrayList<BaiHat> shuffledList = new ArrayList<>(viewModel.getBaiHats().getValue());
+                    Collections.shuffle(shuffledList); // Shuffle dữ liệu
+                    mbaihathienthi.clear();
+                    mbaihathienthi.addAll(shuffledList);
+                    baihatgoiy_adapter.notifyDataSetChanged();
+
+                    // Lưu danh sách đã làm mới vào ViewModel
+                    viewModel.setBaiHats(new ArrayList<>(shuffledList)); // Cập nhật danh sách mới
+                } else {
+                    Toast.makeText(getActivity(), "Danh sách bài hát rỗng!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         return binding.getRoot();
@@ -122,26 +143,127 @@ public class BaiHatFragment extends Fragment {
         mData.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                mbaihat.clear();
+                ArrayList<BaiHat> tempList = new ArrayList<>();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     BaiHat baiHat = dataSnapshot.getValue(BaiHat.class);
                     if (baiHat != null) {
-                        mbaihat.add(baiHat);
+                        tempList.add(baiHat);
                     }
                 }
-                // Trộn ngẫu nhiên danh sách album
-                Collections.shuffle(mbaihat);
-                // Cập nhật ViewModel và danh sách hiển thị
-                viewModel.setBaiHats(mbaihat);
-                mbaihathienthi.clear();
-                mbaihathienthi.addAll(mbaihat);
-                baihatgoiy_adapter.notifyDataSetChanged(); // Cập nhật adapter
+                if (!tempList.isEmpty()) {
+                    mbaihat.clear();
+                    mbaihat.addAll(tempList); // Đồng bộ hóa `mbaihat`
+                    Collections.shuffle(mbaihat); // Shuffle dữ liệu để hiển thị ngẫu nhiên
+
+                    viewModel.setBaiHats(mbaihat); // Cập nhật ViewModel
+
+                    // Cập nhật danh sách hiển thị
+                    mbaihathienthi.clear();
+                    mbaihathienthi.addAll(mbaihat);
+                    baihatgoiy_adapter.notifyDataSetChanged();
+                }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                // Xử lý lỗi nếu cần
+
             }
         });
+    }
+
+
+    private void clickIconMoreOnpenDialog(BaiHat baiHat) {
+        final Dialog dialog = new Dialog(requireContext());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.layout_dialog_more_baihat);
+        Window window = dialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCancelable(false);
+
+        ImageView img_close = dialog.findViewById(R.id.img_close);
+        ImageView img_baiHat = dialog.findViewById(R.id.img_baiHat);
+        ImageView img_iconHeart = dialog.findViewById(R.id.img_iconHeart);
+        ImageView img_IconAddPlaylist = dialog.findViewById(R.id.img_IconAddPlaylist);
+        ImageView img_IconDownload = dialog.findViewById(R.id.img_IconDownload);
+
+        TextView txt_tenBaiHat = dialog.findViewById(R.id.txt_tenBaiHat);
+        TextView txt_tenCaSi = dialog.findViewById(R.id.txt_tenCaSi);
+        TextView txt_addThuvien = dialog.findViewById(R.id.txt_addThuvien);
+        TextView txt_addPlaylist = dialog.findViewById(R.id.txt_addPlaylist);
+        TextView txt_download = dialog.findViewById(R.id.txt_download);
+
+        txt_tenBaiHat.setText(baiHat.getTenBaiHat());
+        txt_tenCaSi.setText(baiHat.getCaSi());
+        Picasso.get().load(baiHat.getAnhBaiHat()).into(img_baiHat);
+
+        img_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+        mData = FirebaseDatabase.getInstance().getReference("BaiHat");
+        if (baiHat != null) {
+            if (baiHat.isYeuThich()) {
+                img_iconHeart.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.heart_pink));
+                img_iconHeart.setColorFilter(Color.parseColor("#F05080"), PorterDuff.Mode.SRC_ATOP);
+            } else {
+                img_iconHeart.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.heart));
+                img_iconHeart.clearColorFilter();
+            }
+        }
+        txt_addThuvien.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean currentState = baiHat.isYeuThich();
+                baiHat.setYeuThich(!currentState);
+
+                if (baiHat.isYeuThich()) {
+                    mData.child(baiHat.getIdBaiHat()).updateChildren(baiHat.toMap());
+                    img_iconHeart.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.heart_pink));
+                    img_iconHeart.setColorFilter(Color.parseColor("#F05080"), PorterDuff.Mode.SRC_ATOP);
+                    txt_addThuvien.setText(R.string.dathemvaothuvien);
+
+                    // Hiển thị thông báo: Đã thêm playlist vào thư viện
+                    showCenteredToast("Đã thêm bài hát này vào thư viện");
+                }else {
+                    mData.child(baiHat.getIdBaiHat()).updateChildren(baiHat.toMap());
+                    img_iconHeart.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.heart));
+                    img_iconHeart.clearColorFilter();
+                    txt_addThuvien.setText(R.string.themvaothuvien);
+
+                    // Hiển thị thông báo: Đã xóa playlist khỏi thư viện
+                    showCenteredToast("Đã xóa bài hát khỏi thư viện");
+                }
+            }
+
+        });
+
+        dialog.show();
+    }
+    // Phương thức hiển thị Toast ở giữa màn hình
+    private void showCenteredToast(String message) {
+        Toast toast = Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT);
+        toast.setGravity(android.view.Gravity.CENTER, 0, 0); // Đặt Toast ở giữa màn hình
+        toast.show();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (viewModel.getBaiHats().getValue() != null && !viewModel.getBaiHats().getValue().isEmpty()) {
+            mbaihat.clear(); // Đồng bộ hóa lại `mbaihat`
+            mbaihat.addAll(viewModel.getBaiHats().getValue());
+
+            mbaihathienthi.clear();
+            mbaihathienthi.addAll(mbaihat);
+            baihatgoiy_adapter.notifyDataSetChanged();
+        } else {
+            // Nếu ViewModel không có dữ liệu, tải lại từ Firebase
+            loadBaiHatGoiY();
+        }
     }
 }

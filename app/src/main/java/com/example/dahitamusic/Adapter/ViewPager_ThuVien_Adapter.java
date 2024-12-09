@@ -22,13 +22,13 @@ public class ViewPager_ThuVien_Adapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position) {
             case 0:
-                return new ThuVien_PlaylistFragment();
-            case 1:
-                return new ThuVien_AlbumFragment();
-            case 2:
                 return new ThuVien_YeuthichFragment();
-            default:
+            case 1:
                 return new ThuVien_PlaylistFragment();
+            case 2:
+                return new ThuVien_AlbumFragment();
+            default:
+                return new ThuVien_YeuthichFragment();
         }
     }
 

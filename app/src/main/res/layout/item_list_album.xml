@@ -49,7 +49,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/xam"
-            android:textSize="11sp" />
+            android:textSize="12sp" />
 
     </LinearLayout>
 </LinearLayout>

@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,6 +20,12 @@ import android.view.ViewGroup;
 import com.example.dahitamusic.Activity.MainActivity;
 import com.example.dahitamusic.R;
 import com.example.dahitamusic.databinding.FragmentHomeBinding;
+
+import android.app.SearchManager;
+import android.content.Context;
+
+import androidx.appcompat.widget.SearchView;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -62,12 +69,52 @@ public class HomeFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        setHasOptionsMenu(true);
     }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.toolbar, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.search);
+        searchItem.setOnMenuItemClickListener(item -> {
+            // Thay thế Fragment hiện tại bằng SearchFragment
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.view_pager, new TimKiemFragment())
+                    .addToBackStack(null)
+                    .commit();
+            return true;
+        });
+
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
+        // Thiết lập Toolbar trong Fragment
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        if (activity != null) {
+            activity.setSupportActionBar(binding.toolbar);
+            if (activity.getSupportActionBar() != null) {
+                activity.getSupportActionBar().setTitle("Trang chủ");
+            }
+        }
+
+//        binding.toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+//            @Override
+//            public boolean onMenuItemClick(MenuItem item) {
+//                if (item.getItemId() == R.id.search) {
+//                    replaceFragment(new TimKiemFragment(), "Tìm Kiếm");
+//                    return true;
+//                }
+//                return false;
+//            }
+//        });
+
         return binding.getRoot();
     }
-
 }

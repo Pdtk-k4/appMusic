@@ -1,5 +1,6 @@
 package com.example.dahitamusic.Fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.dahitamusic.Activity.DSPlaylistAndAlbumActivity;
 import com.example.dahitamusic.Adapter.Album_Adapter;
 import com.example.dahitamusic.Model.Album;
 import com.example.dahitamusic.Model.Playlist;
@@ -105,6 +107,16 @@ public class AlbumFragment extends Fragment {
             // Dữ liệu chưa có trong ViewModel, cần tải từ Firebase
             loadAlbum();
         }
+
+        binding.txtXemthem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ArrayList<Album> danhsach = new ArrayList<>(viewModel.getAlbums().getValue());
+                Intent intent = new Intent(getActivity(), DSPlaylistAndAlbumActivity.class);
+                intent.putParcelableArrayListExtra("danhsachalbum", danhsach);
+                startActivity(intent);
+            }
+        });
 
         return binding.getRoot();
     }

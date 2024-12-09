@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#00000000">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/bg_dialog"
+        android:padding="16dp">
+
+        <ImageView
+            android:id="@+id/img_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/cancle"
+            android:layout_gravity="end"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardview_song"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="5dp">
+
+                <ImageView
+                    android:id="@+id/img_baiHat"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp" />
+
+                <View
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:alpha="0.1"
+                    android:background="@android:color/black" />
+            </androidx.cardview.widget.CardView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_toEndOf="@id/cardview_song"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txt_tenBaiHat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txt_tenCaSi"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:ellipsize="end"
+                    android:maxLines="1" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/img_IconDownload"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/baseline_arrow_circle_down_24"
+                tools:ignore="ContentDescription" />
+            <TextView
+                android:id="@+id/txt_download"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/download"
+                android:layout_toEndOf="@id/img_IconDownload"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="15dp"
+                android:textSize="18sp"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_marginTop="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/img_iconHeart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/heart"
+                tools:ignore="ContentDescription" />
+            <TextView
+                android:id="@+id/txt_addThuvien"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/themvaothuvien"
+                android:layout_toEndOf="@id/img_iconHeart"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="15dp"
+                android:textSize="18sp"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_marginTop="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/img_IconAddPlaylist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/add_playlist"
+                tools:ignore="ContentDescription" />
+            <TextView
+                android:id="@+id/txt_addPlaylist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/themvaoplaylist"
+                android:layout_toEndOf="@id/img_IconAddPlaylist"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="15dp"
+                android:textSize="18sp"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>

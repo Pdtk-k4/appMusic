@@ -93,8 +93,25 @@ public class ChuDeVaTheLoaiFragment extends Fragment {
         binding.recyclerviewChudevatheloai.setAdapter(chudetheloai_adapter);
 
         loadChudeTheloai();
+
+        clickXemThem();
         return binding.getRoot();
     }
+
+    private void clickXemThem() {
+        binding.txtXemthem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                XemThemChuDeTheLoaiFragment fragment = new XemThemChuDeTheLoaiFragment();
+                requireActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.view_pager, fragment)
+                        .addToBackStack(null) // Cho phép quay lại fragment trước đó
+                        .commit();
+            }
+        });
+    }
+
 
     public void loadChudeTheloai() {
         mData = FirebaseDatabase.getInstance().getReference("TheLoai");

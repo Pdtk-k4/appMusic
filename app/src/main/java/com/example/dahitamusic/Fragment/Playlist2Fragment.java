@@ -114,7 +114,7 @@ public class Playlist2Fragment extends Fragment {
             public void onClick(View view) {
                 ArrayList<Playlist> danhsach = new ArrayList<>(viewModel.getPlaylists().getValue());
                 Intent intent = new Intent(getActivity(), DSPlaylistAndAlbumActivity.class);
-                intent.putParcelableArrayListExtra("danhsach", danhsach);
+                intent.putParcelableArrayListExtra("danhsachplaylist", danhsach);
                 startActivity(intent);
             }
         });

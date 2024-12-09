@@ -1,5 +1,6 @@
 package com.example.dahitamusic.Fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.dahitamusic.Activity.ChuDeTheLoaiActivity;
 import com.example.dahitamusic.Adapter.Playlist_Adapter;
 import com.example.dahitamusic.Model.Playlist;
 import com.example.dahitamusic.ViewModel.PlayListViewModel;
@@ -106,6 +108,8 @@ public class PlaylistFragment extends Fragment {
             loadImgPlaylist("chill");
         }
 
+        onclickItem();
+
         // Inflate the layout for this fragment
         return binding.getRoot();
     }
@@ -138,6 +142,16 @@ public class PlaylistFragment extends Fragment {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 // Xử lý lỗi nếu cần
+            }
+        });
+    }
+    private void onclickItem() {
+        binding.txtXemthem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), ChuDeTheLoaiActivity.class);
+                intent.putExtra("playlist", mangPlaylistHienThi);
+                startActivity(intent);
             }
         });
     }

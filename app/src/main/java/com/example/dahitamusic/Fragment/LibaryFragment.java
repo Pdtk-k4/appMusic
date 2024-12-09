@@ -1,12 +1,18 @@
 package com.example.dahitamusic.Fragment;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,6 +73,25 @@ public class LibaryFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.toolbar, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.search);
+        searchItem.setOnMenuItemClickListener(item -> {
+            // Thay thế Fragment hiện tại bằng SearchFragment
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.view_pager, new TimKiemFragment())
+                    .addToBackStack(null)
+                    .commit();
+            return true;
+        });
+
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -74,13 +99,21 @@ public class LibaryFragment extends Fragment {
                              Bundle savedInstanceState) {
         binding = FragmentLibaryBinding.inflate(inflater, container, false);
 
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        if (activity != null) {
+            activity.setSupportActionBar(binding.toolbar);
+            if (activity.getSupportActionBar() != null) {
+                activity.getSupportActionBar().setTitle("Thư viện");
+            }
+        }
+
         setUpViewpager();
         binding.bottomnavigation.setOnItemSelectedListener(item -> {
-            if (item.getItemId() == R.id.playlist) {
+            if (item.getItemId() == R.id.yeuthich) {
                 binding.viewPager.setCurrentItem(0);
-            } else if (item.getItemId() == R.id.album) {
+            } else if (item.getItemId() == R.id.playlist) {
                 binding.viewPager.setCurrentItem(1);
-            } else if (item.getItemId() == R.id.yeuthich) {
+            } else if (item.getItemId() == R.id.album) {
                 binding.viewPager.setCurrentItem(2);
             }
             return true;
@@ -99,13 +132,13 @@ public class LibaryFragment extends Fragment {
                 super.onPageSelected(position);
                 switch (position) {
                     case 0:
-                        binding.bottomnavigation.setSelectedItemId(R.id.playlist);
+                        binding.bottomnavigation.setSelectedItemId(R.id.yeuthich);
                         break;
                     case 1:
-                        binding.bottomnavigation.setSelectedItemId(R.id.album);
+                        binding.bottomnavigation.setSelectedItemId(R.id.playlist);
                         break;
                     case 2:
-                        binding.bottomnavigation.setSelectedItemId(R.id.yeuthich);
+                        binding.bottomnavigation.setSelectedItemId(R.id.album);
                         break;
                 }
             }

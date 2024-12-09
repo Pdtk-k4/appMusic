@@ -15,20 +15,29 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dahitamusic.Activity.PlayMusicActivity;
 import com.example.dahitamusic.Model.BaiHat;
+import com.example.dahitamusic.Model.Playlist;
 import com.example.dahitamusic.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-public class TimKiemAdapter extends RecyclerView.Adapter<TimKiemAdapter.TimKiemViewHolder> implements Filterable {
-    private ArrayList<BaiHat> mBaiHatArrayList; // Danh sách đang hiển thị
-    private final ArrayList<BaiHat> mBaiHatArrayListHienThi; // Danh sách gốc
-    private final Context context;
 
-    public TimKiemAdapter(ArrayList<BaiHat> baiHatArrayList, Context context) {
-        this.mBaiHatArrayListHienThi = baiHatArrayList; // Lưu danh sách gốc
-        this.mBaiHatArrayList = new ArrayList<>(baiHatArrayList); // Khởi tạo danh sách hiển thị
-        this.context = context;
+public class TimKiemAdapter extends RecyclerView.Adapter<TimKiemAdapter.TimKiemViewHolder> {
+    private ArrayList<BaiHat> mListBaiHat;
+    private IClickListner mClickListner;
+
+    public interface IClickListner {
+        void onClick(BaiHat baiHat);
+    }
+
+    public TimKiemAdapter(ArrayList<BaiHat> mListBaiHat, IClickListner Listner) {
+        this.mListBaiHat = mListBaiHat;
+        this.mClickListner = Listner;
+    }
+
+    public void setFilteredList(ArrayList<BaiHat> filteredList) {
+        this.mListBaiHat = filteredList;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -40,7 +49,7 @@ public class TimKiemAdapter extends RecyclerView.Adapter<TimKiemAdapter.TimKiemV
 
     @Override
     public void onBindViewHolder(@NonNull TimKiemViewHolder holder, int position) {
-        BaiHat baiHat = mBaiHatArrayList.get(position);
+        BaiHat baiHat = mListBaiHat.get(position);
         if (baiHat == null) return;
 
         holder.textTen.setText(baiHat.getTenBaiHat());
@@ -48,66 +57,39 @@ public class TimKiemAdapter extends RecyclerView.Adapter<TimKiemAdapter.TimKiemV
 
         Picasso.get().load(baiHat.getAnhBaiHat()).into(holder.imageView);
 
+        holder.img_iconMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mClickListner.onClick(baiHat);
+            }
+        });
+
         holder.itemView.setOnClickListener(view -> {
-            Intent intent = new Intent(context, PlayMusicActivity.class);
-            intent.putExtra("cakhuc", baiHat); // Truyền toàn bộ danh sách bài hát
+            Intent intent = new Intent(view.getContext(), PlayMusicActivity.class);
+            intent.putExtra("BaiHat", mListBaiHat); // Truyền toàn bộ danh sách bài hát
             intent.putExtra("position", position); // Truyền vị trí của bài hát được chọn
-            context.startActivity(intent);
+            view.getContext().startActivity(intent);
         });
 
     }
 
     @Override
     public int getItemCount() {
-        return mBaiHatArrayList.size();
-    }
-
-    @Override
-    public Filter getFilter() {
-        return new Filter() {
-            @Override
-            protected FilterResults performFiltering(CharSequence charSequence) {
-                String query = charSequence != null ? charSequence.toString().trim() : "";
-                ArrayList<BaiHat> filteredList = new ArrayList<>();
-
-                if (query.isEmpty()) {
-                    // Nếu không có query, hiển thị toàn bộ danh sách
-                    filteredList.addAll(mBaiHatArrayListHienThi);
-                } else {
-                    // Lọc danh sách theo query
-                    for (BaiHat baiHat : mBaiHatArrayListHienThi) {
-                        if (baiHat.getTenBaiHat().toLowerCase().contains(query.toLowerCase())) {
-                            filteredList.add(baiHat);
-                        }
-                    }
-                }
-
-                FilterResults filterResults = new FilterResults();
-                filterResults.values = filteredList; // Kết quả sau khi lọc
-                return filterResults;
-            }
-
-            @Override
-            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                mBaiHatArrayList.clear();
-                if (filterResults.values != null) {
-                    mBaiHatArrayList.addAll((ArrayList<BaiHat>) filterResults.values);
-                }
-                notifyDataSetChanged(); // Cập nhật hiển thị
-            }
-        };
+        return Math.min(mListBaiHat.size(), 10);
     }
 
     public static class TimKiemViewHolder extends RecyclerView.ViewHolder {
         private final ImageView imageView;
         private final TextView textTen;
         private final TextView txtNoiDung;
+        private final ImageView img_iconMore;
 
         public TimKiemViewHolder(View itemView) {
             super(itemView);
             textTen = itemView.findViewById(R.id.txt_name_song);
             txtNoiDung = itemView.findViewById(R.id.txt_name_casi);
             imageView = itemView.findViewById(R.id.img_song);
+            img_iconMore = itemView.findViewById(R.id.icon_more);
         }
     }
 }

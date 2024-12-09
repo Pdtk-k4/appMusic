@@ -29,7 +29,7 @@ public class Chude_Theloai_Adapter extends RecyclerView.Adapter<Chude_Theloai_Ad
     @Override
     public ChuDeTheLoaiViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_chudevatheloai, parent, false);
-        return new Chude_Theloai_Adapter.ChuDeTheLoaiViewHolder(view);
+        return new ChuDeTheLoaiViewHolder(view);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class Chude_Theloai_Adapter extends RecyclerView.Adapter<Chude_Theloai_Ad
         return mangChudeTheLoai.size();
     }
 
-    public class ChuDeTheLoaiViewHolder extends RecyclerView.ViewHolder {
+    public static class ChuDeTheLoaiViewHolder extends RecyclerView.ViewHolder {
         private ImageView imgChudeTheLoai;
 
         public ChuDeTheLoaiViewHolder(@NonNull View itemView) {
