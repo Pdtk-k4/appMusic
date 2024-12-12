@@ -9,6 +9,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -109,14 +110,19 @@ public class BaiHatFragment extends Fragment {
         binding.recyclerviewBaihatgoiy.setLayoutManager(new LinearLayoutManager(getActivity()));
         binding.recyclerviewBaihatgoiy.setAdapter(baihatgoiy_adapter);
 
-        // Kiểm tra nếu dữ liệu đã có trong ViewModel rồi thì không tải lại từ Firebase
-        if (viewModel.getBaiHats().getValue() != null && !viewModel.getBaiHats().getValue().isEmpty()) {
-            mbaihathienthi.addAll(viewModel.getBaiHats().getValue());
-            baihatgoiy_adapter.notifyDataSetChanged();
-        } else {
-            // Dữ liệu chưa có trong ViewModel, cần tải từ Firebase
-            loadBaiHatGoiY();
-        }
+        // Quan sát dữ liệu từ ViewModel
+        viewModel.getBaiHats().observe(getViewLifecycleOwner(), new Observer<ArrayList<BaiHat>>() {
+            @Override
+            public void onChanged(ArrayList<BaiHat> baiHats) {
+                if (baiHats != null && !baiHats.isEmpty()) {
+                    mbaihathienthi.clear();
+                    mbaihathienthi.addAll(baiHats);
+                    baihatgoiy_adapter.notifyDataSetChanged();
+                } else {
+                    loadBaiHatGoiY();
+                }
+            }
+        });
 
         binding.txtLammoi.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -254,16 +260,13 @@ public class BaiHatFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
+        // Đảm bảo rằng dữ liệu đã được tải vào ViewModel và hiển thị lại nếu có dữ liệu
         if (viewModel.getBaiHats().getValue() != null && !viewModel.getBaiHats().getValue().isEmpty()) {
-            mbaihat.clear(); // Đồng bộ hóa lại `mbaihat`
-            mbaihat.addAll(viewModel.getBaiHats().getValue());
-
             mbaihathienthi.clear();
-            mbaihathienthi.addAll(mbaihat);
+            mbaihathienthi.addAll(viewModel.getBaiHats().getValue());
             baihatgoiy_adapter.notifyDataSetChanged();
         } else {
-            // Nếu ViewModel không có dữ liệu, tải lại từ Firebase
-            loadBaiHatGoiY();
+            loadBaiHatGoiY(); // Tải lại dữ liệu từ Firebase nếu không có dữ liệu trong ViewModel
         }
     }
 }

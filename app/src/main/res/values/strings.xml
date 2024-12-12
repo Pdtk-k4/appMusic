@@ -5,7 +5,7 @@
 
     <string name="none"></string>
     <string name="home">Home</string>
-    <string name="radio">Radio</string>
+    <string name="poscasts">Poscasts</string>
     <string name="library">Thư viện</string>
     <string name="profile">Cá nhân</string>
     <string name="trang_chu">Trang chủ</string>
@@ -38,6 +38,21 @@
     <string name="quocgia">Quốc gia</string>
     <string name="theloai">Thể loại</string>
     <string name="chude">Chủ đề</string>
+    <string name="noibat">Nổi bật</string>
+
+    <string name="dahita">Dahita</string>
+    <string name="email">Email</string>
+    <string name="password">Mật khẩu</string>
+    <string name="singin">Đăng nhập</string>
+    <string name="singout">Đăng xuất</string>
+    <string name="singup">Tạo tài khoản mới</string>
+    <string name="quenmatkhau">Quên mật khẩu?</string>
+    <string name="tendangnhap">Tên đăng nhập</string>
+
+    <string name="thongtintaikhoan">Thông tin tài khoản</string>
+    <string name="giaodien">Giao diện</string>
+    <string name="doimatkhau">Đổi mật khẩu</string>
+
 
 
 </resources>

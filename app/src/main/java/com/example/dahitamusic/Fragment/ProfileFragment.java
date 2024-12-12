@@ -2,6 +2,7 @@ package com.example.dahitamusic.Fragment;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,9 +16,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.example.dahitamusic.Activity.MainActivity;
+import com.example.dahitamusic.Activity.SinginActivity;
 import com.example.dahitamusic.R;
 import com.example.dahitamusic.databinding.FragmentProfileBinding;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -104,6 +110,19 @@ public class ProfileFragment extends Fragment {
             }
         }
 
+        onClick();
+
         return binding.getRoot();
     }
+
+    private void onClick() {
+        binding.relativeSignout.setOnClickListener(v -> {
+            FirebaseAuth.getInstance().signOut();
+            Intent intent = new Intent(getActivity(), SinginActivity.class);
+            startActivity(intent);
+            getActivity().finish();
+        });
+    }
+
+
 }

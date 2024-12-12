@@ -5,8 +5,8 @@
         android:id="@+id/home"
         android:icon="@drawable/baseline_home_24" />
     <item
-        android:title="@string/radio"
-        android:id="@+id/radio"
+        android:title="@string/poscasts"
+        android:id="@+id/poscasts"
         android:icon="@drawable/baseline_radio_24" />
     <item
         android:title="@string/library"

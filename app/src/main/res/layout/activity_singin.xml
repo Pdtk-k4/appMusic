@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    tools:context=".Activity.SinginActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="16dp">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/img_avt"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/avt" />
+
+        <TextView
+            android:id="@+id/txt_dahita"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/dahita"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:id="@+id/linearlayout_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/linear_background_default"
+            android:padding="10dp">
+
+            <EditText
+                android:id="@+id/txt_email"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:background="@null"
+                android:hint="@string/email"
+                android:imeOptions="actionNext"
+                android:inputType="textEmailAddress"
+                android:maxLines="100"
+                tools:ignore="Autofill,TextFields" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearlayout_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/linear_background_default"
+            android:padding="10dp">
+
+            <EditText
+                android:id="@+id/txt_password"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:background="@null"
+                android:hint="@string/password"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:maxLines="100"
+                tools:ignore="Autofill,TextFields" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_singin"
+            android:layout_width="match_parent"
+            android:layout_height="43dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/sing_in"
+            android:gravity="center"
+            android:text="@string/singin"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:backgroundTint="@null" />
+
+        <TextView
+            android:id="@+id/txt_quenmatkhau"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/quenmatkhau"
+            android:textColor="@color/black"
+            android:textSize="17sp" />
+
+        <Button
+            android:id="@+id/btn_singup"
+            android:layout_width="match_parent"
+            android:layout_height="43dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/sing_up"
+            android:gravity="center"
+            android:text="@string/singup"
+            android:textColor="#4E15F4"
+            android:textSize="16sp"
+            app:backgroundTint="@null" />
+    </LinearLayout>
+</LinearLayout>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

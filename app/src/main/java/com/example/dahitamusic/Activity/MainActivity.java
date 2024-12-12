@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,6 +25,8 @@ import com.example.dahitamusic.Fragment.TimKiemFragment;
 import com.example.dahitamusic.R;
 import com.example.dahitamusic.Fragment.RadioFragment;
 import com.example.dahitamusic.databinding.ActivityMainBinding;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
@@ -41,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+
 
 //        setSupportActionBar(binding.toolbar);
 //        getSupportActionBar().setTitle("");
@@ -61,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         binding.bottomnavigation.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.home) {
                 replaceFragment(new HomeFragment());
-            } else if (item.getItemId() == R.id.radio) {
+            } else if (item.getItemId() == R.id.poscasts) {
                 replaceFragment(new RadioFragment());
             } else if (item.getItemId() == R.id.library) {
                 replaceFragment(new LibaryFragment());

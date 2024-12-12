@@ -69,11 +69,16 @@ public class PlayListSongFragment extends Fragment {
                              Bundle savedInstanceState) {
         binding = FragmentPlayListSongBinding.inflate(inflater, container, false);
 
-        if(PlayMusicActivity.mangbaihat.size() > 0){
+        if(!PlayMusicActivity.mangbaihat.isEmpty()){
             playListSongAdapter = new PlayListSongAdapter(PlayMusicActivity.mangbaihat, getActivity());
             binding.recyclerViewPlaybaihat.setLayoutManager(new LinearLayoutManager(getActivity()));
             binding.recyclerViewPlaybaihat.setAdapter(playListSongAdapter);
         };
+//        if(!PlayMusicActivity.mangpodcast.isEmpty()){
+//            playListSongAdapter = new PlayListSongAdapter(PlayMusicActivity.mangpodcast, getActivity());
+//            binding.recyclerViewPlaybaihat.setLayoutManager(new LinearLayoutManager(getActivity()));
+//            binding.recyclerViewPlaybaihat.setAdapter(playListSongAdapter);
+//        }
 
 
         return binding.getRoot();

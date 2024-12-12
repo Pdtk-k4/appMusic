@@ -13,14 +13,16 @@
         android:theme="@style/Theme.DahitaMusic"
         tools:targetApi="31">
         <activity
-            android:name=".Activity.ChuDeTheLoaiActivity"
+            android:name=".Activity.SingupActivity"
             android:exported="false" />
-<!--        <activity-->
-<!--            android:name=".Activity.ChudeTheloaiActivity"-->
-<!--            android:exported="false" />-->
         <activity
-            android:name=".Activity.DS_ChudevaTheLoaiActivity"
+            android:name=".Activity.SinginActivity"
             android:exported="false" />
+
+        <service
+            android:name=".Service.MusicService"
+            android:exported="false" />
+
         <activity
             android:name=".Activity.DSPlaylistAndAlbumActivity"
             android:exported="false" />
@@ -32,17 +34,9 @@
             android:exported="false" />
         <activity
             android:name=".Activity.MainActivity"
-            android:exported="false">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
-        </activity>
+            android:exported="false" />
         <activity
-            android:name=".Activity.loginFiseBase"
+            android:name=".Activity.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

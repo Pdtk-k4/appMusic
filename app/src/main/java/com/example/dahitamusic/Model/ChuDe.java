@@ -21,6 +21,24 @@ public class ChuDe implements Parcelable {
         this.anhChuDe = anhChuDe;
     }
 
+    protected ChuDe(Parcel in) {
+        tenChuDe = in.readString();
+        idChuDe = in.readString();
+        anhChuDe = in.readString();
+    }
+
+    public static final Creator<ChuDe> CREATOR = new Creator<ChuDe>() {
+        @Override
+        public ChuDe createFromParcel(Parcel in) {
+            return new ChuDe(in);
+        }
+
+        @Override
+        public ChuDe[] newArray(int size) {
+            return new ChuDe[size];
+        }
+    };
+
     public String getTenChuDe() {
         return tenChuDe;
     }
@@ -52,6 +70,8 @@ public class ChuDe implements Parcelable {
 
     @Override
     public void writeToParcel(@NonNull Parcel parcel, int i) {
-
+        parcel.writeString(tenChuDe);
+        parcel.writeString(idChuDe);
+        parcel.writeString(anhChuDe);
     }
 }

@@ -30,6 +30,7 @@ import com.example.dahitamusic.Model.BaiHat;
 import com.example.dahitamusic.Model.Playlist;
 import com.example.dahitamusic.R;
 import com.example.dahitamusic.databinding.ActivityDsachBaiHatBinding;
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -142,15 +143,16 @@ public class DSachBaiHatActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             if (playlist != null) {
-                getSupportActionBar().setTitle(playlist.getTenPlaylist());
+                binding.collapsingtoolbar.setTitle(playlist.getTenPlaylist());
                 Picasso.get().load(playlist.getAnhPlaylist()).placeholder(R.drawable.img_default).into(binding.imgplaylist);
             }
             if (album != null) {
-                getSupportActionBar().setTitle(album.getTenAlbum());
+                binding.collapsingtoolbar.setTitle(album.getTenAlbum());
                 Picasso.get().load(album.getAnhAlbum()).placeholder(R.drawable.img_default).into(binding.imgplaylist);
             }
         }
         binding.toolbardanhsach.setNavigationOnClickListener(v -> finish());
+
     }
 
 

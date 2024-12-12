@@ -8,7 +8,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,8 +18,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.dahitamusic.Adapter.DS_Playlist_Adapter;
+import com.example.dahitamusic.Adapter.Podcast_Adapter;
+import com.example.dahitamusic.Model.Podcast;
+import com.example.dahitamusic.Model.TheLoai;
 import com.example.dahitamusic.R;
 import com.example.dahitamusic.databinding.FragmentRadioBinding;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,6 +49,9 @@ public class RadioFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private FragmentRadioBinding binding;
+    private ArrayList<Podcast> mlistPodcast;
+    private DatabaseReference mData;
+    private Podcast_Adapter adapter;
 
     public RadioFragment() {
         // Required empty public constructor
@@ -100,9 +117,42 @@ public class RadioFragment extends Fragment {
         if (activity != null) {
             activity.setSupportActionBar(binding.toolbar);
             if (activity.getSupportActionBar() != null) {
-                activity.getSupportActionBar().setTitle("Radio");
+                activity.getSupportActionBar().setTitle("Poscasts");
             }
         }
+        mlistPodcast = new ArrayList<>();
+        getData();
+        loadPodcast();
         return binding.getRoot();
     }
+
+    private void getData() {
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 2);
+        binding.rcvPodcast.setLayoutManager(gridLayoutManager);
+        adapter = new Podcast_Adapter(mlistPodcast);
+        binding.rcvPodcast.setAdapter(adapter);
+    }
+
+    private void loadPodcast() {
+        mData = FirebaseDatabase.getInstance().getReference("Podcast");
+        mData.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                mlistPodcast.clear();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    Podcast podcast = dataSnapshot.getValue(Podcast.class);
+                    if (podcast != null) {
+                        mlistPodcast.add(podcast);
+                    }
+                }
+                adapter.notifyDataSetChanged(); // Cập nhật adapter
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Xử lý lỗi nếu cần
+            }
+        });
+    }
+
 }

@@ -26,13 +26,11 @@
             app:expandedTitleTextAppearance="@style/ExpandedTitleTextStyle"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-            <!-- Background View for Collapsing Toolbar -->
             <View
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@android:color/transparent" />
 
-            <!-- Toolbar with Icons -->
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbardanhsach"
                 android:layout_width="match_parent"
@@ -43,7 +41,6 @@
 
             </androidx.appcompat.widget.Toolbar>
 
-            <!-- Image for Song List -->
             <androidx.cardview.widget.CardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -105,7 +102,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:text="@string/like"
-                    android:textSize="10sp" />
+                    android:textSize="10sp"
+                    tools:ignore="SmallSp" />
 
             </LinearLayout>
 

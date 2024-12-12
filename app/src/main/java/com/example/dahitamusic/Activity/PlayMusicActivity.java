@@ -22,6 +22,7 @@ import com.example.dahitamusic.Adapter.ViewPagerPlaySongAdapter;
 import com.example.dahitamusic.Fragment.DiaNhacFragment;
 import com.example.dahitamusic.Fragment.PlayListSongFragment;
 import com.example.dahitamusic.Model.BaiHat;
+import com.example.dahitamusic.Model.Podcast;
 import com.example.dahitamusic.R;
 import com.example.dahitamusic.databinding.ActivityPlayMusicBinding;
 
@@ -38,6 +39,7 @@ public class PlayMusicActivity extends AppCompatActivity {
 
     ActivityPlayMusicBinding binding;
     public static ArrayList<BaiHat> mangbaihat = new ArrayList<>();
+    public static ArrayList<Podcast> mangpodcast = new ArrayList<>();
     public static ViewPagerPlaySongAdapter viewPagerPlaySongAdapter;
     DiaNhacFragment diaNhacFragment;
     PlayListSongFragment playListSongFragment;
@@ -101,7 +103,7 @@ public class PlayMusicActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int positionviewpager) {
                 super.onPageSelected(positionviewpager);
-                if (mangbaihat.size() > 0) {
+                if (!mangbaihat.isEmpty()) {
                     BaiHat baiHat = mangbaihat.get(position);
 //                    Log.d("PlayMusicActivity", "Sending Image URL: " + baiHat.getAnhBaiHat());
 //                    Log.d("PlayMusicActivity", "Sending Image URL: " + baiHat.getTenBaiHat());
@@ -117,15 +119,31 @@ public class PlayMusicActivity extends AppCompatActivity {
                             Log.e("PlayMusicActivity", "DiaNhacFragment not attached yet");
                         }
                     });
+                } else if (!mangpodcast.isEmpty()) {
+                    Podcast podcast = mangpodcast.get(position);
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        if (diaNhacFragment.isAdded()) {
+                            diaNhacFragment.getAnhBaiHat(podcast.getAnhPodcast());
+                            diaNhacFragment.setTenBaiHat(podcast.getTenPodcast());
+                            diaNhacFragment.setTenCaSi(podcast.getTacGia());
+                        } else {
+                            Log.e("PlayMusicActivity", "DiaNhacFragment not attached yet");
+                        }
+                    });
                 }
             }
         });
 
 
-        if (mangbaihat.size() > 0) {
+        if (!mangbaihat.isEmpty()) {
             BaiHat baiHat = mangbaihat.get(position);
             binding.toolbarTitle.setText(baiHat.getTenBaiHat());
             initializePlayer(baiHat.getLinkNhac());
+            binding.imgbtncircledplay.setImageResource(R.drawable.play2_button_icon);
+        } else if (!mangpodcast.isEmpty()) {
+            Podcast podcast = mangpodcast.get(position);
+            binding.toolbarTitle.setText(podcast.getTenPodcast());
+            initializePlayer(podcast.getLinkPodcast());
             binding.imgbtncircledplay.setImageResource(R.drawable.play2_button_icon);
         }
     }
@@ -143,6 +161,14 @@ public class PlayMusicActivity extends AppCompatActivity {
 
             // Khởi tạo lại ExoPlayer với bài hát mới
             initializePlayer(baiHat.getLinkNhac());
+        } else if (position >= 0 && position < mangpodcast.size()) {
+            Podcast podcast = mangpodcast.get(position);
+            binding.toolbarTitle.setText(podcast.getTenPodcast());
+            diaNhacFragment.setTenCaSi(podcast.getTacGia());
+            diaNhacFragment.getAnhBaiHat(podcast.getAnhPodcast());
+            diaNhacFragment.setTenBaiHat(podcast.getTenPodcast());
+            initializePlayer(podcast.getLinkPodcast());
+
         }
     }
 
@@ -235,19 +261,27 @@ public class PlayMusicActivity extends AppCompatActivity {
 
         //xử lý next nhạc
         binding.imgbtnend.setOnClickListener(v -> {
-            if (mangbaihat.size() > 0) {
+            if (!mangbaihat.isEmpty() || !mangpodcast.isEmpty()) {
                 if (exoPlayer.isPlaying() || exoPlayer != null) {
                     exoPlayer.stop();
                     exoPlayer.release();
                     exoPlayer = null;
                 }
-                if (mangbaihat.size() > 0) {
+
+                if (!mangbaihat.isEmpty()) {
                     position++;
                     if (position >= mangbaihat.size()) {
-                        position = 0; // Nếu đến cuối danh sách, quay lại đầu danh sách
+                        position = 0;
+                    }
+                    updateSongAndImage(position);
+                } else if (!mangpodcast.isEmpty()) {
+                    position++;
+                    if (position >= mangpodcast.size()) {
+                        position = 0;
                     }
                     updateSongAndImage(position);
                 }
+
             }
             binding.imgbtnskiptostart.setClickable(false);
             binding.imgbtnend.setClickable(false);
@@ -263,16 +297,22 @@ public class PlayMusicActivity extends AppCompatActivity {
         });
 
         binding.imgbtnskiptostart.setOnClickListener(v -> {
-            if (mangbaihat.size() > 0) {
+            if (!mangbaihat.isEmpty() || !mangpodcast.isEmpty()) {
                 if (exoPlayer.isPlaying() || exoPlayer != null) {
                     exoPlayer.stop();
                     exoPlayer.release();
                     exoPlayer = null;
                 }
-                if (mangbaihat.size() > 0) {
+                if (!mangbaihat.isEmpty()) {
                     position--;
                     if (position < 0) {
                         position = mangbaihat.size() - 1; // Nếu đến đầu danh sách, quay lại cuối danh sách
+                    }
+                    updateSongAndImage(position);
+                } else if (!mangpodcast.isEmpty()) {
+                    position--;
+                    if (position < 0) {
+                        position = mangpodcast.size() - 1; // Nếu đến đầu danh sách, quay lại cuối danh sách
                     }
                     updateSongAndImage(position);
                 }
@@ -302,6 +342,9 @@ public class PlayMusicActivity extends AppCompatActivity {
             if (intent.hasExtra("BaiHat")) {
                 // Lấy danh sách bài hát từ Intent
                 mangbaihat = intent.getParcelableArrayListExtra("BaiHat");
+            }
+            if (intent.hasExtra("Podcast")) {
+                mangpodcast = intent.getParcelableArrayListExtra("Podcast");
             }
             if (intent.hasExtra("position")) {
                 // Lấy vị trí bài hát từ Intent
@@ -346,16 +389,36 @@ public class PlayMusicActivity extends AppCompatActivity {
                     } else {
                         // Nếu repeat tắt, chuyển sang bài hát tiếp theo
                         if (shuffle) {
-                            // Nếu bật shuffle, phát một bài ngẫu nhiên
-                            position = new Random().nextInt(mangbaihat.size());
+                            if (!mangbaihat.isEmpty()) {
+                                position = new Random().nextInt(mangbaihat.size());
+                            } else if (!mangpodcast.isEmpty()) {
+                                position = new Random().nextInt(mangpodcast.size());
+                            }
+//                            // Nếu bật shuffle, phát một bài ngẫu nhiên
+//                            position = new Random().nextInt(mangbaihat.size());
                         } else {
                             // Không bật shuffle, phát bài hát tiếp theo trong danh sách
-                            position++;
-                            if (position >= mangbaihat.size()) {
-                                position = 0; // Quay lại bài đầu tiên nếu đến cuối danh sách
+
+                            if (!mangbaihat.isEmpty()) {
+                                position++;
+                                if (position >= mangbaihat.size()) {
+                                    position = 0; // Quay lại bài đầu tiên nếu đến cuối danh sách
+                                }
+                            } else if (!mangpodcast.isEmpty()) {
+                                position++;
+                                if (position >= mangpodcast.size()) {
+                                    position = 0; // Quay lại bài đầu tiên nếu đến cuối danh sách
+                                }
                             }
+
                         }
-                        updateSongAndImage(position); // Chuyển sang bài hát mới và cập nhật UI
+                        // Cập nhật bài hát hoặc podcast và UI khi chuyển sang bài mới
+                        if (!mangbaihat.isEmpty()) {
+                            updateSongAndImage(position); // Cập nhật với bài hát
+                        } else if (!mangpodcast.isEmpty()) {
+                            updateSongAndImage(position); // Cập nhật với podcast
+                        }
+
                     }
                 }
             }
