@@ -106,6 +106,14 @@
                 android:text="@string/giaodien"
                 android:textSize="17sp" />
 
+            <Switch
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:thumb="@drawable/thumb"
+                android:track="@drawable/track"
+                android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
         </RelativeLayout>
 
         <RelativeLayout

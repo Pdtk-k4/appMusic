@@ -12,4 +12,9 @@
     <color name="pink">#F05080</color>
     <color name="black_trans">#33000000</color>
 
+    <color name="uncheck_thumb">#8c8c8c</color>
+    <color name="check_thumb">#ffffff</color>
+    <color name="uncheck_track">#cdcdcd</color>
+    <color name="check_track">#612EF4</color>
+
 </resources>
