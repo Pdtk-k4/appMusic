@@ -20,7 +20,7 @@
             android:textSize="15sp"
             android:text="@string/album_hot"
             android:textStyle="bold"
-            android:textColor="@color/black"/>
+            android:textColor="@color/TEXT"/>
 
         <TextView
             android:id="@+id/txt_xemthem"

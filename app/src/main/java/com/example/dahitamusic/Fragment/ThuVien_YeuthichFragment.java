@@ -32,6 +32,8 @@ import com.example.dahitamusic.Model.Playlist;
 import com.example.dahitamusic.R;
 import com.example.dahitamusic.databinding.FragmentBaiHatBinding;
 import com.example.dahitamusic.databinding.FragmentThuVienYeuthichBinding;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -98,6 +100,7 @@ public class ThuVien_YeuthichFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentThuVienYeuthichBinding.inflate(inflater, container, false);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         mangBaiHatYeuThich = new ArrayList<>();
         baiHatYeuThich_Adapter = new BaiHatYeuThich_Adapter(mangBaiHatYeuThich, new BaiHatYeuThich_Adapter.IClickListner() {
             @Override
@@ -113,7 +116,8 @@ public class ThuVien_YeuthichFragment extends Fragment {
         binding.rcvBaihaiyeuthich.setLayoutManager(new LinearLayoutManager(getActivity()));
         binding.rcvBaihaiyeuthich.setAdapter(baiHatYeuThich_Adapter);
 
-        loadBaiHatYeuThich();
+        assert user != null;
+        getFavoriteSongs(user.getUid());
         return binding.getRoot();
     }
 
@@ -166,63 +170,117 @@ public class ThuVien_YeuthichFragment extends Fragment {
     }
 
     private void clickHeart(BaiHat baiHat) {
+        DatabaseReference userFavoritesRef = FirebaseDatabase.getInstance()
+                .getReference("Users")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child("baiHatYeuThich");
+
+        // Xóa bài hát khỏi danh sách yêu thích
         new AlertDialog.Builder(getContext())
                 .setTitle(baiHat.getTenBaiHat())
                 .setMessage("Xóa bài hát này khỏi thư viện?")
-                .setPositiveButton("Xóa", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        mData = FirebaseDatabase.getInstance().getReference("BaiHat");
-                        mData.child(baiHat.getIdBaiHat()).child("yeuThich").setValue(!baiHat.isYeuThich(), new DatabaseReference.CompletionListener() {
-                            @Override
-                            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                                Toast.makeText(getContext(), "Đã xóa bài hát khỏi thư viện", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-
-                    }
+                .setPositiveButton("Xóa", (dialogInterface, i) -> {
+                    userFavoritesRef.child(baiHat.getIdBaiHat()).removeValue((error, ref) -> {
+                        if (error == null) {
+                            Toast.makeText(getContext(), "Đã xóa khỏi thư viện yêu thích", Toast.LENGTH_SHORT).show();
+                            mangBaiHatYeuThich.remove(baiHat); // Xóa bài hát khỏi danh sách
+                            baiHatYeuThich_Adapter.notifyDataSetChanged();
+                            updateNoDataMessage();
+                            anPhatNgauNhien();
+                        } else {
+                            Toast.makeText(getContext(), "Lỗi: Không thể xóa", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 })
                 .setNegativeButton("Hủy", null)
                 .show();
     }
 
-    private void loadBaiHatYeuThich() {
-        mData = FirebaseDatabase.getInstance().getReference("BaiHat");
-        Query query = mData.orderByChild("yeuThich").equalTo(true);
-        query.addValueEventListener(new ValueEventListener() {
+
+    private void getFavoriteSongs(String userId) {
+        DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference userFavoritesRef = database.child("Users").child(userId).child("baiHatYeuThich");
+
+        userFavoritesRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot songSnapshot : dataSnapshot.getChildren()) {
+                    String idBaiHat = songSnapshot.getKey();
+                    loadBaiHatYeuThich(idBaiHat);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                System.out.println("Error: " + databaseError.getMessage());
+            }
+        });
+    }
+
+    private void loadBaiHatYeuThich(String idBaiHat) {
+        mData = FirebaseDatabase.getInstance().getReference("BaiHat").child(idBaiHat); // Chỉ lấy dữ liệu bài hát theo id
+        mData.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                mangBaiHatYeuThich.clear();
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    BaiHat baiHat = dataSnapshot.getValue(BaiHat.class);
-                    if (baiHat != null) {
+                BaiHat baiHat = snapshot.getValue(BaiHat.class);
+                if (baiHat != null) {
+                    // Chỉ thêm bài hát vào danh sách nếu chưa tồn tại
+                    boolean isExist = false;
+                    for (BaiHat item : mangBaiHatYeuThich) {
+                        if (item.getIdBaiHat().equals(baiHat.getIdBaiHat())) {
+                            isExist = true;
+                            break;
+                        }
+                    }
+                    if (!isExist) {
                         mangBaiHatYeuThich.add(baiHat);
                     }
                 }
                 baiHatYeuThich_Adapter.notifyDataSetChanged();
-                btnClick(mangBaiHatYeuThich);
+                updateNoDataMessage();
+                anPhatNgauNhien();
+                btnClick(mangBaiHatYeuThich); // Kích hoạt nút phát nhạc
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                System.out.println("Error: " + error.getMessage());
             }
         });
-
     }
 
+
     private void btnClick(ArrayList<BaiHat> baiHatList) {
-        if (baiHatList == null || baiHatList.isEmpty()) {
-            Toast.makeText(getContext(), "Không có bài hát nào để phát", Toast.LENGTH_SHORT).show();
-            return;
+        if (binding != null && baiHatList != null && !baiHatList.isEmpty()) {
+            binding.btnPhatngaynhien.setOnClickListener(view -> {
+                Collections.shuffle(baiHatList);
+                Intent intent = new Intent(requireContext(), PlayMusicActivity.class);
+                intent.putExtra("BaiHat", baiHatList);
+                startActivity(intent);
+            });
         }
+    }
 
-        binding.btnPhatngaynhien.setOnClickListener(view -> {
-            Collections.shuffle(baiHatList);
-            Intent intent = new Intent(getContext(), PlayMusicActivity.class);
-            intent.putExtra("BaiHat", baiHatList);
-            startActivity(intent);
-        });
+    private void updateNoDataMessage() {
+        if (mangBaiHatYeuThich.isEmpty()) {
+            binding.txt.setVisibility(View.VISIBLE);  // Hiển thị thông báo nếu không có album
+        } else {
+            binding.txt.setVisibility(View.GONE);  // Ẩn thông báo nếu có album
+        }
+    }
+    private void anPhatNgauNhien() {
+        if (mangBaiHatYeuThich.isEmpty()){
+            binding.btnPhatngaynhien.setVisibility(View.INVISIBLE);
+        } else {
+            binding.btnPhatngaynhien.setVisibility(View.VISIBLE);
+        }
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Gọi lại phương thức kiểm tra và cập nhật giao diện
+        updateNoDataMessage();
+        anPhatNgauNhien();
     }
 }

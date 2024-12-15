@@ -128,8 +128,6 @@ public class TimKiemFragment extends Fragment {
                         mListBaiHat.add(baiHat);
                     }
                 }
-                Log.d("FirebaseData", "Tải " + mListBaiHat.size() + " bài hát từ Firebase");
-                //timKiemAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -141,7 +139,7 @@ public class TimKiemFragment extends Fragment {
 
     //Search
     private void searchBaiHat(){
-        binding.searchView.setQueryHint("Tìm kiếm bài hát, playlist...");
+        binding.searchView.setQueryHint("Tìm kiếm bài hát");
         binding.searchView.requestFocus();
 
         binding.txtHuy.setOnClickListener(new View.OnClickListener() {

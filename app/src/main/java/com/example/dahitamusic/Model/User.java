@@ -3,7 +3,7 @@ package com.example.dahitamusic.Model;
 import java.util.List;
 
 public class User {
-    private String tenDangNhap;
+    private String tenNguoiDung;
     private String email;
     private List<String> baiHatYeuThich;
     private List<String> playListYeuThich;
@@ -13,13 +13,13 @@ public class User {
     public User() {
     }
 
-    public User(String tenDangNhap, String email) {
-        this.tenDangNhap = tenDangNhap;
+    public User(String tenNguoiDung, String email) {
+        this.tenNguoiDung = tenNguoiDung;
         this.email = email;
     }
 
-    public User(String tenDangNhap, String email, List<String> baiHatYeuThich, List<String> playListYeuThich, List<String> albumYeuThich, List<String> baiHatDaTai) {
-        this.tenDangNhap = tenDangNhap;
+    public User(String tenNguoiDung, String email, List<String> baiHatYeuThich, List<String> playListYeuThich, List<String> albumYeuThich, List<String> baiHatDaTai) {
+        this.tenNguoiDung = tenNguoiDung;
         this.email = email;
         this.baiHatYeuThich = baiHatYeuThich;
         this.playListYeuThich = playListYeuThich;
@@ -27,12 +27,12 @@ public class User {
         this.baiHatDaTai = baiHatDaTai;
     }
 
-    public String getTenDangNhap() {
-        return tenDangNhap;
+    public String getTenNguoiDung() {
+        return tenNguoiDung;
     }
 
-    public void setTenDangNhap(String tenDangNhap) {
-        this.tenDangNhap = tenDangNhap;
+    public void setTenNguoiDung(String tenNguoiDung) {
+        this.tenNguoiDung = tenNguoiDung;
     }
 
     public String getEmail() {

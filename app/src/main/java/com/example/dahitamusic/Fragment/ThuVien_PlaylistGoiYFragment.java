@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.dahitamusic.Adapter.ThuVien_Playlist_Adapter;
 import com.example.dahitamusic.Model.Playlist;
@@ -18,6 +19,8 @@ import com.example.dahitamusic.R;
 import com.example.dahitamusic.ViewModel.PlayListViewModel;
 import com.example.dahitamusic.databinding.FragmentThuVienPlaylistBinding;
 import com.example.dahitamusic.databinding.FragmentThuVienPlaylistGoiYBinding;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -116,28 +119,64 @@ public class ThuVien_PlaylistGoiYFragment extends Fragment {
 
     private void loadPlaylistgoiy() {
         mData = FirebaseDatabase.getInstance().getReference("Playlist");
-        Query query = mData.orderByChild("yeuThich").equalTo(false);
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user == null) {
+            return;
+        }
+
+        // Lấy reference đến danh sách playListYeuThich của người dùng
+        DatabaseReference playListYeuThichRef = FirebaseDatabase.getInstance()
+                .getReference("Users")
+                .child(user.getUid())
+                .child("playListYeuThich");
+
+        // Lấy danh sách playlist yêu thích
+        playListYeuThichRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                // Tạo một Set để lưu trữ idPlaylist của các playlist yêu thích
+                ArrayList<String> playListYeuThichIds = new ArrayList<>();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    Playlist playlist = dataSnapshot.getValue(Playlist.class);
-                    if (playlist != null && !playlist.getYeuThich()) {
-                        mangPlaylist.add(playlist);
+                    // Lưu idPlaylist vào danh sách
+                    String playlistId = dataSnapshot.getKey();
+                    if (playlistId != null) {
+                        playListYeuThichIds.add(playlistId);
                     }
                 }
 
-                // Trộn dữ liệu ngay trước khi lưu vào ViewModel
-                Collections.shuffle(mangPlaylist);
+                // Tải playlist từ Firebase và kiểm tra nếu nó không có trong playListYeuThich
+                Query query = mData;
+                query.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        // Dọn sạch danh sách mangPlaylist trước khi thêm mới
+                        mangPlaylist.clear();
 
-                // Cập nhật ViewModel và danh sách hiển thị
-                viewModel.setPlaylists(mangPlaylist);
-                mangPlaylistHienThi.clear();
-                mangPlaylistHienThi.addAll(mangPlaylist);
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                            Playlist playlist = dataSnapshot.getValue(Playlist.class);
+                            if (playlist != null && !playListYeuThichIds.contains(playlist.getIdPlaylist())) {
+                                mangPlaylist.add(playlist);  // Chỉ thêm playlist nếu nó chưa yêu thích
+                            }
+                        }
 
-                // Thông báo adapter
-                thuVien_Playlist_Adapter.notifyDataSetChanged();
+                        // Trộn dữ liệu ngay trước khi lưu vào ViewModel
+                        Collections.shuffle(mangPlaylist);
 
+                        // Cập nhật ViewModel và danh sách hiển thị
+                        viewModel.setPlaylists(mangPlaylist);
+                        mangPlaylistHienThi.clear();
+                        mangPlaylistHienThi.addAll(mangPlaylist);
+
+                        // Thông báo adapter
+                        thuVien_Playlist_Adapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        // Xử lý lỗi nếu cần
+                    }
+                });
             }
 
             @Override
@@ -148,16 +187,32 @@ public class ThuVien_PlaylistGoiYFragment extends Fragment {
     }
 
 
+
+
     private void clickIconHeart(Playlist playlist) {
-        mData = FirebaseDatabase.getInstance().getReference("Playlist");
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            return;
+        }
 
-        playlist.setYeuThich(true);
-        mData.child(playlist.getIdPlaylist()).updateChildren(playlist.toMap());
+        // Lấy reference đến danh sách playListYeuThich của người dùng
+        DatabaseReference playListYeuThichRef = FirebaseDatabase.getInstance()
+                .getReference("Users")
+                .child(user.getUid())
+                .child("playListYeuThich");
 
-        viewModel.setPlaylists(mangPlaylistHienThi);
+        // Chỉ thêm idPlaylist vào danh sách playListYeuThich của người dùng
+        playListYeuThichRef.child(playlist.getIdPlaylist()).setValue(true);
+
+        // Loại bỏ playlist khỏi danh sách hiển thị
         mangPlaylistHienThi.remove(playlist);
         thuVien_Playlist_Adapter.notifyDataSetChanged();
+
+        // Cập nhật lại ViewModel (nếu cần)
+        viewModel.setPlaylists(mangPlaylistHienThi);
     }
+
+
 
     @Override
     public void onDestroyView() {

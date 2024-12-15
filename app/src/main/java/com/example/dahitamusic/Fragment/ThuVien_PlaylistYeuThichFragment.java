@@ -1,5 +1,6 @@
 package com.example.dahitamusic.Fragment;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -17,7 +18,9 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.example.dahitamusic.Adapter.ThuVien_PlaylistYeuThich_Adapter;
 import com.example.dahitamusic.Adapter.ThuVien_Playlist_Adapter;
 import com.example.dahitamusic.Model.BaiHat;
 import com.example.dahitamusic.Model.Playlist;
@@ -25,6 +28,8 @@ import com.example.dahitamusic.R;
 import com.example.dahitamusic.databinding.FragmentThuVienPlaylistBinding;
 import com.example.dahitamusic.databinding.FragmentThuVienPlaylistGoiYBinding;
 import com.example.dahitamusic.databinding.FragmentThuVienPlaylistYeuThichBinding;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -54,8 +59,7 @@ public class ThuVien_PlaylistYeuThichFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private ArrayList<Playlist> mangPlaylist;
-    private ArrayList<Playlist> mangPlaylistHienThi;
-    private ThuVien_Playlist_Adapter thuVien_Playlist_Adapter;
+    private ThuVien_PlaylistYeuThich_Adapter thuVien_playlistYeuThich_adapter;
     private FragmentThuVienPlaylistYeuThichBinding binding;
     private DatabaseReference mData;
 
@@ -95,12 +99,11 @@ public class ThuVien_PlaylistYeuThichFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentThuVienPlaylistYeuThichBinding.inflate(inflater, container, false);
-
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         mangPlaylist = new ArrayList<>();
-        mangPlaylistHienThi = new ArrayList<>();
-        thuVien_Playlist_Adapter = new ThuVien_Playlist_Adapter(mangPlaylistHienThi, getActivity(), new ThuVien_Playlist_Adapter.IClickListner() {
+        thuVien_playlistYeuThich_adapter = new ThuVien_PlaylistYeuThich_Adapter(mangPlaylist, new ThuVien_PlaylistYeuThich_Adapter.IClickListner() {
             @Override
-            public void onClick(Playlist playlist) {
+            public void onClickHeart(Playlist playlist) {
                 clickIconHeart(playlist);
             }
         });
@@ -108,55 +111,62 @@ public class ThuVien_PlaylistYeuThichFragment extends Fragment {
         clickTaoPlaylist();
 
         binding.recyclerviewPlaylist.setLayoutManager(new LinearLayoutManager(getActivity()));
-        binding.recyclerviewPlaylist.setAdapter(thuVien_Playlist_Adapter);
+        binding.recyclerviewPlaylist.setAdapter(thuVien_playlistYeuThich_adapter);
 
-        loadPlaylistyeuthich();
+        assert user != null;
+        getPlayListYeuThich(user.getUid());
         return binding.getRoot();
     }
 
-    private void loadPlaylistyeuthich() {
-        mData = FirebaseDatabase.getInstance().getReference("Playlist");
-        Query query = mData.orderByChild("yeuThich").equalTo(true);
-        query.addChildEventListener(new ChildEventListener() {
+    private void getPlayListYeuThich(String userId) {
+        DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference userFavoritesRef = database.child("Users").child(userId).child("playListYeuThich");
+
+        userFavoritesRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                Playlist playlist = snapshot.getValue(Playlist.class);
-                if (playlist != null) {
-                    mangPlaylist.add(playlist);
-                    mangPlaylistHienThi.add(playlist);
-                    thuVien_Playlist_Adapter.notifyDataSetChanged();
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                mangPlaylist.clear();
+                for (DataSnapshot songSnapshot : dataSnapshot.getChildren()) {
+                    String idPlayList = songSnapshot.getKey();
+                    loadPlaylistyeuthich(idPlayList);
                 }
             }
 
             @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                System.out.println("Error: " + databaseError.getMessage());
+            }
+        });
+    }
+
+    private void loadPlaylistyeuthich(String idPlayList) {
+        mData = FirebaseDatabase.getInstance().getReference("Playlist").child(idPlayList); // Chỉ lấy dữ liệu bài hát theo id
+        mData.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Playlist playlist = snapshot.getValue(Playlist.class);
                 if (playlist != null) {
-                    for (int i = 0; i < mangPlaylist.size(); i++) {
-                        if (mangPlaylist.get(i).getIdPlaylist().equals(playlist.getIdPlaylist())) {
-                            mangPlaylist.set(i, playlist);
+                    // Chỉ thêm bài hát vào danh sách nếu chưa tồn tại
+                    boolean isExist = false;
+                    for (Playlist item : mangPlaylist) {
+                        if (item.getIdPlaylist().equals(playlist.getIdPlaylist())) {
+                            isExist = true;
                             break;
                         }
                     }
-                    thuVien_Playlist_Adapter.notifyDataSetChanged();
+                    if (!isExist) {
+                        mangPlaylist.add(playlist);
+                    }
                 }
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
+                thuVien_playlistYeuThich_adapter.notifyDataSetChanged(); // Cập nhật giao diện
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                System.out.println("Error: " + error.getMessage());
             }
         });
+
     }
 
     private void clickTaoPlaylist() {
@@ -186,17 +196,60 @@ public class ThuVien_PlaylistYeuThichFragment extends Fragment {
                     @Override
                     public void onClick(View view) {
                         String tenPlaylist = edt_tenplaylist.getText().toString().trim();
+                        if (tenPlaylist.isEmpty()) {
+                            Toast.makeText(getContext(), "Vui lòng nhập tên playlist!", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
                         String idPlaylist = generateIdPlaylist(tenPlaylist);
-                        Playlist playlist = new Playlist(idPlaylist, tenPlaylist, true, true);
-                        mData = FirebaseDatabase.getInstance().getReference("Playlist");
-                        mData.child(idPlaylist).setValue(playlist);
-                        dialog.dismiss();
+
+                        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                        if (currentUser == null) {
+                            Toast.makeText(getContext(), "Vui lòng đăng nhập!", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        String userId = currentUser.getUid();
+                        DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+
+                        // Tạo đối tượng Playlist
+                        Playlist playlist = new Playlist(idPlaylist, tenPlaylist, userId);
+
+                        // Lưu playlist vào node "Playlist"
+                        database.child("Playlist").child(idPlaylist).setValue(playlist)
+                                .addOnSuccessListener(unused -> {
+                                    // Đồng thời lưu playlist vào "Users -> playListYeuThich"
+                                    database.child("Users").child(userId).child("playListYeuThich").child(idPlaylist).setValue(true)
+                                            .addOnSuccessListener(unused1 -> {
+                                                Toast.makeText(getContext(), "Tạo playlist thành công!", Toast.LENGTH_SHORT).show();
+                                                getPlayListYeuThich(userId);
+                                                dialog.dismiss();
+                                                openPlaylist(playlist);
+                                            })
+                                            .addOnFailureListener(e -> {
+                                                Toast.makeText(getContext(), "Không thể thêm vào danh sách yêu thích: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                            });
+                                })
+                                .addOnFailureListener(e -> {
+                                    Toast.makeText(getContext(), "Không thể lưu playlist: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                });
                     }
                 });
                 dialog.show();
             }
         });
 
+    }
+
+    private void openPlaylist(Playlist playlist) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("Playlist", playlist);
+        CreatePlaylistFragment fragment = new CreatePlaylistFragment();
+        fragment.setArguments(bundle);
+        requireActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.view_pager, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 
     private String generateIdPlaylist(String tenPlaylist) {
@@ -228,25 +281,52 @@ public class ThuVien_PlaylistYeuThichFragment extends Fragment {
 
 
     private void clickIconHeart(Playlist playlist) {
-        mData = FirebaseDatabase.getInstance().getReference("Playlist");
-
-        if (playlist.isCreatePlaylisYeuThich()) {
-            // Xóa hoàn toàn playlist này khỏi Firebase
-            mData.child(playlist.getIdPlaylist()).removeValue();
-
-            // Xóa khỏi danh sách hiển thị
-            mangPlaylistHienThi.remove(playlist);
-            thuVien_Playlist_Adapter.notifyDataSetChanged();
-        } else {
-            // Chỉ cập nhật trạng thái yêu thích
-            playlist.setYeuThich(false);
-            mData.child(playlist.getIdPlaylist()).updateChildren(playlist.toMap());
-
-            // Xóa khỏi danh sách hiển thị
-            mangPlaylistHienThi.remove(playlist);
-            thuVien_Playlist_Adapter.notifyDataSetChanged();
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            Toast.makeText(getContext(), "Vui lòng đăng nhập!", Toast.LENGTH_SHORT).show();
+            return;
         }
+
+        String userId = currentUser.getUid();
+        DatabaseReference playListYeuThichRef = FirebaseDatabase.getInstance()
+                .getReference("Users")
+                .child(userId)
+                .child("playListYeuThich");
+
+        DatabaseReference playlistRef = FirebaseDatabase.getInstance()
+                .getReference("Playlist");
+
+        // Hiển thị hộp thoại xác nhận
+        new AlertDialog.Builder(getContext())
+                .setTitle(playlist.getTenPlaylist())
+                .setMessage("Xóa playlist này khỏi thư viện?")
+                .setPositiveButton("Xóa", (dialogInterface, i) -> {
+                    // Xóa khỏi playListYeuThich
+                    playListYeuThichRef.child(playlist.getIdPlaylist()).removeValue((error, ref) -> {
+                        if (error == null) {
+                            Toast.makeText(getContext(), "Đã xóa playlist khỏi thư viện", Toast.LENGTH_SHORT).show();
+                            mangPlaylist.remove(playlist);
+                            thuVien_playlistYeuThich_adapter.notifyDataSetChanged();
+
+                            // Nếu playlist được tạo bởi người dùng, xóa khỏi node Playlist
+                            if (playlist.getUserId().equals(userId)) {
+                                playlistRef.child(playlist.getIdPlaylist()).removeValue((error1, ref1) -> {
+                                    if (error1 == null) {
+                                        Toast.makeText(getContext(), "Đã xóa playlist khỏi thư viện", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(getContext(), "Không thể xóa playlist khỏi hệ thống: " + error1.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+                        } else {
+                            Toast.makeText(getContext(), "Lỗi: Không thể xóa khỏi thư viện yêu thích", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                })
+                .setNegativeButton("Hủy", null)
+                .show();
     }
+
 
 
     @Override

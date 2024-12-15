@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Fragment.DoiMatKhauFragment">
+
+    <RelativeLayout
+        android:id="@+id/relativelayout_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="15dp">
+
+        <ImageView
+            android:id="@+id/img_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:src="@drawable/arrow_left"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/doimatkhau"
+            android:textSize="23sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/relativelayout_header"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <LinearLayout
+            android:id="@+id/linearlayout_newpassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/linear_background_default"
+            android:padding="10dp">
+
+            <EditText
+                android:id="@+id/txt_newpassword"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:background="@null"
+                android:hint="@string/newpassword"
+                android:imeOptions="actionDone"
+                android:inputType="textPassword"
+                android:maxLines="100"
+                tools:ignore="Autofill,TextFields" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearlayout_nhaplaipassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/linear_background_default"
+            android:padding="10dp">
+
+            <EditText
+                android:id="@+id/txt_nhaplaipassword"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:background="@null"
+                android:hint="@string/nhaplaipassword"
+                android:imeOptions="actionDone"
+                android:inputType="textPassword"
+                android:maxLines="100"
+                tools:ignore="Autofill,TextFields" />
+        </LinearLayout>
+
+        <CheckBox
+            android:id="@+id/ckb_hienthimatkhau"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/hienthimatkhau"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/btn_doimatkhau"
+            android:layout_width="match_parent"
+            android:layout_height="43dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/sing_in"
+            android:gravity="center"
+            android:text="@string/doimatkhau"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:backgroundTint="@null" />
+    </LinearLayout>
+</RelativeLayout>

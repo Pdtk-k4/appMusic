@@ -1,115 +1,174 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center"
     tools:context=".Activity.SingupActivity">
 
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/relativelayout_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:padding="16dp">
+        android:padding="15dp">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/img_avt"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:src="@drawable/avt" />
-
-        <TextView
-            android:id="@+id/txt_dahita"
+        <ImageView
+            android:id="@+id/img_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@string/dahita"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:layout_centerVertical="true"
+            android:src="@drawable/arrow_left"
+            tools:ignore="ContentDescription" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:padding="16dp">
 
         <LinearLayout
-            android:id="@+id/linearlayout_tendangnhap"
+            android:id="@+id/linearlayout_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
-            android:background="@drawable/linear_background_default"
-            android:padding="10dp">
-
-            <EditText
-                android:id="@+id/txt_tendangnhap"
-                android:layout_width="match_parent"
-                android:layout_height="34dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:background="@null"
-                android:hint="@string/tendangnhap"
-                android:imeOptions="actionNext"
-                android:inputType="textEmailAddress"
-                android:maxLines="100"
-                tools:ignore="Autofill,TextFields" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/linearlayout_email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/linear_background_default"
-            android:padding="10dp">
-
-            <EditText
-                android:id="@+id/txt_email"
-                android:layout_width="match_parent"
-                android:layout_height="35dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:background="@null"
-                android:hint="@string/email"
-                android:imeOptions="actionNext"
-                android:inputType="textEmailAddress"
-                android:maxLines="100"
-                tools:ignore="Autofill,TextFields" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/linearlayout_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/linear_background_default"
-            android:padding="10dp">
-
-            <EditText
-                android:id="@+id/txt_password"
-                android:layout_width="match_parent"
-                android:layout_height="32dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:background="@null"
-                android:hint="@string/password"
-                android:imeOptions="actionDone"
-                android:inputType="text"
-                android:maxLines="100"
-                tools:ignore="Autofill,TextFields" />
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/btn_singup"
-            android:layout_width="match_parent"
-            android:layout_height="43dp"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/sing_up"
             android:gravity="center"
-            android:text="@string/singup"
-            android:textColor="#4E15F4"
-            android:textSize="16sp"
-            app:backgroundTint="@null" />
-    </LinearLayout>
-</LinearLayout>
+            android:orientation="vertical">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/img_avt"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/avt" />
+
+            <TextView
+                android:id="@+id/txt_dahita"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/dahita"
+                android:textSize="30sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/linearlayout_header"
+            android:layout_marginTop="25dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/linearlayout_tennguoidung"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/linear_background_default"
+                android:padding="10dp">
+
+                <EditText
+                    android:id="@+id/txt_tennguoidung"
+                    android:layout_width="match_parent"
+                    android:layout_height="34dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@null"
+                    android:hint="@string/tennguoidung"
+                    android:imeOptions="actionNext"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="100"
+                    tools:ignore="Autofill,TextFields" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearlayout_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/linear_background_default"
+                android:padding="10dp">
+
+                <EditText
+                    android:id="@+id/txt_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@null"
+                    android:hint="@string/email"
+                    android:imeOptions="actionNext"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="100"
+                    tools:ignore="Autofill,TextFields" />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/relativeLayout_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/linear_background_default"
+                android:padding="10dp">
+
+                <EditText
+                    android:id="@+id/txt_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="32dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_toStartOf="@id/img_showpassword"
+                    android:background="@null"
+                    android:hint="@string/password"
+                    android:imeOptions="actionDone"
+                    android:inputType="textPassword"
+                    android:maxLines="100"
+                    tools:ignore="Autofill,TextFields" />
+
+                <ImageView
+                    android:id="@+id/img_showpassword"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/eyse"
+                    tools:ignore="ContentDescription" />
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginEnd="5dp"
+                android:text="@string/luuy"
+                android:textSize="11sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginEnd="5dp"
+                android:text="@string/luuy2"
+                android:textSize="11sp" />
+
+
+            <Button
+                android:id="@+id/btn_singup"
+                android:layout_width="match_parent"
+                android:layout_height="43dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/sing_up"
+                android:gravity="center"
+                android:text="@string/singup"
+                android:textColor="#4E15F4"
+                android:textSize="16sp"
+                app:backgroundTint="@null" />
+        </LinearLayout>
+
+
+    </RelativeLayout>
+</RelativeLayout>
 
 
 

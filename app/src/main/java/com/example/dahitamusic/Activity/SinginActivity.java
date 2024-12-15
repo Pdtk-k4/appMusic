@@ -3,6 +3,8 @@ package com.example.dahitamusic.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -23,6 +25,7 @@ import com.google.firebase.auth.FirebaseAuth;
 public class SinginActivity extends AppCompatActivity {
     private ActivitySinginBinding binding;
     private ProgressDialog progressDialog;
+    private boolean isPasswordVisible = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +53,11 @@ public class SinginActivity extends AppCompatActivity {
         binding.btnSingin.setOnClickListener(v -> {
             onClickSignIn();
         });
+
+        binding.txtQuenmatkhau.setOnClickListener(v -> {
+            Intent intent = new Intent(SinginActivity.this, ForgotPasswordActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void onClickSignIn() {
@@ -61,6 +69,7 @@ public class SinginActivity extends AppCompatActivity {
         }
 
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        progressDialog.setMessage("Đang đăng nhập...");
         progressDialog.show();
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -89,11 +98,33 @@ public class SinginActivity extends AppCompatActivity {
             }
         });
 
+        binding.imgShowpassword.setVisibility(View.INVISIBLE);
+
+        // Xử lý sự kiện bật/tắt hiển thị mật khẩu
+        binding.imgShowpassword.setOnClickListener(v -> {
+            if (isPasswordVisible) {
+                // Đổi sang chế độ ẩn mật khẩu
+                binding.txtPassword.setTransformationMethod(new android.text.method.PasswordTransformationMethod());
+                binding.imgShowpassword.setImageResource(R.drawable.eyse); // Biểu tượng mắt đóng
+            } else {
+                // Đổi sang chế độ hiển thị mật khẩu
+                binding.txtPassword.setTransformationMethod(null);
+                binding.imgShowpassword.setImageResource(R.drawable.eyes_show); // Biểu tượng mắt mở
+            }
+            isPasswordVisible = !isPasswordVisible;
+            // Đảm bảo con trỏ luôn ở cuối văn bản sau khi thay đổi chế độ
+            binding.txtPassword.setSelection(binding.txtPassword.getText().length());
+        });
+
         binding.txtPassword.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus) {
-                binding.linearlayoutPassword.setBackgroundResource(R.drawable.linear_background);
+                binding.relativeLayoutPassword.setBackgroundResource(R.drawable.linear_background);
+                binding.imgShowpassword.setVisibility(View.VISIBLE);
             } else {
-                binding.linearlayoutPassword.setBackgroundResource(R.drawable.linear_background_default);
+                binding.relativeLayoutPassword.setBackgroundResource(R.drawable.linear_background_default);
+                if (binding.txtPassword.getText().toString().trim().isEmpty()) {
+                    binding.imgShowpassword.setVisibility(View.INVISIBLE);
+                }
             }
         });
     }

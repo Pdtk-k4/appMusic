@@ -106,7 +106,7 @@ public class Playlist2Fragment extends Fragment {
             playlist_adapter.notifyDataSetChanged();
         } else {
             // Dữ liệu chưa có trong ViewModel, cần tải từ Firebase
-            loadImgPlaylist(false);
+            loadImgPlaylist();
         }
 
         binding.txtXemthem.setOnClickListener(new View.OnClickListener() {
@@ -122,16 +122,16 @@ public class Playlist2Fragment extends Fragment {
         return binding.getRoot();
     }
 
-    public void loadImgPlaylist(boolean yeuThich) {
+    public void loadImgPlaylist() {
         mData = FirebaseDatabase.getInstance().getReference("Playlist");
-        Query query = mData.orderByChild("yeuThich").equalTo(yeuThich);
-        query.addValueEventListener(new ValueEventListener() {
+        mData.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 mListPlaylist.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     Playlist playlist = dataSnapshot.getValue(Playlist.class);
-                    if (playlist != null) {
+                    if (playlist != null && (playlist.getUserId() == null || playlist.getUserId().isEmpty())) {
+                        // Chỉ thêm Playlist không có userId
                         mListPlaylist.add(playlist);
                     }
                 }
@@ -152,6 +152,7 @@ public class Playlist2Fragment extends Fragment {
             }
         });
     }
+
 
     @Override
     public void onPause() {

@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 public class BaiHatYeuThich_Adapter extends RecyclerView.Adapter<BaiHatYeuThich_Adapter.BaiHatYeuThichViewHolder> {
     private final ArrayList<BaiHat> mBaiHatlist;
-    private IClickListner mClickListner;;
+    private IClickListner mClickListner;
 
     public interface IClickListner {
         void onClickHeart(BaiHat baiHat);

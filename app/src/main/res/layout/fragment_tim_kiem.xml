@@ -30,8 +30,9 @@
             android:layout_centerInParent="true"
             android:layout_marginStart="10dp"
             android:text="@string/huy"
-            android:textColor="@color/tim"
-            android:textSize="16sp" />
+            android:textColor="@color/xanh"
+            android:textSize="16sp"
+            android:textStyle="bold" />
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -39,6 +40,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/relative_layout"
-        android:layout_marginTop="15dp"/>
+        android:layout_marginTop="15dp" />
 
 </RelativeLayout>

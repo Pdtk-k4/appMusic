@@ -30,6 +30,8 @@ import com.example.dahitamusic.ViewModel.AlbumViewModel;
 import com.example.dahitamusic.ViewModel.BaiHatViewModel;
 import com.example.dahitamusic.databinding.FragmentBaiHatBinding;
 import com.example.dahitamusic.databinding.FragmentPlayListSongBinding;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -149,6 +151,9 @@ public class BaiHatFragment extends Fragment {
         mData.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (!isAdded()) {
+                    return; // Tránh thao tác khi Fragment chưa được gắn vào Activity
+                }
                 ArrayList<BaiHat> tempList = new ArrayList<>();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     BaiHat baiHat = dataSnapshot.getValue(BaiHat.class);
@@ -179,6 +184,9 @@ public class BaiHatFragment extends Fragment {
 
 
     private void clickIconMoreOnpenDialog(BaiHat baiHat) {
+        if (!isAdded()) {
+            return; // Tránh thao tác khi Fragment chưa được gắn vào Activity
+        }
         final Dialog dialog = new Dialog(requireContext());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.layout_dialog_more_baihat);
@@ -203,48 +211,59 @@ public class BaiHatFragment extends Fragment {
         txt_tenCaSi.setText(baiHat.getCaSi());
         Picasso.get().load(baiHat.getAnhBaiHat()).into(img_baiHat);
 
-        img_close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
+        img_close.setOnClickListener(view -> dialog.dismiss());
 
-        mData = FirebaseDatabase.getInstance().getReference("BaiHat");
-        if (baiHat != null) {
-            if (baiHat.isYeuThich()) {
-                img_iconHeart.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.heart_pink));
-                img_iconHeart.setColorFilter(Color.parseColor("#F05080"), PorterDuff.Mode.SRC_ATOP);
-            } else {
-                img_iconHeart.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.heart));
-                img_iconHeart.clearColorFilter();
-            }
-        }
-        txt_addThuvien.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                boolean currentState = baiHat.isYeuThich();
-                baiHat.setYeuThich(!currentState);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference favoritesRef = FirebaseDatabase.getInstance()
+                .getReference("Users")
+                .child(user.getUid())
+                .child("baiHatYeuThich");
 
-                if (baiHat.isYeuThich()) {
-                    mData.child(baiHat.getIdBaiHat()).updateChildren(baiHat.toMap());
-                    img_iconHeart.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.heart_pink));
-                    img_iconHeart.setColorFilter(Color.parseColor("#F05080"), PorterDuff.Mode.SRC_ATOP);
+        // Kiểm tra trạng thái "yêu thích" từ Firebase
+        favoritesRef.child(baiHat.getIdBaiHat()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                boolean isFavorite = snapshot.exists(); // Kiểm tra bài hát đã được yêu thích chưa
+
+                if (isFavorite) {
+                    if (isAdded() && getContext() != null) {
+                        img_iconHeart.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.heart_pink));
+                    }
                     txt_addThuvien.setText(R.string.dathemvaothuvien);
-
-                    // Hiển thị thông báo: Đã thêm playlist vào thư viện
-                    showCenteredToast("Đã thêm bài hát này vào thư viện");
-                }else {
-                    mData.child(baiHat.getIdBaiHat()).updateChildren(baiHat.toMap());
-                    img_iconHeart.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.heart));
-                    img_iconHeart.clearColorFilter();
+                } else {
+                    if (isAdded() && getContext() != null) {
+                        img_iconHeart.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.heart));
+                    }
                     txt_addThuvien.setText(R.string.themvaothuvien);
-
-                    // Hiển thị thông báo: Đã xóa playlist khỏi thư viện
-                    showCenteredToast("Đã xóa bài hát khỏi thư viện");
                 }
+
+                // Xử lý khi nhấn nút "thêm vào thư viện"
+                txt_addThuvien.setOnClickListener(view -> {
+                    if (isFavorite) {
+                        // Xóa bài hát khỏi thư viện
+                        favoritesRef.child(baiHat.getIdBaiHat()).removeValue();
+                        if (isAdded() && getContext() != null) {
+                            img_iconHeart.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.heart));
+                        }
+                        txt_addThuvien.setText(R.string.themvaothuvien);
+                        showCenteredToast("Đã xóa bài hát khỏi thư viện");
+                    } else {
+                        // Thêm bài hát vào thư viện
+                        favoritesRef.child(baiHat.getIdBaiHat()).setValue(true);
+                        if (isAdded() && getContext() != null) {
+                            img_iconHeart.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.heart_pink));
+                        }
+
+                        txt_addThuvien.setText(R.string.dathemvaothuvien);
+                        showCenteredToast("Đã thêm bài hát này vào thư viện");
+                    }
+                });
             }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getActivity(), "Lỗi khi tải trạng thái yêu thích!", Toast.LENGTH_SHORT).show();
+            }
         });
 
         dialog.show();

@@ -123,34 +123,10 @@ public class PlaylistChuDeTheLoaiFragment extends Fragment {
                 activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 activity.getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_white);
                 if(chuDe != null){
-//                    binding.appbarlayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-//                        @Override
-//                        public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-//                            if (Math.abs(verticalOffset) >= binding.appbarlayout.getTotalScrollRange()) {
-//                                // Người dùng đã cuộn hết, hiển thị tiêu đề
-//                                binding.collapsingtoolbar.setTitle(chuDe.getTenChuDe());
-//                            } else {
-//                                // Khi chưa cuộn, ẩn tiêu đề
-//                                binding.collapsingtoolbar.setTitle("");
-//                            }
-//                        }
-//                    });
                     activity.getSupportActionBar().setTitle("");
                     Picasso.get().load(chuDe.getAnhChuDe()).placeholder(R.drawable.img_default).into(binding.imgAnh);
                 }
                 if(theLoai != null){
-//                    binding.appbarlayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-//                        @Override
-//                        public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-//                            if (Math.abs(verticalOffset) >= binding.appbarlayout.getTotalScrollRange()) {
-//                                // Người dùng đã cuộn hết, hiển thị tiêu đề
-//                                binding.collapsingtoolbar.setTitle(theLoai.getTenTheLoai());
-//                            } else {
-//                                // Khi chưa cuộn, ẩn tiêu đề
-//                                binding.collapsingtoolbar.setTitle("");
-//                            }
-//                        }
-//                    });
                     activity.getSupportActionBar().setTitle("");
                     Picasso.get().load(theLoai.getAnhTheLoai()).placeholder(R.drawable.img_default).into(binding.imgAnh);
                 }

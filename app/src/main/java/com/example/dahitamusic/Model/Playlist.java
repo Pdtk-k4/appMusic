@@ -15,25 +15,26 @@ public class Playlist implements Parcelable {
     private String idChuDe;
     private String tenPlaylist;
     private String anhPlaylist;
-    private boolean yeuThich;
-    private boolean createPlaylisYeuThich;
+    private String userId;
+    private Map<String, Boolean> danhSachBaiHat;
 
     public Playlist() {
     }
-    public Playlist(String idPlaylist, String tenPlaylist, boolean yeuThich, boolean createPlaylisYeuThich) {
+
+    public Playlist(String idPlaylist, String tenPlaylist, String userId) {
         this.idPlaylist = idPlaylist;
         this.tenPlaylist = tenPlaylist;
-        this.yeuThich = yeuThich;
-        this.createPlaylisYeuThich = createPlaylisYeuThich;
+        this.userId = userId;
     }
 
-    public Playlist(String idPlaylist, String idTheLoai, String idChuDe, String tenPlaylist, String anhPlaylist, Boolean yeuThich) {
+    public Playlist(String idPlaylist, String idTheLoai, String idChuDe, String tenPlaylist, String anhPlaylist, String userId, Map<String, Boolean> danhSachBaiHat) {
         this.idPlaylist = idPlaylist;
         this.idTheLoai = idTheLoai;
         this.idChuDe = idChuDe;
         this.tenPlaylist = tenPlaylist;
         this.anhPlaylist = anhPlaylist;
-        this.yeuThich = yeuThich;
+        this.userId = userId;
+        this.danhSachBaiHat = danhSachBaiHat;
     }
 
     protected Playlist(Parcel in) {
@@ -42,8 +43,15 @@ public class Playlist implements Parcelable {
         idChuDe = in.readString();
         tenPlaylist = in.readString();
         anhPlaylist = in.readString();
-        yeuThich = in.readByte() != 0;
-        createPlaylisYeuThich = in.readByte() != 0;
+        userId = in.readString();
+
+        int size = in.readInt();
+        danhSachBaiHat = new HashMap<>();
+        for (int i = 0; i < size; i++) {
+            String key = in.readString();
+            boolean value = in.readByte() != 0;
+            danhSachBaiHat.put(key, value);
+        }
     }
 
     public static final Creator<Playlist> CREATOR = new Creator<Playlist>() {
@@ -58,20 +66,20 @@ public class Playlist implements Parcelable {
         }
     };
 
-    public boolean isCreatePlaylisYeuThich() {
-        return createPlaylisYeuThich;
+    public Map<String, Boolean> getDanhSachBaiHat() {
+        return danhSachBaiHat;
     }
 
-    public void setCreatePlaylisYeuThich(boolean createPlaylisYeuThich) {
-        this.createPlaylisYeuThich = createPlaylisYeuThich;
+    public void setDanhSachBaiHat(Map<String, Boolean> danhSachBaiHat) {
+        this.danhSachBaiHat = danhSachBaiHat;
     }
 
-    public boolean getYeuThich() {
-        return yeuThich;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setYeuThich(boolean yeuThich) {
-        this.yeuThich = yeuThich;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getIdPlaylist() {
@@ -114,12 +122,6 @@ public class Playlist implements Parcelable {
         this.anhPlaylist = anhPlaylist;
     }
 
-    public Map<String, Object> toMap(){
-        HashMap<String, Object> result = new HashMap<>();
-        result.put("yeuThich", yeuThich);
-        return result;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -132,7 +134,17 @@ public class Playlist implements Parcelable {
         parcel.writeString(idChuDe);
         parcel.writeString(tenPlaylist);
         parcel.writeString(anhPlaylist);
-        parcel.writeByte((byte) (yeuThich ? 1 : 0));
-        parcel.writeByte((byte) (createPlaylisYeuThich ? 1 : 0));
+        parcel.writeString(userId);
+
+        if (danhSachBaiHat != null) {
+            parcel.writeInt(danhSachBaiHat.size());
+            for (Map.Entry<String, Boolean> entry : danhSachBaiHat.entrySet()) {
+                parcel.writeString(entry.getKey());
+                parcel.writeByte((byte) (entry.getValue() ? 1 : 0));
+            }
+        } else {
+            parcel.writeInt(0); // Ghi 0 nếu danh sách bài hát null
+        }
     }
+
 }

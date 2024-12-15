@@ -7,4 +7,21 @@
     </style>
 
     <style name="Theme.DahitaMusic" parent="Base.Theme.DahitaMusic" />
+
+
+    <!--Light mode-->
+    <style name="SCREEN">
+        <item name="android:windowBackground">@color/white</item>
+    </style>
+
+    <style name="TEXT">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <item name="colorControlNormal">#000000</item> <!-- Màu đen cho Light Mode -->
+    </style>
+
+
+
 </resources>

@@ -34,6 +34,7 @@
     <string name="dathemvaothuvien">Đã thêm vào thư viện</string>
 
     <string name="huy">Hủy</string>
+    <string name="HUY">HỦY</string>
 
     <string name="quocgia">Quốc gia</string>
     <string name="theloai">Thể loại</string>
@@ -43,16 +44,40 @@
     <string name="dahita">Dahita</string>
     <string name="email">Email</string>
     <string name="password">Mật khẩu</string>
+    <string name="matkhaucu">Mật khẩu cũ</string>
+    <string name="newpassword">Mật khẩu mới</string>
+    <string name="nhaplaipassword">Nhập lại mật khẩu mới</string>
     <string name="singin">Đăng nhập</string>
     <string name="singout">Đăng xuất</string>
     <string name="singup">Tạo tài khoản mới</string>
     <string name="quenmatkhau">Quên mật khẩu?</string>
-    <string name="tendangnhap">Tên đăng nhập</string>
+    <string name="tennguoidung">Tên người dùng</string>
 
     <string name="thongtintaikhoan">Thông tin tài khoản</string>
     <string name="giaodien">Giao diện</string>
     <string name="doimatkhau">Đổi mật khẩu</string>
+    <string name="capnhat">Cập nhật</string>
 
+    <string name="suaten">Sửa tên</string>
+    <string name="xacthuctaikhoan">Xác thực tài khoản</string>
+    <string name="xacthuc">Xác thực</string>
+    <string name="dangxuattaikhoannay">Đăng xuất tài khoản này?</string>
+    <string name="dangxuat">Đăng xuất</string>
 
+    <string name="timtaikhoan">Tìm tài khoản</string>
+    <string name="nhapdiachimailcuaban">Nhập địa chỉ email của bạn.</string>
+    <string name="gui">Gửi</string>
+    <string name="thongbao">Khi ấn gửi, Chúng tôi sẽ gửi Email đổi mật khẩu đến địa chỉ Gmail của bạn.</string>
+    <string name="hienthimatkhau">hiển thị mật khẩu</string>
+
+    <string name="canhbao">Hãy tìm album yêu thích của bạn để thêm vào thư viện</string>
+    <string name="canhbaobaihatyeuthich">Hãy tìm bài hát yêu thích của bạn để thêm vào thư viện</string>
+    <string name="canhbaobaiplaylist">Hãy tìm bài hát để thêm vào playlist của bạn</string>
+    <string name="thembai">Thêm bài</string>
+    <string name="thembaihat">THÊM BÀI HÁT</string>
+
+    <string name="thembaihatvaoplaylist">Thêm bài hát vào playlist</string>
+    <string name="luuy">Lưu ý: Nên sử dụng Gmail đã đăng ký để tạo tài khoản. Nếu</string>
+    <string name="luuy2">quên mật khẩu bạn có thể khôi phục lại qua Gmail.</string>
 
 </resources>

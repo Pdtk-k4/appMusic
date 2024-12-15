@@ -8,6 +8,7 @@
     <color name="background">#F4F4F4</color>
     <color name="textWhite">#F4F4F4</color>
     <color name="blueDark">#00008B</color>
+    <color name="xanh">#612EF4</color>
     <color name="color_menu">#FF6200EE</color>
     <color name="pink">#F05080</color>
     <color name="black_trans">#33000000</color>
@@ -16,5 +17,11 @@
     <color name="check_thumb">#ffffff</color>
     <color name="uncheck_track">#cdcdcd</color>
     <color name="check_track">#612EF4</color>
+
+    <!--Light Mode-->
+    <color name="TEXT">#000000</color>
+    <color name="TEXT_MENU">#696969</color>
+    <color name="ic_Color">#000000</color>
+
 
 </resources>

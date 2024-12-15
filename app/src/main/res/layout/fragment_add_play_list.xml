@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="15dp"
+    android:paddingTop="15dp"
+    android:paddingEnd="15dp"
+    tools:context=".Fragment.AddPlayListFragment">
+
+    <RelativeLayout
+        android:id="@+id/rlt_tieude"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/thembaihatvaoplaylist"
+            android:textColor="@color/TEXT"
+            android:textSize="20sp"/>
+
+        <ImageView
+            android:id="@+id/icon_back"
+            android:layout_width="21dp"
+            android:layout_height="21dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/arrow_left" />
+
+    </RelativeLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar1"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/rlt_tieude"
+        android:layout_marginTop="10dp" />
+
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/search_view"
+        android:layout_width="match_parent"
+        android:layout_height="37dp"
+        android:layout_below="@+id/progressBar1"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/search_view_bg"
+        app:iconifiedByDefault="false" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview_baihat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/search_view"
+        android:layout_marginTop="15dp" />
+
+</RelativeLayout>

@@ -51,10 +51,7 @@ public class ThuVien_Playlist_Adapter extends RecyclerView.Adapter<ThuVien_Playl
         Playlist playlist = mangPlaylist.get(position);
         holder.txt_tenplaylist.setText(playlist.getTenPlaylist());
         Picasso.get().load(playlist.getAnhPlaylist()).placeholder(R.drawable.img_default).into(holder.img_playlist);
-        if(playlist.getYeuThich()){
-            holder.icon_heart.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.heart_pink));
-            holder.icon_heart.setColorFilter(Color.parseColor("#F05080"), PorterDuff.Mode.SRC_ATOP);
-        }
+
         holder.icon_heart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

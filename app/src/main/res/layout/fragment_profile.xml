@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".Fragment.ProfileFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -31,20 +30,38 @@
             android:layout_height="wrap_content">
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/imd_avt"
+                android:id="@+id/img_avt"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
-                android:src="@drawable/avt" />
+                android:src="@drawable/avt_user" />
 
-            <TextView
+            <LinearLayout
+                android:id="@+id/linearlayout_tennguoidung"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:layout_marginStart="15dp"
-                android:layout_toEndOf="@id/imd_avt"
-                android:text="Phạm Duy Tân"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:layout_toEndOf="@id/img_avt"
+                android:gravity="center"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
+
+                <TextView
+                    android:id="@+id/txt_tennguoidung"
+                    style="@style/TEXT"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/TEXT"/>
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="10dp"
+                    android:src="@drawable/ic_pen"
+                    tools:ignore="ContentDescription" />
+            </LinearLayout>
         </RelativeLayout>
 
         <ProgressBar
@@ -54,35 +71,6 @@
             android:layout_height="1dp"
             android:layout_marginTop="20dp" />
 
-        <RelativeLayout
-            android:id="@+id/relative_thongTinTaiKhoan"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="25dp">
-
-            <ImageView
-                android:id="@+id/ic_user"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_centerVertical="true"
-                android:src="@drawable/user_male_circle" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_marginStart="10dp"
-                android:layout_toEndOf="@id/ic_user"
-                android:text="@string/thongtintaikhoan"
-                android:textSize="17sp" />
-
-            <ImageView
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerInParent="true"
-                android:src="@drawable/arrow_right" />
-        </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/relative_theme"
@@ -92,10 +80,10 @@
 
             <ImageView
                 android:id="@+id/ic_theme"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_centerVertical="true"
-                android:src="@drawable/ic_theme" />
+                android:src="@drawable/icon_theme" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -104,15 +92,16 @@
                 android:layout_marginStart="15dp"
                 android:layout_toEndOf="@id/ic_theme"
                 android:text="@string/giaodien"
+                android:textColor="@color/TEXT"
                 android:textSize="17sp" />
 
             <Switch
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:thumb="@drawable/thumb"
-                android:track="@drawable/track"
                 android:layout_alignParentEnd="true"
                 android:layout_centerInParent="true"
+                android:thumb="@drawable/thumb"
+                android:track="@drawable/track"
                 tools:ignore="UseSwitchCompatOrMaterialXml" />
         </RelativeLayout>
 
@@ -124,12 +113,13 @@
 
             <ImageView
                 android:id="@+id/ic_lock"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_centerVertical="true"
                 android:src="@drawable/baseline_lock_outline_24" />
 
             <TextView
+                style="@style/TEXT"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
@@ -161,19 +151,20 @@
 
             <ImageView
                 android:id="@+id/ic_signout"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="23dp"
+                android:layout_height="23dp"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="4dp"
-                android:src="@drawable/ic_signout" />
+                android:src="@drawable/icon_logout" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:layout_marginStart="15dp"
+                android:layout_marginStart="13dp"
                 android:layout_toEndOf="@id/ic_signout"
                 android:text="@string/singout"
+                android:textColor="@color/TEXT"
                 android:textSize="17sp" />
 
         </RelativeLayout>

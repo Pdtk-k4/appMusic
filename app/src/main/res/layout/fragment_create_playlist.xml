@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".Fragment.CreatePlaylistFragment">
+
+    <!-- AppBarLayout for Collapsing Toolbar -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/collapsingtoolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            app:collapsedTitleTextAppearance="@style/CollapsedTitleTextStyle"
+            app:expandedTitleGravity="center"
+            app:expandedTitleMarginTop="240dp"
+            app:expandedTitleTextAppearance="@style/ExpandedTitleTextStyle"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent" />
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbardanhsach"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:elevation="6dp"
+                android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:layout_collapseMode="pin">
+
+            </androidx.appcompat.widget.Toolbar>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="65dp"
+                android:layout_marginBottom="75dp"
+                app:cardCornerRadius="5dp">
+
+                <ImageView
+                    android:id="@+id/imgplaylist"
+                    android:layout_width="170dp"
+                    android:layout_height="170dp"
+                    android:src="@drawable/img_default"
+                    android:scaleType="fitXY" />
+
+                <View
+                    android:layout_width="170dp"
+                    android:layout_height="170dp"
+                    android:alpha="0.1"
+                    android:background="@android:color/black" />
+            </androidx.cardview.widget.CardView>
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+        <RelativeLayout
+            android:id="@+id/rlt_dieukhien"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/btn_thembaihat"
+                android:layout_width="140dp"
+                android:layout_height="35dp"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/sing_up"
+                android:gravity="center"
+                android:text="@string/thembaihat"
+                android:textColor="#4E15F4"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:backgroundTint="@null" />
+
+            <Button
+                android:id="@+id/btn_phatngaynhien"
+                android:layout_width="180dp"
+                android:layout_height="43dp"
+                android:layout_centerInParent="true"
+                android:backgroundTint="@color/xanh"
+                android:text="@string/phatngaungien"
+                android:textColor="@color/white"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="43dp"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="25dp"
+                android:layout_toEndOf="@id/btn_phatngaynhien"
+                android:gravity="center"
+                android:orientation="vertical"
+                tools:ignore="RelativeOverlap,UseCompoundDrawables">
+
+                <ImageView
+                    android:id="@+id/img_like"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/heart" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/like"
+                    android:textColor="@color/TEXT"
+                    android:textSize="10sp"
+                    tools:ignore="SmallSp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearlayout_add"
+                android:layout_width="43dp"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="25dp"
+                android:layout_toStartOf="@+id/btn_phatngaynhien"
+                android:gravity="center"
+                android:orientation="vertical"
+                tools:ignore="RelativeOverlap,UseCompoundDrawables">
+
+                <ImageView
+                    android:id="@+id/img_add"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/baseline_1k_plus_24" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/thembai"
+                    android:textColor="@color/TEXT"
+                    android:textSize="10sp"
+                    tools:ignore="SmallSp" />
+
+            </LinearLayout>
+        </RelativeLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="13dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/txt"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:gravity="center"
+                android:text="@string/canhbaobaiplaylist"
+                android:textColor="@color/TEXT" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerview_danhsachbaihat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
