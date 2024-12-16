@@ -129,7 +129,7 @@ public class ThuVien_AlbumFragment extends Fragment {
         DatabaseReference database = FirebaseDatabase.getInstance().getReference();
         DatabaseReference userFavoritesRef = database.child("Users").child(userId).child("albumYeuThich");
 
-        userFavoritesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        userFavoritesRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot songSnapshot : dataSnapshot.getChildren()) {
@@ -147,7 +147,7 @@ public class ThuVien_AlbumFragment extends Fragment {
 
     private void loadAlbumYeuThich(String idAlbum) {
         mData = FirebaseDatabase.getInstance().getReference("Album").child(idAlbum);
-        mData.addListenerForSingleValueEvent(new ValueEventListener() {
+        mData.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Album album = snapshot.getValue(Album.class);

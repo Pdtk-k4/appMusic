@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -241,7 +242,7 @@ public class ThuVien_PlaylistYeuThichFragment extends Fragment {
         CreatePlaylistFragment fragment = new CreatePlaylistFragment();
         fragment.setArguments(bundle);
         requireActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.view_pager, fragment)
+                .add(R.id.view_pager, fragment)
                 .addToBackStack(null)
                 .commit();
     }
@@ -298,12 +299,13 @@ public class ThuVien_PlaylistYeuThichFragment extends Fragment {
                     // Xóa khỏi playListYeuThich
                     playListYeuThichRef.child(playlist.getIdPlaylist()).removeValue((error, ref) -> {
                         if (error == null) {
+                            Log.d("ThuVien_PlaylistYeuThichFragment", playlist.getIdPlaylist());
                             Toast.makeText(getContext(), "Đã xóa playlist khỏi thư viện", Toast.LENGTH_SHORT).show();
                             mangPlaylist.remove(playlist);
                             thuVien_playlistYeuThich_adapter.notifyDataSetChanged();
 
                             // Nếu playlist được tạo bởi người dùng, xóa khỏi node Playlist
-                            if (playlist.getUserId().equals(userId)) {
+                            if (playlist.getUserId() != null && playlist.getUserId().equals(userId)) {
                                 playlistRef.child(playlist.getIdPlaylist()).removeValue((error1, ref1) -> {
                                     if (error1 == null) {
                                         Toast.makeText(getContext(), "Đã xóa playlist khỏi thư viện", Toast.LENGTH_SHORT).show();

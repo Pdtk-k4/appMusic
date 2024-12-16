@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
+    
     public void openGallery() {
         Intent intent = new Intent();
         intent.setType("image/*");

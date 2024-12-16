@@ -195,17 +195,31 @@ public class ProfileFragment extends Fragment {
         if (mainActivity == null) {
             return;
         }
+
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             mainActivity.openGallery();
             return;
         }
-        if (getActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            mainActivity.openGallery();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // Android 13 trở lên, yêu cầu quyền READ_MEDIA_IMAGES
+            if (getActivity().checkSelfPermission(Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED) {
+                mainActivity.openGallery();
+            } else {
+                String[] permission = {Manifest.permission.READ_MEDIA_IMAGES};
+                getActivity().requestPermissions(permission, MY_REQUEST_CODE);
+            }
         } else {
-            String[] premission = {Manifest.permission.READ_EXTERNAL_STORAGE};
-            getActivity().requestPermissions(premission, MY_REQUEST_CODE);
+            // Android 12 trở xuống, yêu cầu quyền READ_EXTERNAL_STORAGE
+            if (getActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                mainActivity.openGallery();
+            } else {
+                String[] permission = {Manifest.permission.READ_EXTERNAL_STORAGE};
+                getActivity().requestPermissions(permission, MY_REQUEST_CODE);
+            }
         }
     }
+
 
     public void setBitmapImageView(Bitmap bitmapImageView) {
         binding.imgAvt.setImageBitmap(bitmapImageView);

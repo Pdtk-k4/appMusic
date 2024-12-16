@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -191,7 +192,7 @@ public class CreatePlaylistFragment extends Fragment {
                     Picasso.get().load(playlist.getAnhPlaylist()).placeholder(R.drawable.img_default).into(binding.imgplaylist);
                 }
             }
-            binding.toolbardanhsach.setNavigationOnClickListener(v -> activity.onBackPressed());
+            binding.toolbardanhsach.setNavigationOnClickListener(v -> getFragmentManager().popBackStack());
         }
     }
 
@@ -266,12 +267,13 @@ public class CreatePlaylistFragment extends Fragment {
                 }
                 adapter.notifyDataSetChanged();
 
+
                 updatePlaylistWithFirstSongImage();
 
                 anThemBaihat();
                 anPhatNgauNhien();
                 updateNoDataMessage();
-                btnClick(mListBaiHat); // Kích hoạt nút phát nhạc
+                btnClick(mListBaiHat);
             }
 
             @Override
@@ -282,24 +284,25 @@ public class CreatePlaylistFragment extends Fragment {
     }
 
     private void updatePlaylistWithFirstSongImage() {
-        // Kiểm tra nếu danh sách bài hát không rỗng
-        if (mListBaiHat != null && !mListBaiHat.isEmpty()) {
-            // Lấy bài hát đầu tiên trong danh sách
+        if (mListBaiHat != null && !mListBaiHat.isEmpty() && isAdded() && getContext() != null) {
             BaiHat firstSong = mListBaiHat.get(0);
-
-            // Lấy ảnh của bài hát đầu tiên
             String firstSongImage = firstSong.getAnhBaiHat();
 
-            // Kiểm tra playlist có hợp lệ không
-            if (playlist != null) {
-                // Cập nhật ảnh bài hát đầu tiên vào Playlist
+            if (firstSongImage == null || firstSongImage.isEmpty()) {
+                return;
+            }
+
+            if (playlist != null && (playlist.getAnhPlaylist() == null || playlist.getAnhPlaylist().isEmpty())) {
                 playlist.setAnhPlaylist(firstSongImage);
 
-                // Cập nhật Playlist trong Firebase
                 DatabaseReference playlistRef = FirebaseDatabase.getInstance().getReference("Playlist");
                 playlistRef.child(playlist.getIdPlaylist()).child("anhPlaylist")
                         .setValue(firstSongImage);
             }
+
+            Picasso.get().load(playlist.getAnhPlaylist())
+                    .placeholder(R.drawable.img_default)
+                    .into(binding.imgplaylist);
         }
     }
 

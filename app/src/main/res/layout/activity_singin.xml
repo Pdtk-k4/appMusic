@@ -5,37 +5,27 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:gravity="center"
+    android:orientation="vertical"
     tools:context=".Activity.SinginActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:gravity="center"
+        android:orientation="vertical"
         android:padding="16dp">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/img_avt"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:src="@drawable/avt" />
-
-        <TextView
-            android:id="@+id/txt_dahita"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@string/dahita"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+        <ImageView
+            android:layout_width="85dp"
+            android:layout_height="85dp"
+            android:src="@drawable/logoapp" />
 
         <LinearLayout
             android:id="@+id/linearlayout_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="40dp"
             android:background="@drawable/linear_background_default"
             android:padding="10dp">
 
@@ -67,20 +57,21 @@
                 android:layout_height="32dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
+                android:layout_toStartOf="@id/img_showpassword"
                 android:background="@null"
                 android:hint="@string/password"
                 android:imeOptions="actionDone"
                 android:inputType="textPassword"
                 android:maxLines="100"
-                android:layout_toStartOf="@id/img_showpassword"
                 tools:ignore="Autofill,TextFields" />
+
             <ImageView
                 android:id="@+id/img_showpassword"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/eyse"
                 android:layout_alignParentEnd="true"
                 android:layout_centerInParent="true"
+                android:src="@drawable/eyse"
                 tools:ignore="ContentDescription" />
         </RelativeLayout>
 

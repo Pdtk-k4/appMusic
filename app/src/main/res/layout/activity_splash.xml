@@ -9,17 +9,9 @@
     android:orientation="vertical"
     tools:context=".Activity.SplashActivity">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:layout_width="85dp"
-        android:layout_height="85dp"
-        android:src="@drawable/avt" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/dahita"
-        android:textSize="30sp"
-        android:textStyle="bold" />
+    <ImageView
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:src="@drawable/logoapp"/>
 
 </LinearLayout>

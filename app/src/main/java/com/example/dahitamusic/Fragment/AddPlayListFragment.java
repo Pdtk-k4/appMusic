@@ -123,11 +123,14 @@ public class AddPlayListFragment extends Fragment {
 
             // Thêm idBaiHat vào danh sách và gán giá trị true
             playlist.getDanhSachBaiHat().put(baiHat.getIdBaiHat(), true);
+            // Cập nhật danh sách bài hát trong Firebase
+            DatabaseReference playlistRef = FirebaseDatabase.getInstance().getReference("Playlist");
+            HashMap<String, Object> updateMap = new HashMap<>();
+            updateMap.put("danhSachBaiHat/" + baiHat.getIdBaiHat(), true);
 
             // Cập nhật Playlist trong Firebase
-            DatabaseReference playlistRef = FirebaseDatabase.getInstance().getReference("Playlist");
             playlistRef.child(playlist.getIdPlaylist())
-                    .setValue(playlist)
+                    .updateChildren(updateMap)
                     .addOnSuccessListener(unused -> {
                         Toast.makeText(getActivity(), "Thêm bài hát thành công", Toast.LENGTH_SHORT).show();
                     })

@@ -36,27 +36,18 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <de.hdodenhof.circleimageview.CircleImageView
+            <ImageView
                 android:id="@+id/img_avt"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:src="@drawable/avt" />
-
-            <TextView
-                android:id="@+id/txt_dahita"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="@string/dahita"
-                android:textSize="30sp"
-                android:textStyle="bold" />
+                android:layout_width="85dp"
+                android:layout_height="85dp"
+                android:src="@drawable/logoapp" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/linearlayout_header"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="40dp"
             android:orientation="vertical">
 
             <LinearLayout
