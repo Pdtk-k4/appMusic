@@ -19,6 +19,7 @@
     <color name="check_track">#612EF4</color>
 
     <!--Light Mode-->
+    <color name="BACKGROUND">#FFFFFF</color>
     <color name="TEXT">#000000</color>
     <color name="TEXT_MENU">#696969</color>
     <color name="ic_Color">#000000</color>

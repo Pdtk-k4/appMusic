@@ -85,7 +85,7 @@ public class LibaryFragment extends Fragment {
             // Thay thế Fragment hiện tại bằng SearchFragment
             requireActivity().getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.view_pager, new TimKiemFragment())
+                    .add(R.id.view_pager, new TimKiemFragment())
                     .addToBackStack(null)
                     .commit();
             return true;

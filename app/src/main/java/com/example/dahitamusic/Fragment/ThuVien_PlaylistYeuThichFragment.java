@@ -170,7 +170,7 @@ public class ThuVien_PlaylistYeuThichFragment extends Fragment {
     }
 
     private void clickTaoPlaylist() {
-        binding.txtTaoplaylist.setOnClickListener(new View.OnClickListener() {
+        binding.btnTaoPlaylist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 final Dialog dialog = new Dialog(requireContext());
@@ -202,13 +202,7 @@ public class ThuVien_PlaylistYeuThichFragment extends Fragment {
                         }
 
                         String idPlaylist = generateIdPlaylist(tenPlaylist);
-
                         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-                        if (currentUser == null) {
-                            Toast.makeText(getContext(), "Vui lòng đăng nhập!", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-
                         String userId = currentUser.getUid();
                         DatabaseReference database = FirebaseDatabase.getInstance().getReference();
 

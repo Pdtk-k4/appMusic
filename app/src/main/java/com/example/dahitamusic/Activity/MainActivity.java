@@ -19,6 +19,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.dahitamusic.Fragment.HomeFragment;
 import com.example.dahitamusic.Fragment.LibaryFragment;
@@ -91,29 +92,45 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        replaceFragment(new HomeFragment());
+        replaceFragment(new HomeFragment(), "HOME_FRAGMENT");
         binding.bottomnavigation.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.home) {
-                replaceFragment(new HomeFragment());
+                replaceFragment(new HomeFragment(), "HOME_FRAGMENT");
             } else if (item.getItemId() == R.id.poscasts) {
-                replaceFragment(new RadioFragment());
+                replaceFragment(new RadioFragment(), "RADIO_FRAGMENT");
             } else if (item.getItemId() == R.id.library) {
-                replaceFragment(new LibaryFragment());
+                replaceFragment(new LibaryFragment(), "LIBRARY_FRAGMENT");
             } else if (item.getItemId() == R.id.profile) {
-                replaceFragment(profileFragment);
+                replaceFragment(profileFragment, "PROFILE_FRAGMENT");
             } else {
                 return false;
             }
             return true;
         });
 
+
     }
 
-    private void replaceFragment(Fragment fragment) {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.view_pager, fragment)
-                .commit();
+    private void replaceFragment(Fragment fragment, String tag) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        // Ẩn tất cả các fragment đang hoạt động
+        for (Fragment frag : getSupportFragmentManager().getFragments()) {
+            transaction.hide(frag);
+        }
+
+        // Kiểm tra nếu fragment đã được thêm
+        Fragment existingFragment = getSupportFragmentManager().findFragmentByTag(tag);
+        if (existingFragment != null) {
+            // Nếu tồn tại, chỉ cần hiện lại
+            transaction.show(existingFragment);
+        } else {
+            // Nếu không tồn tại, thêm mới
+            transaction.add(R.id.view_pager, fragment, tag);
+        }
+        transaction.commit();
     }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

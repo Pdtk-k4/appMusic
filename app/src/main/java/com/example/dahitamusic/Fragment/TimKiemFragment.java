@@ -96,6 +96,14 @@ public class TimKiemFragment extends Fragment {
                              Bundle savedInstanceState) {
         binding = FragmentTimKiemBinding.inflate(inflater, container, false);
 
+        binding.txtHuy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (getFragmentManager() != null){
+                    getFragmentManager().popBackStack();
+                }
+            }
+        });
         mListBaiHat = new ArrayList<>();
         baiHatApdapter();
         loadBaiHatGoiY();
@@ -141,13 +149,6 @@ public class TimKiemFragment extends Fragment {
     private void searchBaiHat(){
         binding.searchView.setQueryHint("Tìm kiếm bài hát");
         binding.searchView.requestFocus();
-
-        binding.txtHuy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().getSupportFragmentManager().popBackStack();
-            }
-        });
 
         binding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

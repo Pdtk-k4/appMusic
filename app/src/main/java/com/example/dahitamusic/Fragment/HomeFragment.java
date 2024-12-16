@@ -81,7 +81,7 @@ public class HomeFragment extends Fragment {
             // Thay thế Fragment hiện tại bằng SearchFragment
             requireActivity().getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.view_pager, new TimKiemFragment())
+                    .add(R.id.view_pager, new TimKiemFragment())
                     .addToBackStack(null)
                     .commit();
             return true;
@@ -89,8 +89,6 @@ public class HomeFragment extends Fragment {
 
         super.onCreateOptionsMenu(menu, inflater);
     }
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -104,16 +102,6 @@ public class HomeFragment extends Fragment {
             }
         }
 
-//        binding.toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-//            @Override
-//            public boolean onMenuItemClick(MenuItem item) {
-//                if (item.getItemId() == R.id.search) {
-//                    replaceFragment(new TimKiemFragment(), "Tìm Kiếm");
-//                    return true;
-//                }
-//                return false;
-//            }
-//        });
 
         return binding.getRoot();
     }

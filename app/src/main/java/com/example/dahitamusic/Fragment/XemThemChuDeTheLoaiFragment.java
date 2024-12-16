@@ -28,6 +28,7 @@ public class XemThemChuDeTheLoaiFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private FragmentXemThemChuDeTheLoaiBinding binding;
+    public static final String TAG = XemThemChuDeTheLoaiFragment.class.getName();
 
     public XemThemChuDeTheLoaiFragment() {
         // Required empty public constructor
@@ -72,7 +73,7 @@ public class XemThemChuDeTheLoaiFragment extends Fragment {
                 activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 activity.getSupportActionBar().setTitle("Chủ đề và thể loại");
             }
-            binding.toolbar.setNavigationOnClickListener(v -> activity.onBackPressed());
+            binding.toolbar.setNavigationOnClickListener(v -> getFragmentManager().popBackStack());
         }
         return binding.getRoot();
     }

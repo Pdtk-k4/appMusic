@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:fillViewport="true"
     android:scrollbars="none"
+    android:background="@color/BACKGROUND"
     tools:context=".Fragment.XemThemChuDeTheLoaiFragment">
 
     <androidx.appcompat.widget.Toolbar

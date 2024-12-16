@@ -21,11 +21,17 @@ import java.util.ArrayList;
 public class PlayListSongAdapter extends RecyclerView.Adapter<PlayListSongAdapter.PlayListSongViewHolder> {
     private final ArrayList<BaiHat> songs;
     private Context context;
+    private IClickListner mClickListner;
+    public interface IClickListner {
+        void onClickItem(BaiHat baiHat);
+        void onClickMore(BaiHat baiHat);
+    }
 
     // Cập nhật constructor để nhận listener
-    public PlayListSongAdapter(ArrayList<BaiHat> songs, Context context) {
+    public PlayListSongAdapter(ArrayList<BaiHat> songs, Context context, IClickListner mClickListner) {
         this.songs = songs;
         this.context = context;
+        this.mClickListner = mClickListner;
     }
 
     @NonNull
@@ -42,12 +48,13 @@ public class PlayListSongAdapter extends RecyclerView.Adapter<PlayListSongAdapte
         holder.songArtist.setText(baiHat.getCaSi());
         Picasso.get().load(baiHat.getAnhBaiHat()).placeholder(R.drawable.img_default).into(holder.songImage);
 
-//        holder.itemView.setOnClickListener(view -> {
-//            Intent intent = new Intent(context, PlayMusicActivity.class);
-//            intent.putExtra("cakhuc", songs); // Truyền toàn bộ danh sách bài hát
-//            intent.putExtra("position", position); // Truyền vị trí của bài hát được chọn
-//            context.startActivity(intent);
-//        });
+        holder.itemView.setOnClickListener(view -> {
+            mClickListner.onClickItem(baiHat);
+
+        });
+        holder.img_IconMore.setOnClickListener(view -> {
+            mClickListner.onClickMore(baiHat);
+        });
     }
 
     @Override
@@ -56,16 +63,18 @@ public class PlayListSongAdapter extends RecyclerView.Adapter<PlayListSongAdapte
     }
 
     // ViewHolder class
-    public class PlayListSongViewHolder extends RecyclerView.ViewHolder {
+    public static class PlayListSongViewHolder extends RecyclerView.ViewHolder {
         private final TextView songTitle;
         private final TextView songArtist;
         private final ImageView songImage;
+        private final ImageView img_IconMore;
 
         public PlayListSongViewHolder(@NonNull View itemView) {
             super(itemView);
             songTitle = itemView.findViewById(R.id.txt_name_song);
             songArtist = itemView.findViewById(R.id.txt_name_casi);
             songImage = itemView.findViewById(R.id.img_song);
+            img_IconMore = itemView.findViewById(R.id.icon_more);
         }
     }
 }

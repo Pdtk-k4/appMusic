@@ -52,6 +52,7 @@ public class RadioFragment extends Fragment {
     private ArrayList<Podcast> mlistPodcast;
     private DatabaseReference mData;
     private Podcast_Adapter adapter;
+    private Bundle savedState;
 
     public RadioFragment() {
         // Required empty public constructor
@@ -76,11 +77,6 @@ public class RadioFragment extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
@@ -99,7 +95,7 @@ public class RadioFragment extends Fragment {
             // Thay thế Fragment hiện tại bằng SearchFragment
             requireActivity().getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.view_pager, new TimKiemFragment())
+                    .add(R.id.view_pager, new TimKiemFragment())
                     .addToBackStack(null)
                     .commit();
             return true;
@@ -154,5 +150,21 @@ public class RadioFragment extends Fragment {
             }
         });
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        savedState = new Bundle();
+        savedState.putString("key", "value");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (savedState != null) {
+            String value = savedState.getString("key");
+        }
+    }
+
 
 }

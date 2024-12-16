@@ -53,7 +53,7 @@ public class Chude_Theloai_Adapter extends RecyclerView.Adapter<Chude_Theloai_Ad
             // Thay thế hoặc thêm Fragment vào container
             activity.getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.view_pager, fragment)
+                    .add(R.id.view_pager, fragment)
                     .addToBackStack(null)
                     .commit();
         });

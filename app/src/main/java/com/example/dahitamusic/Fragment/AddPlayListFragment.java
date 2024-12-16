@@ -97,7 +97,9 @@ public class AddPlayListFragment extends Fragment {
 
     private void onClick() {
         binding.iconBack.setOnClickListener(view -> {
-            getActivity().getSupportFragmentManager().popBackStack();
+            if (getFragmentManager() != null){
+                getFragmentManager().popBackStack();
+            }
         });
     }
 

@@ -51,7 +51,7 @@ public class XemThem_TheLoai_Adapter extends RecyclerView.Adapter<XemThem_TheLoa
             // Thay thế hoặc thêm Fragment vào container
             activity.getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.view_pager, fragment)
+                    .add(R.id.view_pager, fragment)
                     .addToBackStack(null)
                     .commit();
         });

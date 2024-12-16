@@ -90,6 +90,7 @@ public class PlaylistChuDeTheLoaiFragment extends Fragment {
         }
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -132,7 +133,7 @@ public class PlaylistChuDeTheLoaiFragment extends Fragment {
                 }
 
             }
-            binding.toolbar.setNavigationOnClickListener(v -> activity.onBackPressed());
+            binding.toolbar.setNavigationOnClickListener(v -> getFragmentManager().popBackStack());
         }
     }
 

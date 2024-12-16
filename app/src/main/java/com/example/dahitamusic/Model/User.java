@@ -5,6 +5,7 @@ import java.util.List;
 public class User {
     private String tenNguoiDung;
     private String email;
+    private List<String> podcastYeuThich;
     private List<String> baiHatYeuThich;
     private List<String> playListYeuThich;
     private List<String> albumYeuThich;
@@ -18,13 +19,23 @@ public class User {
         this.email = email;
     }
 
-    public User(String tenNguoiDung, String email, List<String> baiHatYeuThich, List<String> playListYeuThich, List<String> albumYeuThich, List<String> baiHatDaTai) {
+    public User(String tenNguoiDung, String email, List<String> baiHatYeuThich, List<String> playListYeuThich, List<String> albumYeuThich, List<String> baiHatDaTai, List<String> podcastYeuThich) {
         this.tenNguoiDung = tenNguoiDung;
         this.email = email;
         this.baiHatYeuThich = baiHatYeuThich;
         this.playListYeuThich = playListYeuThich;
         this.albumYeuThich = albumYeuThich;
         this.baiHatDaTai = baiHatDaTai;
+        this.podcastYeuThich = podcastYeuThich;
+
+    }
+
+    public List<String> getPodcastYeuThich() {
+        return podcastYeuThich;
+    }
+
+    public void setPodcastYeuThich(List<String> podcastYeuThich) {
+        this.podcastYeuThich = podcastYeuThich;
     }
 
     public String getTenNguoiDung() {

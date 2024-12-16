@@ -1,14 +1,20 @@
 package com.example.dahitamusic.Activity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.StrictMode;
 import android.util.Log;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +22,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.dahitamusic.Adapter.ViewPagerPlaySongAdapter;
@@ -29,6 +36,7 @@ import com.example.dahitamusic.databinding.ActivityPlayMusicBinding;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.Player;
+import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -37,13 +45,12 @@ import java.util.Random;
 
 public class PlayMusicActivity extends AppCompatActivity {
 
-    ActivityPlayMusicBinding binding;
+    private ActivityPlayMusicBinding binding;
     public static ArrayList<BaiHat> mangbaihat = new ArrayList<>();
     public static ArrayList<Podcast> mangpodcast = new ArrayList<>();
     public static ViewPagerPlaySongAdapter viewPagerPlaySongAdapter;
-    DiaNhacFragment diaNhacFragment;
-    PlayListSongFragment playListSongFragment;
-    ExoPlayer exoPlayer;
+    private DiaNhacFragment diaNhacFragment;
+    private ExoPlayer exoPlayer;
     int position = 0;
     boolean repeat = false;
     boolean shuffle = false;
@@ -62,14 +69,12 @@ public class PlayMusicActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
         // Cấu hình StrictMode để cho phép tải nội dung trong background
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
         getDataIntent();
         init();
-
         eventClick();
     }
 
@@ -85,55 +90,57 @@ public class PlayMusicActivity extends AppCompatActivity {
             mangbaihat.clear();
         });
 
-        List<Fragment> fragments = new ArrayList<>();
-        playListSongFragment = new PlayListSongFragment();
         diaNhacFragment = new DiaNhacFragment();
+        PlayListSongFragment playListSongFragment = new PlayListSongFragment();
+        List<Fragment> fragments = new ArrayList<>();
 
-        fragments.add(diaNhacFragment);
         fragments.add(playListSongFragment);
-
+        fragments.add(diaNhacFragment);
 
         viewPagerPlaySongAdapter = new ViewPagerPlaySongAdapter(PlayMusicActivity.this, fragments);
 
+        // Sau khi thiết lập ViewPager2
         binding.viewpagerplaynhac.setAdapter(viewPagerPlaySongAdapter);
-//        binding.viewpagerplaynhac.setCurrentItem(1, false);
+        binding.viewpagerplaynhac.setCurrentItem(1, false);
 
-        // Đăng ký callback cho ViewPager để đảm bảo diaNhacFragment sẵn sàng trước khi set ảnh
+        updateDiaNhacFragment();
+        // Cập nhật trực tiếp DiaNhacFragment nếu dữ liệu sẵn sàng
+        if (!mangbaihat.isEmpty()) {
+            BaiHat baiHat = mangbaihat.get(position);
+            new Handler(Looper.getMainLooper()).post(() -> {
+                if (diaNhacFragment.isAdded()) {
+                    diaNhacFragment.getAnhBaiHat(baiHat.getAnhBaiHat());
+                    diaNhacFragment.setTenBaiHat(baiHat.getTenBaiHat());
+                    diaNhacFragment.setTenCaSi(baiHat.getCaSi());
+                    diaNhacFragment.clickIconHeart(baiHat.getIdBaiHat());
+                } else {
+                    Log.e("PlayMusicActivity", "DiaNhacFragment not attached yet");
+                }
+            });
+        } else if (!mangpodcast.isEmpty()) {
+            Podcast podcast = mangpodcast.get(position);
+            new Handler(Looper.getMainLooper()).post(() -> {
+                if (diaNhacFragment.isAdded()) {
+                    diaNhacFragment.getAnhBaiHat(podcast.getAnhPodcast());
+                    diaNhacFragment.setTenBaiHat(podcast.getTenPodcast());
+                    diaNhacFragment.setTenCaSi(podcast.getTacGia());
+                } else {
+                    Log.e("PlayMusicActivity", "DiaNhacFragment not attached yet");
+                }
+            });
+        }
+
+
+//         Đăng ký callback cho ViewPager để đảm bảo diaNhacFragment sẵn sàng trước khi set ảnh
         binding.viewpagerplaynhac.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int positionviewpager) {
                 super.onPageSelected(positionviewpager);
-                if (!mangbaihat.isEmpty()) {
-                    BaiHat baiHat = mangbaihat.get(position);
-//                    Log.d("PlayMusicActivity", "Sending Image URL: " + baiHat.getAnhBaiHat());
-//                    Log.d("PlayMusicActivity", "Sending Image URL: " + baiHat.getTenBaiHat());
-//                    Log.d("PlayMusicActivity", "Sending Image URL: " + baiHat.getCaSi());
-
-                    // Đảm bảo fragment đã sẵn sàng
-                    new Handler(Looper.getMainLooper()).post(() -> {
-                        if (diaNhacFragment.isAdded()) {
-                            diaNhacFragment.getAnhBaiHat(baiHat.getAnhBaiHat());
-                            diaNhacFragment.setTenBaiHat(baiHat.getTenBaiHat());
-                            diaNhacFragment.setTenCaSi(baiHat.getCaSi());
-                        } else {
-                            Log.e("PlayMusicActivity", "DiaNhacFragment not attached yet");
-                        }
-                    });
-                } else if (!mangpodcast.isEmpty()) {
-                    Podcast podcast = mangpodcast.get(position);
-                    new Handler(Looper.getMainLooper()).post(() -> {
-                        if (diaNhacFragment.isAdded()) {
-                            diaNhacFragment.getAnhBaiHat(podcast.getAnhPodcast());
-                            diaNhacFragment.setTenBaiHat(podcast.getTenPodcast());
-                            diaNhacFragment.setTenCaSi(podcast.getTacGia());
-                        } else {
-                            Log.e("PlayMusicActivity", "DiaNhacFragment not attached yet");
-                        }
-                    });
+                if (positionviewpager == 1) { // Khi chuyển tới DiaNhacFragment
+                    updateDiaNhacFragment();
                 }
             }
         });
-
 
         if (!mangbaihat.isEmpty()) {
             BaiHat baiHat = mangbaihat.get(position);
@@ -148,6 +155,54 @@ public class PlayMusicActivity extends AppCompatActivity {
         }
     }
 
+    private void updateDiaNhacFragment() {
+        new Handler(Looper.getMainLooper()).post(() -> {
+            if (diaNhacFragment.isAdded()) {
+                if (!mangbaihat.isEmpty()) {
+                    BaiHat baiHat = mangbaihat.get(position);
+                    diaNhacFragment.getAnhBaiHat(baiHat.getAnhBaiHat());
+                    diaNhacFragment.setTenBaiHat(baiHat.getTenBaiHat());
+                    diaNhacFragment.setTenCaSi(baiHat.getCaSi());
+                    diaNhacFragment.clickIconHeart(baiHat.getIdBaiHat());
+                } else if (!mangpodcast.isEmpty()) {
+                    Podcast podcast = mangpodcast.get(position);
+                    diaNhacFragment.getAnhBaiHat(podcast.getAnhPodcast());
+                    diaNhacFragment.setTenBaiHat(podcast.getTenPodcast());
+                    diaNhacFragment.setTenCaSi(podcast.getTacGia());
+                }
+            } else {
+                Log.e("PlayMusicActivity", "DiaNhacFragment not attached yet");
+            }
+        });
+    }
+
+    public void playSong(BaiHat baiHat) {
+        // Cập nhật tên bài hát và ca sĩ trên giao diện
+        binding.toolbarTitle.setText(baiHat.getTenBaiHat());
+        diaNhacFragment.getAnhBaiHat(baiHat.getAnhBaiHat());
+        diaNhacFragment.setTenBaiHat(baiHat.getTenBaiHat());
+        diaNhacFragment.setTenCaSi(baiHat.getCaSi());
+        diaNhacFragment.clickIconHeart(baiHat.getIdBaiHat());
+
+        // Khởi tạo lại ExoPlayer với bài hát mới
+        initializePlayer(baiHat.getLinkNhac());
+
+        // Cập nhật vị trí hiện tại của bài hát trong danh sách
+        position = mangbaihat.indexOf(baiHat);
+        binding.imgbtncircledplay.setImageResource(R.drawable.play2_button_icon); // Đổi biểu tượng play
+    }
+
+    public void playPodcast(Podcast podcast) {
+        binding.toolbarTitle.setText(podcast.getTenPodcast());
+        diaNhacFragment.getAnhBaiHat(podcast.getAnhPodcast());
+        diaNhacFragment.setTenBaiHat(podcast.getTenPodcast());
+        diaNhacFragment.setTenCaSi(podcast.getTacGia());
+        initializePlayer(podcast.getLinkPodcast());
+        position = mangpodcast.indexOf(podcast);
+        binding.imgbtncircledplay.setImageResource(R.drawable.play2_button_icon);
+    }
+
+
     public void updateSongAndImage(int position) {
         if (position >= 0 && position < mangbaihat.size()) {
             BaiHat baiHat = mangbaihat.get(position);
@@ -158,6 +213,7 @@ public class PlayMusicActivity extends AppCompatActivity {
             diaNhacFragment.getAnhBaiHat(baiHat.getAnhBaiHat());
             diaNhacFragment.setTenBaiHat(baiHat.getTenBaiHat());
             diaNhacFragment.setTenCaSi(baiHat.getCaSi());
+            diaNhacFragment.clickIconHeart(baiHat.getIdBaiHat());
 
             // Khởi tạo lại ExoPlayer với bài hát mới
             initializePlayer(baiHat.getLinkNhac());

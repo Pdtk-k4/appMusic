@@ -105,8 +105,8 @@ public class ChuDeVaTheLoaiFragment extends Fragment {
                 XemThemChuDeTheLoaiFragment fragment = new XemThemChuDeTheLoaiFragment();
                 requireActivity().getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.view_pager, fragment)
-                        .addToBackStack(null) // Cho phép quay lại fragment trước đó
+                        .add(R.id.view_pager, fragment)
+                        .addToBackStack(XemThemChuDeTheLoaiFragment.TAG) // Cho phép quay lại fragment trước đó
                         .commit();
             }
         });

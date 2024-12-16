@@ -25,6 +25,7 @@
             android:textStyle="bold" />
 
         <RelativeLayout
+            android:id="@+id/relative_lammoi"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"

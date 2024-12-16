@@ -67,7 +67,7 @@ public class ThuVien_PlaylistYeuThich_Adapter extends RecyclerView.Adapter<ThuVi
                     if (view.getContext() instanceof AppCompatActivity) {
                         AppCompatActivity activity = (AppCompatActivity) view.getContext();
                         activity.getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.view_pager, createPlaylistFragment)
+                                .add(R.id.view_pager, createPlaylistFragment)
                                 .addToBackStack(null)
                                 .commit();
                     }

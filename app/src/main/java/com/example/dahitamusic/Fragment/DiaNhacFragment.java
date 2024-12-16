@@ -5,6 +5,8 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -14,10 +16,18 @@ import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.dahitamusic.Model.BaiHat;
 import com.example.dahitamusic.R;
 import com.example.dahitamusic.databinding.FragmentDiaNhacBinding;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -37,10 +47,8 @@ public class DiaNhacFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private CircleImageView circleImageView;
-    private TextView txttenbaihat, txttencasi;
     private ObjectAnimator objectAnimator;
-    private BaiHat baiHat;
+    private FragmentDiaNhacBinding binding;
 
     public DiaNhacFragment() {
         // Required empty public constructor
@@ -72,24 +80,81 @@ public class DiaNhacFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment and initialize binding
-        View view = inflater.inflate(R.layout.fragment_dia_nhac, container, false);
-        circleImageView = view.findViewById(R.id.imgdianhac);
-        txttenbaihat = view.findViewById(R.id.id_tenbaihat);
-        txttencasi = view.findViewById(R.id.id_tencasi);
+        binding = FragmentDiaNhacBinding.inflate(inflater, container, false);
 
-        objectAnimator = ObjectAnimator.ofFloat(circleImageView, "rotation", 0f, 360f);
+        objectAnimator = ObjectAnimator.ofFloat(binding.imgdianhac, "rotation", 0f, 360f);
         objectAnimator.setDuration(25000);
         objectAnimator.setRepeatCount(ValueAnimator.INFINITE);
         objectAnimator.setRepeatMode(ValueAnimator.RESTART);
         objectAnimator.setInterpolator(new LinearInterpolator());
-        return view;
+
+        return binding.getRoot();
     }
 
+    public void clickIconHeart(String idBaiHat) {
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference favoritesRef = FirebaseDatabase.getInstance()
+                .getReference("Users")
+                .child(user.getUid())
+                .child("baiHatYeuThich");
+
+        favoritesRef.child(idBaiHat).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                boolean isFavorite = snapshot.exists(); // Kiểm tra bài hát đã được yêu thích chưa
+
+                if (isFavorite) {
+                    if (isAdded() && getContext() != null) {
+                        binding.imgbtnheart.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.heart_pink));
+                    }
+                } else {
+                    if (isAdded() && getContext() != null) {
+                        binding.imgbtnheart.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_heart_white));
+                    }
+                }
+
+                // Xử lý khi nhấn nút "thêm vào thư viện"
+                binding.imgbtnheart.setOnClickListener(view -> {
+                    if (isFavorite) {
+                        // Xóa bài hát khỏi thư viện
+                        favoritesRef.child(idBaiHat).removeValue();
+                        if (isAdded() && getContext() != null) {
+                            binding.imgbtnheart.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_heart_white));
+                        }
+                        showCenteredToast("Đã xóa bài hát khỏi thư viện");
+                    } else {
+                        // Thêm bài hát vào thư viện
+                        favoritesRef.child(idBaiHat).setValue(true);
+                        if (isAdded() && getContext() != null) {
+                            binding.imgbtnheart.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.heart_pink));
+                        }
+                        showCenteredToast("Đã thêm bài hát này vào thư viện");
+                    }
+                });
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getActivity(), "Lỗi khi tải trạng thái yêu thích!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void showCenteredToast(String message) {
+        Toast toast = Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT);
+        toast.setGravity(android.view.Gravity.CENTER, 0, 0); // Đặt Toast ở giữa màn hình
+        toast.show();
+    }
+
+
     public void getAnhBaiHat(String anhBaiHat) {
-        Picasso.get().load(anhBaiHat).into(circleImageView, new com.squareup.picasso.Callback() {
+        Picasso.get().load(anhBaiHat).into(binding.imgdianhac, new com.squareup.picasso.Callback() {
             @Override
             public void onSuccess() {
                 // Khi ảnh được tải thành công, bắt đầu hiệu ứng xoay
@@ -105,15 +170,14 @@ public class DiaNhacFragment extends Fragment {
         });
     }
 
-
     // Hàm nhập tên bài hát
     public void setTenBaiHat(String tenBaiHat) {
-        txttenbaihat.setText(tenBaiHat);
+        binding.idTenbaihat.setText(tenBaiHat);
     }
 
     // Hàm nhập tên ca sĩ
     public void setTenCaSi(String tenCaSi) {
-        txttencasi.setText(tenCaSi);
+        binding.idTencasi.setText(tenCaSi);
     }
 
 

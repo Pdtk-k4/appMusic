@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/bg_play_nhac"
     android:orientation="vertical"
+    android:weightSum="10"
     tools:context=".Activity.PlayMusicActivity">
 
     <androidx.appcompat.widget.Toolbar
@@ -16,25 +17,31 @@
 
         <TextView
             android:id="@+id/toolbar_title"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@android:color/white"
             android:textSize="18sp"
+            android:ellipsize="end"
+            android:layout_marginEnd="50dp"
+            android:maxLines="1"
             android:layout_gravity="center" />
 
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewpagerplaynhac"
+        android:layout_weight="7"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:padding="20dp">
-
+        android:layout_height="0dp"
+        android:paddingTop="20dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp">
     </androidx.viewpager2.widget.ViewPager2>
 
     <LinearLayout
+        android:layout_weight="3"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
         android:orientation="vertical">

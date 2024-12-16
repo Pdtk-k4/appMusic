@@ -205,7 +205,7 @@ public class CreatePlaylistFragment extends Fragment {
 
             // Mở AddPlaylistFragment
             getFragmentManager().beginTransaction()
-                    .replace(R.id.view_pager, addPlaylistFragment)
+                    .add(R.id.view_pager, addPlaylistFragment)
                     .addToBackStack(null)
                     .commit();
         });
@@ -218,7 +218,7 @@ public class CreatePlaylistFragment extends Fragment {
 
             // Mở AddPlaylistFragment
             getFragmentManager().beginTransaction()
-                    .replace(R.id.view_pager, addPlaylistFragment)
+                    .add(R.id.view_pager, addPlaylistFragment)
                     .addToBackStack(null)
                     .commit();
         });
