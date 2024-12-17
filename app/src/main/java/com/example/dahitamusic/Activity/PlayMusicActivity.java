@@ -1,7 +1,11 @@
 package com.example.dahitamusic.Activity;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
@@ -27,10 +31,12 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.dahitamusic.Adapter.ViewPagerPlaySongAdapter;
 import com.example.dahitamusic.Fragment.DiaNhacFragment;
+import com.example.dahitamusic.Fragment.LyricsSongFragment;
 import com.example.dahitamusic.Fragment.PlayListSongFragment;
 import com.example.dahitamusic.Model.BaiHat;
 import com.example.dahitamusic.Model.Podcast;
 import com.example.dahitamusic.R;
+import com.example.dahitamusic.Service.MusicService;
 import com.example.dahitamusic.databinding.ActivityPlayMusicBinding;
 
 import com.google.android.exoplayer2.ExoPlayer;
@@ -50,11 +56,72 @@ public class PlayMusicActivity extends AppCompatActivity {
     public static ArrayList<Podcast> mangpodcast = new ArrayList<>();
     public static ViewPagerPlaySongAdapter viewPagerPlaySongAdapter;
     private DiaNhacFragment diaNhacFragment;
-    private ExoPlayer exoPlayer;
+    private LyricsSongFragment lyricsSongFragment;
     int position = 0;
-    boolean repeat = false;
-    boolean shuffle = false;
-    boolean next = false;
+    private final BroadcastReceiver playbackStateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent == null) return;  // Kiểm tra null
+
+            try {
+                // Lấy các giá trị từ intent và kiểm tra null
+                boolean isPlaying = intent.getBooleanExtra("isPlaying", false);
+                long currentPosition = intent.getLongExtra("currentPosition", -1); // Sử dụng giá trị mặc định là -1
+                long duration = intent.getLongExtra("duration", -1);
+                boolean isShuffle = intent.getBooleanExtra("shuffle", false);
+                boolean isRepeat = intent.getBooleanExtra("repeat", false);
+
+                String songTitle = intent.getStringExtra("songTitle");
+                String songArtist = intent.getStringExtra("songArtist");
+                String songID = intent.getStringExtra("songID");
+                String songImg = intent.getStringExtra("songImg");
+                String songLyrics = intent.getStringExtra("songLyrics");
+
+
+                // Kiểm tra null cho các giá trị quan trọng trước khi sử dụng
+                if (songTitle != null && songArtist != null) {
+                    updateSongInfo(songTitle, songArtist, songID, songImg, songLyrics);
+                }
+
+                if (currentPosition >= 0 && duration >= 0) {
+                    updateSeekBarAndTime(currentPosition, duration);
+                }
+
+                // Cập nhật nút phát/tạm dừng
+                updatePlayPauseButton(isPlaying);
+
+                // Cập nhật nút Shuffle và Repeat
+                updateShuffleButtonUI(isShuffle);
+                updateRepeatButtonUI(isRepeat);
+            } catch (Exception e) {
+                e.printStackTrace(); // Ghi log nếu có lỗi
+            }
+        }
+    };
+
+
+    private void updateSongInfo(String songTitle, String songArtist, String songUrl, String songImg, String songLyrics) {
+        binding.toolbarTitle.setText(songTitle);
+        diaNhacFragment.setTenCaSi(songArtist);
+        diaNhacFragment.setTenBaiHat(songTitle);
+        diaNhacFragment.getAnhBaiHat(songImg);
+        diaNhacFragment.clickIconHeart(songUrl);
+        lyricsSongFragment.setSongLyrics(songLyrics);
+    }
+
+    // Đăng ký BroadcastReceiver trong onStart()
+    @Override
+    protected void onStart() {
+        super.onStart();
+        IntentFilter filter = new IntentFilter("MUSIC_UPDATE");
+        registerReceiver(playbackStateReceiver, filter);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(playbackStateReceiver);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +129,6 @@ public class PlayMusicActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         binding = ActivityPlayMusicBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-        // Cấu hình padding cho các hệ thống thanh trạng thái và thanh điều hướng
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -86,16 +151,17 @@ public class PlayMusicActivity extends AppCompatActivity {
         binding.toolbarplaynhac.getNavigationIcon().setTint(Color.WHITE);
         binding.toolbarplaynhac.setNavigationOnClickListener(v -> {
             finish();
-            exoPlayer.stop();
             mangbaihat.clear();
         });
 
         diaNhacFragment = new DiaNhacFragment();
+        lyricsSongFragment = new LyricsSongFragment();
         PlayListSongFragment playListSongFragment = new PlayListSongFragment();
         List<Fragment> fragments = new ArrayList<>();
 
         fragments.add(playListSongFragment);
         fragments.add(diaNhacFragment);
+        fragments.add(lyricsSongFragment);
 
         viewPagerPlaySongAdapter = new ViewPagerPlaySongAdapter(PlayMusicActivity.this, fragments);
 
@@ -113,8 +179,7 @@ public class PlayMusicActivity extends AppCompatActivity {
                     diaNhacFragment.setTenBaiHat(baiHat.getTenBaiHat());
                     diaNhacFragment.setTenCaSi(baiHat.getCaSi());
                     diaNhacFragment.clickIconHeart(baiHat.getIdBaiHat());
-                } else {
-                    Log.e("PlayMusicActivity", "DiaNhacFragment not attached yet");
+                    lyricsSongFragment.setSongLyrics(baiHat.getLyrics());
                 }
             });
         } else if (!mangpodcast.isEmpty()) {
@@ -124,14 +189,10 @@ public class PlayMusicActivity extends AppCompatActivity {
                     diaNhacFragment.getAnhBaiHat(podcast.getAnhPodcast());
                     diaNhacFragment.setTenBaiHat(podcast.getTenPodcast());
                     diaNhacFragment.setTenCaSi(podcast.getTacGia());
-                } else {
-                    Log.e("PlayMusicActivity", "DiaNhacFragment not attached yet");
                 }
             });
         }
-
-
-//         Đăng ký callback cho ViewPager để đảm bảo diaNhacFragment sẵn sàng trước khi set ảnh
+        //Đăng ký callback cho ViewPager để đảm bảo diaNhacFragment sẵn sàng trước khi set ảnh
         binding.viewpagerplaynhac.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int positionviewpager) {
@@ -164,14 +225,13 @@ public class PlayMusicActivity extends AppCompatActivity {
                     diaNhacFragment.setTenBaiHat(baiHat.getTenBaiHat());
                     diaNhacFragment.setTenCaSi(baiHat.getCaSi());
                     diaNhacFragment.clickIconHeart(baiHat.getIdBaiHat());
+                    lyricsSongFragment.setSongLyrics(baiHat.getLyrics());
                 } else if (!mangpodcast.isEmpty()) {
                     Podcast podcast = mangpodcast.get(position);
                     diaNhacFragment.getAnhBaiHat(podcast.getAnhPodcast());
                     diaNhacFragment.setTenBaiHat(podcast.getTenPodcast());
                     diaNhacFragment.setTenCaSi(podcast.getTacGia());
                 }
-            } else {
-                Log.e("PlayMusicActivity", "DiaNhacFragment not attached yet");
             }
         });
     }
@@ -183,6 +243,7 @@ public class PlayMusicActivity extends AppCompatActivity {
         diaNhacFragment.setTenBaiHat(baiHat.getTenBaiHat());
         diaNhacFragment.setTenCaSi(baiHat.getCaSi());
         diaNhacFragment.clickIconHeart(baiHat.getIdBaiHat());
+        lyricsSongFragment.setSongLyrics(baiHat.getLyrics());
 
         // Khởi tạo lại ExoPlayer với bài hát mới
         initializePlayer(baiHat.getLinkNhac());
@@ -214,6 +275,7 @@ public class PlayMusicActivity extends AppCompatActivity {
             diaNhacFragment.setTenBaiHat(baiHat.getTenBaiHat());
             diaNhacFragment.setTenCaSi(baiHat.getCaSi());
             diaNhacFragment.clickIconHeart(baiHat.getIdBaiHat());
+            lyricsSongFragment.setSongLyrics(baiHat.getLyrics());
 
             // Khởi tạo lại ExoPlayer với bài hát mới
             initializePlayer(baiHat.getLinkNhac());
@@ -228,101 +290,121 @@ public class PlayMusicActivity extends AppCompatActivity {
         }
     }
 
-    private void eventClick() {
+    private void updateRepeatButtonUI(boolean isRepeat) {
+        if (isRepeat) {
+            binding.imgbtnrepeat.setColorFilter(Color.parseColor("#8342BD"), PorterDuff.Mode.SRC_ATOP);
+        } else {
+            binding.imgbtnrepeat.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
+        }
+    }
 
-        // Xử lý sự kiện play/pause
-        binding.imgbtncircledplay.setOnClickListener(v -> {
-            if (exoPlayer != null) {
-                if (exoPlayer.isPlaying()) {
-                    exoPlayer.pause();
-                    binding.imgbtncircledplay.setImageResource(R.drawable.play_button_icon);
-                    if (diaNhacFragment != null) {
-                        diaNhacFragment.pauseAnimation(); // Dừng xoay ảnh khi pause
-                    }
-                } else {
-                    exoPlayer.play();
-                    binding.imgbtncircledplay.setImageResource(R.drawable.play2_button_icon);
-                    if (diaNhacFragment != null) {
-                        diaNhacFragment.resumeAnimation(); // Bắt đầu xoay ảnh khi play
-                    }
-                }
-                startSeekBarUpdate();
+    private void updateShuffleButtonUI(boolean isShuffle) {
+        if (isShuffle) {
+            binding.imgbtnshuffle.setColorFilter(Color.parseColor("#8342BD"), PorterDuff.Mode.SRC_ATOP);
+
+        } else {
+            binding.imgbtnshuffle.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
+        }
+    }
+
+//    private void handleNextSong() {
+//        if (!mangbaihat.isEmpty()) {
+//            position++;
+//            if (position >= mangbaihat.size()) {
+//                position = 0;
+//            }
+//            updateSongAndImage(position);
+//        } else if (!mangpodcast.isEmpty()) {
+//            position++;
+//            if (position >= mangpodcast.size()) {
+//                position = 0;
+//            }
+//            updateSongAndImage(position);
+//        }
+//    }
+
+    private void updatePlayPauseButton(boolean isPlaying) {
+        if (isPlaying) {
+            binding.imgbtncircledplay.setImageResource(R.drawable.play2_button_icon);
+            if (diaNhacFragment != null) {
+                diaNhacFragment.resumeAnimation();
             }
+        } else {
+            binding.imgbtncircledplay.setImageResource(R.drawable.play_button_icon);
+            if (diaNhacFragment != null) {
+                diaNhacFragment.pauseAnimation();
+            }
+        }
+    }
+
+    private void updateSeekBarAndTime(long currentPosition, long duration) {
+        // Cập nhật SeekBar
+        binding.seekbarsong.setMax((int) duration);
+        binding.seekbarsong.setProgress((int) currentPosition);
+
+        // Cập nhật thời gian bài hát
+        String currentTime = formatTime(currentPosition);
+        String totalTime = formatTime(duration);
+        binding.txtTimesong.setText(currentTime);
+        binding.txtTimesong1.setText(totalTime);
+    }
+
+    private void eventClick() {
+        binding.imgbtncircledplay.setOnClickListener(v -> {
+            Intent intent = new Intent(this, MusicService.class);
+            intent.setAction(MusicService.ACTION_PLAY_PAUSE);
+            startService(intent);
         });
 
         //xủ lý repeat và shuffle(lặp lại và random)
         binding.imgbtnrepeat.setOnClickListener(v -> {
-            if (repeat) {
-                // Nếu repeat đang bật, tắt đi và chuyển trắng
-                binding.imgbtnrepeat.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
-                repeat = false;
-            } else {
-                // Nếu repeat chưa bật, bật lên và chuyển sang tím
-                binding.imgbtnrepeat.setColorFilter(Color.parseColor("#8342BD"), PorterDuff.Mode.SRC_ATOP);  // Màu tím
-                repeat = true;
-
-                // Tắt shuffle nếu đang bật
-                if (shuffle) {
-                    shuffle = false;
-                    binding.imgbtnshuffle.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
-                }
-            }
+            Intent intent = new Intent(PlayMusicActivity.this, MusicService.class);
+            intent.setAction(MusicService.ACTION_REPEAT);
+            startService(intent);
         });
 
         binding.imgbtnshuffle.setOnClickListener(v -> {
-            if (shuffle) {
-                // Nếu shuffle đang bật, tắt đi và chuyển thành màu trắng
-                binding.imgbtnshuffle.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
-                shuffle = false;
-            } else {
-                // Nếu shuffle chưa bật, bật lên và chuyển màu tím
-                binding.imgbtnshuffle.setColorFilter(Color.parseColor("#8342BD"), PorterDuff.Mode.SRC_ATOP);  // Màu tím
-                shuffle = true;
-
-                // Tắt repeat nếu đang bật
-                if (repeat) {
-                    repeat = false;
-                    binding.imgbtnrepeat.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
-                }
-            }
+            Intent intent = new Intent(PlayMusicActivity.this, MusicService.class);
+            intent.setAction(MusicService.ACTION_SHUFFLE);
+            startService(intent);
         });
-
 
         //xử lý seekbar(thanh chạy nhạc)
         binding.seekbarsong.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (fromUser && exoPlayer != null) {
-                    // Cập nhật thời gian hiện tại của bài hát khi kéo SeekBar
-                    binding.txtTimesong.setText(formatTime(progress));
+                if (fromUser) {
+                    Intent intent = new Intent(PlayMusicActivity.this, MusicService.class);
+                    intent.setAction(MusicService.ACTION_SEEK);
+                    intent.putExtra("seek_position", progress);
+                    startService(intent);
                 }
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                // Tạm dừng cập nhật SeekBar khi người dùng bắt đầu kéo
-                seekBarHandler.removeCallbacks(updateSeekBar);
+//                Intent startTimeUpdateIntent = new Intent(MusicService.ACTION_SEEK);
+//                sendBroadcast(startTimeUpdateIntent);
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                if (exoPlayer != null) {
-                    // Phát nhạc từ vị trí người dùng chọn
-                    exoPlayer.seekTo(seekBar.getProgress());
-                    startSeekBarUpdate(); // Bắt đầu lại cập nhật SeekBar
-                }
+//                int seekPosition = seekBar.getProgress();
+//                Intent intent = new Intent(MusicService.ACTION_SEEK);
+//                intent.putExtra("seek_position", seekPosition);
+//                sendBroadcast(intent);
+
             }
         });
-
 
         //xử lý next nhạc
         binding.imgbtnend.setOnClickListener(v -> {
             if (!mangbaihat.isEmpty() || !mangpodcast.isEmpty()) {
-                if (exoPlayer.isPlaying() || exoPlayer != null) {
-                    exoPlayer.stop();
-                    exoPlayer.release();
-                    exoPlayer = null;
-                }
+//                if (exoPlayer.isPlaying() || exoPlayer != null) {
+//                    exoPlayer.stop();
+//                    exoPlayer.release();
+//                    exoPlayer = null;
+//                }
 
                 if (!mangbaihat.isEmpty()) {
                     position++;
@@ -354,11 +436,11 @@ public class PlayMusicActivity extends AppCompatActivity {
 
         binding.imgbtnskiptostart.setOnClickListener(v -> {
             if (!mangbaihat.isEmpty() || !mangpodcast.isEmpty()) {
-                if (exoPlayer.isPlaying() || exoPlayer != null) {
-                    exoPlayer.stop();
-                    exoPlayer.release();
-                    exoPlayer = null;
-                }
+//                if (exoPlayer.isPlaying() || exoPlayer != null) {
+//                    exoPlayer.stop();
+//                    exoPlayer.release();
+//                    exoPlayer = null;
+//                }
                 if (!mangbaihat.isEmpty()) {
                     position--;
                     if (position < 0) {
@@ -391,110 +473,28 @@ public class PlayMusicActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent != null) {
             if (intent.hasExtra("cakhuc")) {
-                // Lấy bài hát từ Intent
                 BaiHat baiHat = intent.getParcelableExtra("cakhuc");
                 mangbaihat.add(baiHat);
             }
             if (intent.hasExtra("BaiHat")) {
-                // Lấy danh sách bài hát từ Intent
                 mangbaihat = intent.getParcelableArrayListExtra("BaiHat");
             }
             if (intent.hasExtra("Podcast")) {
                 mangpodcast = intent.getParcelableArrayListExtra("Podcast");
             }
             if (intent.hasExtra("position")) {
-                // Lấy vị trí bài hát từ Intent
                 position = intent.getIntExtra("position", 0);
             }
 
         }
     }
 
-
-    // Khởi tạo ExoPlayer và phát bài hát
-    private Handler seekBarHandler = new Handler(Looper.getMainLooper());
-    private Runnable updateSeekBar;
-
     private void initializePlayer(String songUrl) {
-
-        // Kiểm tra nếu ExoPlayer đã được khởi tạo
-        if (exoPlayer == null) {
-            exoPlayer = new ExoPlayer.Builder(this).build();
-        }
-
-        MediaItem mediaItem = MediaItem.fromUri(songUrl);
-        exoPlayer.setMediaItem(mediaItem);
-        exoPlayer.prepare();
-        exoPlayer.play();
-
-        exoPlayer.addListener(new Player.Listener() {
-            @Override
-            public void onPlaybackStateChanged(int state) {
-                if (state == Player.STATE_READY) {
-                    // Cập nhật SeekBar và thời gian cho bài hát hiện tại
-                    long duration = exoPlayer.getDuration();
-                    binding.seekbarsong.setMax((int) duration);
-                    binding.txtTimesong1.setText(formatTime(duration));
-                    startSeekBarUpdate();
-                } else if (state == Player.STATE_ENDED) {
-                    // Kiểm tra xem có bật chế độ repeat hay không
-                    if (repeat) {
-                        // Nếu repeat bật, phát lại bài hát hiện tại
-                        exoPlayer.seekTo(0);
-                        exoPlayer.play();
-                    } else {
-                        // Nếu repeat tắt, chuyển sang bài hát tiếp theo
-                        if (shuffle) {
-                            if (!mangbaihat.isEmpty()) {
-                                position = new Random().nextInt(mangbaihat.size());
-                            } else if (!mangpodcast.isEmpty()) {
-                                position = new Random().nextInt(mangpodcast.size());
-                            }
-//                            // Nếu bật shuffle, phát một bài ngẫu nhiên
-//                            position = new Random().nextInt(mangbaihat.size());
-                        } else {
-                            // Không bật shuffle, phát bài hát tiếp theo trong danh sách
-
-                            if (!mangbaihat.isEmpty()) {
-                                position++;
-                                if (position >= mangbaihat.size()) {
-                                    position = 0; // Quay lại bài đầu tiên nếu đến cuối danh sách
-                                }
-                            } else if (!mangpodcast.isEmpty()) {
-                                position++;
-                                if (position >= mangpodcast.size()) {
-                                    position = 0; // Quay lại bài đầu tiên nếu đến cuối danh sách
-                                }
-                            }
-
-                        }
-                        // Cập nhật bài hát hoặc podcast và UI khi chuyển sang bài mới
-                        if (!mangbaihat.isEmpty()) {
-                            updateSongAndImage(position); // Cập nhật với bài hát
-                        } else if (!mangpodcast.isEmpty()) {
-                            updateSongAndImage(position); // Cập nhật với podcast
-                        }
-
-                    }
-                }
-            }
-        });
+        Intent serviceIntent = new Intent(PlayMusicActivity.this, MusicService.class);
+        serviceIntent.putExtra("songUrl", songUrl);
+        Log.d("PlayMusicActivity", "Starting MusicService with songUrl: " + songUrl);
+        startService(serviceIntent);
     }
-
-    private void startSeekBarUpdate() {
-        updateSeekBar = new Runnable() {
-            @Override
-            public void run() {
-                if (exoPlayer != null && exoPlayer.isPlaying()) {
-                    binding.seekbarsong.setProgress((int) exoPlayer.getCurrentPosition());
-                    binding.txtTimesong.setText(formatTime(exoPlayer.getCurrentPosition()));
-                    seekBarHandler.postDelayed(this, 300);
-                }
-            }
-        };
-        seekBarHandler.post(updateSeekBar);
-    }
-
 
     private String formatTime(long timeMs) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("mm:ss");
@@ -504,9 +504,6 @@ public class PlayMusicActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (exoPlayer != null) {
-            exoPlayer.release();
-        }
-        seekBarHandler.removeCallbacks(updateSeekBar); // Ngừng cập nhật SeekBar
+
     }
 }

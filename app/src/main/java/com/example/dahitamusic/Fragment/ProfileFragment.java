@@ -157,7 +157,7 @@ public class ProfileFragment extends Fragment {
         binding.relativeDoiMatKhau.setOnClickListener(v -> {
             requireActivity().getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.view_pager, new DoiMatKhauFragment())
+                    .add(R.id.view_pager, new DoiMatKhauFragment())
                     .addToBackStack(null)
                     .commit();
         });
@@ -219,7 +219,6 @@ public class ProfileFragment extends Fragment {
             }
         }
     }
-
 
     public void setBitmapImageView(Bitmap bitmapImageView) {
         binding.imgAvt.setImageBitmap(bitmapImageView);

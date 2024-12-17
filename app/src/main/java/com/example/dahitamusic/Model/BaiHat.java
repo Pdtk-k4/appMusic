@@ -21,12 +21,13 @@ public class BaiHat implements Parcelable {
     private String idTheLoai;
     private String anhQuangCao;
     private String idQuangCao;
+    private String lyrics;
     private boolean yeuThich;
 
     public BaiHat() {
     }
 
-    public BaiHat(String idBaiHat, String anhBaiHat, String caSi, String tenBaiHat, String linkNhac, String idAlbum, String idPlaylist, String idTheLoai, String anhQuangCao, String idQuangCao, boolean yeuThich) {
+    public BaiHat(String idBaiHat, String anhBaiHat, String caSi, String tenBaiHat, String linkNhac, String idAlbum, String idPlaylist, String idTheLoai, String anhQuangCao, String idQuangCao, boolean yeuThich, String lyrics) {
         this.idBaiHat = idBaiHat;
         this.anhBaiHat = anhBaiHat;
         this.caSi = caSi;
@@ -38,6 +39,7 @@ public class BaiHat implements Parcelable {
         this.anhQuangCao = anhQuangCao;
         this.idQuangCao = idQuangCao;
         this.yeuThich = yeuThich;
+        this.lyrics = lyrics;
     }
 
     protected BaiHat(Parcel in) {
@@ -52,6 +54,7 @@ public class BaiHat implements Parcelable {
         anhQuangCao = in.readString();
         idQuangCao = in.readString();
         yeuThich = in.readByte() != 0;
+        lyrics = in.readString();
     }
 
     public static final Creator<BaiHat> CREATOR = new Creator<BaiHat>() {
@@ -65,6 +68,14 @@ public class BaiHat implements Parcelable {
             return new BaiHat[size];
         }
     };
+
+    public String getLyrics() {
+        return lyrics;
+    }
+
+    public void setLyrics(String lyrics) {
+        this.lyrics = lyrics;
+    }
 
     public String getIdBaiHat() {
         return idBaiHat;
@@ -178,5 +189,6 @@ public class BaiHat implements Parcelable {
         parcel.writeString(anhQuangCao);
         parcel.writeString(idQuangCao);
         parcel.writeByte((byte) (yeuThich ? 1 : 0));
+        parcel.writeString(lyrics);
     }
 }
