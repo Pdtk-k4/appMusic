@@ -23,7 +23,7 @@
         android:layout_height="50dp"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
-        android:backgroundTint="#8C36D9"
+        android:backgroundTint="@color/xanh"
         android:text="@string/phatngaungien"
         android:textColor="@color/white"
         android:textSize="13sp"

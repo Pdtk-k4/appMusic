@@ -71,16 +71,26 @@ public class PlayMusicActivity extends AppCompatActivity {
                 boolean isShuffle = intent.getBooleanExtra("shuffle", false);
                 boolean isRepeat = intent.getBooleanExtra("repeat", false);
 
+                //bai hat
                 String songTitle = intent.getStringExtra("songTitle");
                 String songArtist = intent.getStringExtra("songArtist");
                 String songID = intent.getStringExtra("songID");
                 String songImg = intent.getStringExtra("songImg");
                 String songLyrics = intent.getStringExtra("songLyrics");
 
+                //podcast
+                String songIDPodcast = intent.getStringExtra("songIDPodcast");
+                String songPodcast = intent.getStringExtra("songPodcast");
+                String songArtistPodcast = intent.getStringExtra("songArtistPodcast");
+                String songImgPodcast = intent.getStringExtra("songImgPodcast");
+//                String songLyricsPodcast = intent.getStringExtra("songLyricsPodcast");
+
+//                updateSongInfoPodcast(songPodcast, songArtistPodcast, songIDPodcast, songImgPodcast);
+
 
                 // Kiểm tra null cho các giá trị quan trọng trước khi sử dụng
                 if (songTitle != null && songArtist != null) {
-                    updateSongInfo(songTitle, songArtist, songID, songImg, songLyrics);
+                    updateSongInfoBaiHat(songTitle, songArtist, songID, songImg, songLyrics);
                 }
 
                 if (currentPosition >= 0 && duration >= 0) {
@@ -99,8 +109,16 @@ public class PlayMusicActivity extends AppCompatActivity {
         }
     };
 
+//    private void updateSongInfoPodcast(String songPodcast, String songArtistPodcast, String songIDPodcast, String songImgPodcast) {
+//        binding.toolbarTitle.setText(songPodcast);
+//        diaNhacFragment.setTenCaSi(songArtistPodcast);
+//        diaNhacFragment.setTenBaiHat(songPodcast);
+//        diaNhacFragment.getAnhBaiHat(songImgPodcast);
+//        diaNhacFragment.clickIconPodcast(songIDPodcast);
+//    }
 
-    private void updateSongInfo(String songTitle, String songArtist, String songUrl, String songImg, String songLyrics) {
+
+    private void updateSongInfoBaiHat(String songTitle, String songArtist, String songUrl, String songImg, String songLyrics) {
         binding.toolbarTitle.setText(songTitle);
         diaNhacFragment.setTenCaSi(songArtist);
         diaNhacFragment.setTenBaiHat(songTitle);
@@ -189,6 +207,7 @@ public class PlayMusicActivity extends AppCompatActivity {
                     diaNhacFragment.getAnhBaiHat(podcast.getAnhPodcast());
                     diaNhacFragment.setTenBaiHat(podcast.getTenPodcast());
                     diaNhacFragment.setTenCaSi(podcast.getTacGia());
+                    diaNhacFragment.clickIconPodcast(podcast.getIdPodcast());
                 }
             });
         }
@@ -207,6 +226,7 @@ public class PlayMusicActivity extends AppCompatActivity {
             BaiHat baiHat = mangbaihat.get(position);
             binding.toolbarTitle.setText(baiHat.getTenBaiHat());
             initializePlayer(baiHat.getLinkNhac());
+//            getDataIntentBaiHat(baiHat);
             binding.imgbtncircledplay.setImageResource(R.drawable.play2_button_icon);
         } else if (!mangpodcast.isEmpty()) {
             Podcast podcast = mangpodcast.get(position);
@@ -244,6 +264,7 @@ public class PlayMusicActivity extends AppCompatActivity {
         diaNhacFragment.setTenCaSi(baiHat.getCaSi());
         diaNhacFragment.clickIconHeart(baiHat.getIdBaiHat());
         lyricsSongFragment.setSongLyrics(baiHat.getLyrics());
+//        getDataIntentBaiHat(baiHat);
 
         // Khởi tạo lại ExoPlayer với bài hát mới
         initializePlayer(baiHat.getLinkNhac());
@@ -276,6 +297,7 @@ public class PlayMusicActivity extends AppCompatActivity {
             diaNhacFragment.setTenCaSi(baiHat.getCaSi());
             diaNhacFragment.clickIconHeart(baiHat.getIdBaiHat());
             lyricsSongFragment.setSongLyrics(baiHat.getLyrics());
+//            getDataIntentBaiHat(baiHat);
 
             // Khởi tạo lại ExoPlayer với bài hát mới
             initializePlayer(baiHat.getLinkNhac());
@@ -488,11 +510,18 @@ public class PlayMusicActivity extends AppCompatActivity {
 
         }
     }
+//    private void getDataIntentBaiHat(BaiHat baiHat) {
+//        Intent intent = new Intent(this, PlayMusicActivity.class);
+//        Bundle bundle = new Bundle();
+//        bundle.putParcelable("cakhuc", baiHat);
+//        intent.putExtras(bundle);
+//        startService(intent);
+//    }
+
 
     private void initializePlayer(String songUrl) {
         Intent serviceIntent = new Intent(PlayMusicActivity.this, MusicService.class);
         serviceIntent.putExtra("songUrl", songUrl);
-        Log.d("PlayMusicActivity", "Starting MusicService with songUrl: " + songUrl);
         startService(serviceIntent);
     }
 

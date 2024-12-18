@@ -1,7 +1,9 @@
 package com.example.dahitamusic.Fragment;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,6 +16,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.dahitamusic.Activity.DSachBaiHatActivity;
@@ -99,7 +106,12 @@ public class CreatePlaylistFragment extends Fragment {
             clickHeart(playlist);
         }
         mListBaiHat = new ArrayList<>();
-        adapter = new SongsAdapter(mListBaiHat, getContext());
+        adapter = new SongsAdapter(mListBaiHat, getContext(), new SongsAdapter.IClickListner() {
+            @Override
+            public void onClick(BaiHat baiHat) {
+                click_iconmore(baiHat);
+            }
+        });
         binding.recyclerviewDanhsachbaihat.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerviewDanhsachbaihat.setAdapter(adapter);
 
@@ -109,14 +121,99 @@ public class CreatePlaylistFragment extends Fragment {
         return binding.getRoot();
     }
 
+    private void click_iconmore(BaiHat baiHat) {
+        if (!isAdded()) {
+            return; // Tránh thao tác khi Fragment chưa được gắn vào Activity
+        }
+
+        final Dialog dialog = new Dialog(requireContext());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.layout_dialog_more_baihat);
+        Window window = dialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCancelable(false);
+
+        ImageView img_close = dialog.findViewById(R.id.img_close);
+        ImageView img_baiHat = dialog.findViewById(R.id.img_baiHat);
+        ImageView img_iconHeart = dialog.findViewById(R.id.img_iconHeart);
+
+        TextView txt_tenBaiHat = dialog.findViewById(R.id.txt_tenBaiHat);
+        TextView txt_tenCaSi = dialog.findViewById(R.id.txt_tenCaSi);
+        TextView txt_addThuvien = dialog.findViewById(R.id.txt_addThuvien);
+
+        RelativeLayout relative_download = dialog.findViewById(R.id.relative_download);
+        RelativeLayout relative_addPlaylist = dialog.findViewById(R.id.relative_addPlaylist);
+        RelativeLayout relative_addThuvien = dialog.findViewById(R.id.relative_addThuvien);
+
+        txt_tenBaiHat.setText(baiHat.getTenBaiHat());
+        txt_tenCaSi.setText(baiHat.getCaSi());
+        Picasso.get().load(baiHat.getAnhBaiHat()).into(img_baiHat);
+
+        img_close.setOnClickListener(view -> dialog.dismiss());
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference favoritesRef = FirebaseDatabase.getInstance()
+                .getReference("Users")
+                .child(user.getUid())
+                .child("baiHatYeuThich");
+
+        // Kiểm tra trạng thái "yêu thích" từ Firebase
+        favoritesRef.child(baiHat.getIdBaiHat()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                boolean isFavorite = snapshot.exists(); // Kiểm tra bài hát đã được yêu thích chưa
+
+                if (isFavorite) {
+                    if (isAdded() && getContext() != null) {
+                        img_iconHeart.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.heart_pink));
+                    }
+                    txt_addThuvien.setText(R.string.dathemvaothuvien);
+                } else {
+                    if (isAdded() && getContext() != null) {
+                        img_iconHeart.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.heart));
+                    }
+                    txt_addThuvien.setText(R.string.themvaothuvien);
+                }
+
+                // Xử lý khi nhấn nút "thêm vào thư viện"
+                relative_addThuvien.setOnClickListener(view -> {
+                    if (isFavorite) {
+                        // Xóa bài hát khỏi thư viện
+                        favoritesRef.child(baiHat.getIdBaiHat()).removeValue();
+                        if (isAdded() && getContext() != null) {
+                            img_iconHeart.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.heart));
+                        }
+                        txt_addThuvien.setText(R.string.themvaothuvien);
+                        showCenteredToast("Đã xóa bài hát khỏi thư viện");
+                    } else {
+                        // Thêm bài hát vào thư viện
+                        favoritesRef.child(baiHat.getIdBaiHat()).setValue(true);
+                        if (isAdded() && getContext() != null) {
+                            img_iconHeart.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.heart_pink));
+                        }
+
+                        txt_addThuvien.setText(R.string.dathemvaothuvien);
+                        showCenteredToast("Đã thêm bài hát này vào thư viện");
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getActivity(), "Lỗi khi tải trạng thái yêu thích!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        dialog.show();
+    }
+
     private void clickHeart(Playlist playlist) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference playListYeuThich = FirebaseDatabase.getInstance()
                 .getReference("Users")
                 .child(user.getUid())
                 .child("playListYeuThich");
-
-        // Lắng nghe trạng thái yêu thích của playlist ngay khi mở ứng dụng
         playListYeuThich.child(playlist.getIdPlaylist()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

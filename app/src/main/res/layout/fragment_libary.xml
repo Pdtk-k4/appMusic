@@ -12,20 +12,17 @@
         android:layout_height="wrap_content"
         app:layout_scrollFlags="scroll|enterAlways"
         app:menu="@menu/toolbar">
-
     </androidx.appcompat.widget.Toolbar>
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomnavigation"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tablayout"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        app:menu="@menu/menu_thuvien"
-        android:layout_below="@+id/toolbar"
-        app:itemTextColor="@color/coler_menu"/>
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"/>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/bottomnavigation"/>
+        android:layout_below="@+id/tablayout"/>
 
 </RelativeLayout>

@@ -21,10 +21,16 @@ import java.util.ArrayList;
 public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.SongViewHolder> {
     private final ArrayList<BaiHat> songs;
     private Context context;
+    private IClickListner mClickListner;
 
-    public SongsAdapter(ArrayList<BaiHat> songs, Context context) {
+    public interface IClickListner {
+        void onClick(BaiHat baiHat);
+    }
+
+    public SongsAdapter(ArrayList<BaiHat> songs, Context context, IClickListner clickListner) {
         this.songs = songs;
         this.context = context;
+        this.mClickListner = clickListner;
     }
 
     @NonNull
@@ -47,6 +53,11 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.SongViewHold
             intent.putExtra("position", position); // Truyền vị trí của bài hát được chọn
             context.startActivity(intent);
         });
+
+        holder.icon_more.setOnClickListener(view -> {
+            mClickListner.onClick(baiHat);
+        });
+
     }
 
     @Override
@@ -58,12 +69,14 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.SongViewHold
         private final TextView songTitle;
         private final TextView songArtist;
         private final ImageView songImage;
+        private final ImageView icon_more;
 
         public SongViewHolder(@NonNull View itemView) {
             super(itemView);
             songTitle = itemView.findViewById(R.id.txt_name_song);
             songArtist = itemView.findViewById(R.id.txt_name_casi);
             songImage = itemView.findViewById(R.id.img_song);
+            icon_more = itemView.findViewById(R.id.icon_more);
         }
     }
 }

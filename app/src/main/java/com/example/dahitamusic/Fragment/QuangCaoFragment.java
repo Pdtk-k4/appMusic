@@ -118,7 +118,7 @@ public class QuangCaoFragment extends Fragment {
 
     public void loadImgQuangCao() {
         mData = FirebaseDatabase.getInstance().getReference("BaiHat");
-        Query query = mData.orderByChild("idQuangCao").equalTo("qc");
+        Query query = mData.orderByChild("idQuangCao").startAt(1);
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

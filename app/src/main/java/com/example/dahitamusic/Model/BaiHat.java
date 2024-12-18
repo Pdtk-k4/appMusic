@@ -20,14 +20,14 @@ public class BaiHat implements Parcelable {
     private String idPlaylist;
     private String idTheLoai;
     private String anhQuangCao;
-    private String idQuangCao;
+    private int idQuangCao;
     private String lyrics;
     private boolean yeuThich;
 
     public BaiHat() {
     }
 
-    public BaiHat(String idBaiHat, String anhBaiHat, String caSi, String tenBaiHat, String linkNhac, String idAlbum, String idPlaylist, String idTheLoai, String anhQuangCao, String idQuangCao, boolean yeuThich, String lyrics) {
+    public BaiHat(String idBaiHat, String anhBaiHat, String caSi, String tenBaiHat, String linkNhac, String idAlbum, String idPlaylist, String idTheLoai, String anhQuangCao, int idQuangCao, boolean yeuThich, String lyrics) {
         this.idBaiHat = idBaiHat;
         this.anhBaiHat = anhBaiHat;
         this.caSi = caSi;
@@ -52,7 +52,7 @@ public class BaiHat implements Parcelable {
         idPlaylist = in.readString();
         idTheLoai = in.readString();
         anhQuangCao = in.readString();
-        idQuangCao = in.readString();
+        idQuangCao = in.readInt();
         yeuThich = in.readByte() != 0;
         lyrics = in.readString();
     }
@@ -149,20 +149,20 @@ public class BaiHat implements Parcelable {
         this.anhQuangCao = anhQuangCao;
     }
 
-    public String getIdQuangCao() {
-        return idQuangCao;
-    }
-
-    public void setIdQuangCao(String idQuangCao) {
-        this.idQuangCao = idQuangCao;
-    }
-
     public boolean isYeuThich() {
         return yeuThich;
     }
 
     public void setYeuThich(boolean yeuThich) {
         this.yeuThich = yeuThich;
+    }
+
+    public int getIdQuangCao() {
+        return idQuangCao;
+    }
+
+    public void setIdQuangCao(int idQuangCao) {
+        this.idQuangCao = idQuangCao;
     }
 
     public Map<String, Object> toMap(){
@@ -187,7 +187,7 @@ public class BaiHat implements Parcelable {
         parcel.writeString(idPlaylist);
         parcel.writeString(idTheLoai);
         parcel.writeString(anhQuangCao);
-        parcel.writeString(idQuangCao);
+        parcel.writeInt(idQuangCao);
         parcel.writeByte((byte) (yeuThich ? 1 : 0));
         parcel.writeString(lyrics);
     }

@@ -95,6 +95,57 @@ public class DiaNhacFragment extends Fragment {
         return binding.getRoot();
     }
 
+    public void clickIconPodcast(String idPodcast) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference favoritesRef = FirebaseDatabase.getInstance()
+                .getReference("Users")
+                .child(user.getUid())
+                .child("podcastYeuThich");
+
+        favoritesRef.child(idPodcast).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                boolean isFavorite = snapshot.exists(); // Kiểm tra bài hát đã được yêu thích chưa
+
+                if (isFavorite) {
+                    if (isAdded() && getContext() != null) {
+                        binding.imgbtnheart.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.heart_pink));
+                    }
+                } else {
+                    if (isAdded() && getContext() != null) {
+                        binding.imgbtnheart.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_heart_white));
+                    }
+                }
+
+                // Xử lý khi nhấn nút "thêm vào thư viện"
+                binding.imgbtnheart.setOnClickListener(view -> {
+                    if (isFavorite) {
+                        // Xóa bài hát khỏi thư viện
+                        favoritesRef.child(idPodcast).removeValue();
+                        if (isAdded() && getContext() != null) {
+                            binding.imgbtnheart.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_heart_white));
+                        }
+                        showCenteredToast("Đã xóa khỏi thư viện");
+                    } else {
+                        // Thêm bài hát vào thư viện
+                        favoritesRef.child(idPodcast).setValue(true);
+                        if (isAdded() && getContext() != null) {
+                            binding.imgbtnheart.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.heart_pink));
+                        }
+                        showCenteredToast("Đã thêm vào thư viện");
+                    }
+                });
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getActivity(), "Lỗi khi tải trạng thái yêu thích!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
     public void clickIconHeart(String idBaiHat) {
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();

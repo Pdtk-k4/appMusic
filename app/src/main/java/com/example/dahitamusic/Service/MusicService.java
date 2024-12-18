@@ -1,17 +1,24 @@
 package com.example.dahitamusic.Service;
 
+import static com.example.dahitamusic.MyApplication.CHANNEL_ID;
+
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.util.Log;
+import android.widget.RemoteViews;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -25,16 +32,13 @@ import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SeekParameters;
+import com.google.common.collect.BiMap;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 public class MusicService extends Service {
-    private static final String PREFS_NAME = "MusicServicePrefs";
-    private static final String KEY_SONG_URL = "song_url";
-    private static final String KEY_POSITION = "position";
-    private static final String KEY_SHUFFLE = "shuffle";
-    private static final String KEY_REPEAT = "repeat";
 
     public static final String ACTION_PLAY_PAUSE = "com.example.dahitamusic.ACTION_PLAY_PAUSE";
     public static final String ACTION_NEXT = "com.example.dahitamusic.ACTION_NEXT";
@@ -64,14 +68,6 @@ public class MusicService extends Service {
             getSystemService(NotificationManager.class).createNotificationChannel(channel);
         }
 
-        // Hiển thị notification khi nhạc đang phát
-        Notification notification = new NotificationCompat.Builder(this, "music_channel")
-                .setContentTitle("Music Player")
-                .setContentText("Playing music")
-                .setSmallIcon(R.drawable.play2_button_icon)
-                .build();
-
-        startForeground(1, notification); // Chạy service ở chế độ foreground
     }
 
     @Override
@@ -82,6 +78,7 @@ public class MusicService extends Service {
                 songUrl = intent.getStringExtra("songUrl");
                 if (songUrl != null){
                     playMusic(songUrl);
+                    senNotification();
                 }
             } else if (ACTION_PLAY_PAUSE.equals(action)) {
                 togglePlayPause();
@@ -99,6 +96,18 @@ public class MusicService extends Service {
             }
         }
         return START_STICKY;
+    }
+
+    @SuppressLint("ForegroundServiceType")
+    private void senNotification() {
+        // Hiển thị notification khi nhạc đang phát
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle("Music Player")
+                .setContentText("Playing music")
+                .setSmallIcon(R.drawable.play2_button_icon)
+                .build();
+
+        startForeground(1, notification); // Chạy service ở chế độ foreground
     }
 
     private void playMusic(String url) {
@@ -169,10 +178,10 @@ public class MusicService extends Service {
 
         if (position > 0 && position < PlayMusicActivity.mangpodcast.size()) {
             Podcast podcast = PlayMusicActivity.mangpodcast.get(position);
-            intent.putExtra("songTitle", podcast.getTenPodcast());
-            intent.putExtra("songArtist", podcast.getTacGia());
-            intent.putExtra("songID", podcast.getIdPodcast());
-            intent.putExtra("songImg", podcast.getAnhPodcast());
+            intent.putExtra("songPodcast", podcast.getTenPodcast());
+            intent.putExtra("songArtistPodcast", podcast.getTacGia());
+            intent.putExtra("songIDPodcast", podcast.getIdPodcast());
+            intent.putExtra("songImgPodcast", podcast.getAnhPodcast());
 //            intent.putExtra("songLyrics", podcast.getNoiDung());
         }
         sendBroadcast(intent);
@@ -227,6 +236,7 @@ public class MusicService extends Service {
             repeat = false;
             exoPlayer.setRepeatMode(Player.REPEAT_MODE_OFF);
         }
+        Log.d("Repeat", "Repeat: " + repeat);
         sendPlaybackStateUpdate(exoPlayer.isPlaying(), exoPlayer.getCurrentPosition(), exoPlayer.getDuration());
     }
 

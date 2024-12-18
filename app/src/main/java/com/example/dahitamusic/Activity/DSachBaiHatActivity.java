@@ -1,12 +1,21 @@
 package com.example.dahitamusic.Activity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -21,6 +30,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dahitamusic.Adapter.SongsAdapter;
+import com.example.dahitamusic.Adapter.dialod_ds_playlist_adapter;
 import com.example.dahitamusic.Fragment.HomeFragment;
 import com.example.dahitamusic.Fragment.LibaryFragment;
 import com.example.dahitamusic.Fragment.ProfileFragment;
@@ -41,14 +51,18 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.regex.Pattern;
 
 public class DSachBaiHatActivity extends AppCompatActivity {
 
     private ActivityDsachBaiHatBinding binding;
     private Playlist playlist;
     private Album album;
+    private ArrayList<Playlist> mListPlaylist;
     private DatabaseReference mData;
     private ValueEventListener playlistListener, albumListener;
 
@@ -65,6 +79,7 @@ public class DSachBaiHatActivity extends AppCompatActivity {
         });
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
+        mListPlaylist = new ArrayList<>();
         dataIntent();
         init();
 
@@ -134,10 +149,294 @@ public class DSachBaiHatActivity extends AppCompatActivity {
             Toast.makeText(this, "Không có bài hát nào để hiển thị", Toast.LENGTH_SHORT).show();
         } else {
             RecyclerView recyclerView = binding.recyclerviewDanhsachbaihat;
-            SongsAdapter adapter = new SongsAdapter(baiHatList, DSachBaiHatActivity.this);
+            SongsAdapter adapter = new SongsAdapter(baiHatList, DSachBaiHatActivity.this, new SongsAdapter.IClickListner() {
+                @Override
+                public void onClick(BaiHat baiHat) {
+                    click_iconMore(baiHat);
+                }
+            });
             recyclerView.setLayoutManager(new LinearLayoutManager(DSachBaiHatActivity.this));
             recyclerView.setAdapter(adapter);
         }
+    }
+
+    private void click_iconMore(BaiHat baiHat) {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.layout_dialog_more_baihat);
+        Window window = dialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCancelable(false);
+
+        ImageView img_close = dialog.findViewById(R.id.img_close);
+        ImageView img_baiHat = dialog.findViewById(R.id.img_baiHat);
+        ImageView img_iconHeart = dialog.findViewById(R.id.img_iconHeart);
+
+        TextView txt_tenBaiHat = dialog.findViewById(R.id.txt_tenBaiHat);
+        TextView txt_tenCaSi = dialog.findViewById(R.id.txt_tenCaSi);
+        TextView txt_addThuvien = dialog.findViewById(R.id.txt_addThuvien);
+
+        RelativeLayout relative_download = dialog.findViewById(R.id.relative_download);
+        RelativeLayout relative_addPlaylist = dialog.findViewById(R.id.relative_addPlaylist);
+        RelativeLayout relative_addThuvien = dialog.findViewById(R.id.relative_addThuvien);
+
+        txt_tenBaiHat.setText(baiHat.getTenBaiHat());
+        txt_tenCaSi.setText(baiHat.getCaSi());
+        Picasso.get().load(baiHat.getAnhBaiHat()).into(img_baiHat);
+
+        img_close.setOnClickListener(view -> dialog.dismiss());
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference favoritesRef = FirebaseDatabase.getInstance()
+                .getReference("Users")
+                .child(user.getUid())
+                .child("baiHatYeuThich");
+
+        // Kiểm tra trạng thái "yêu thích" từ Firebase
+        favoritesRef.child(baiHat.getIdBaiHat()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                boolean isFavorite = snapshot.exists(); // Kiểm tra bài hát đã được yêu thích chưa
+
+                if (isFavorite) {
+
+                    img_iconHeart.setImageDrawable(ContextCompat.getDrawable(DSachBaiHatActivity.this, R.drawable.heart_pink));
+
+                    txt_addThuvien.setText(R.string.dathemvaothuvien);
+                } else {
+
+                    img_iconHeart.setImageDrawable(ContextCompat.getDrawable(DSachBaiHatActivity.this, R.drawable.heart));
+
+                    txt_addThuvien.setText(R.string.themvaothuvien);
+                }
+
+                // Xử lý khi nhấn nút "thêm vào thư viện"
+                relative_addThuvien.setOnClickListener(view -> {
+                    if (isFavorite) {
+                        // Xóa bài hát khỏi thư viện
+                        favoritesRef.child(baiHat.getIdBaiHat()).removeValue();
+
+                        img_iconHeart.setImageDrawable(ContextCompat.getDrawable(DSachBaiHatActivity.this, R.drawable.heart));
+
+                        txt_addThuvien.setText(R.string.themvaothuvien);
+                        showCenteredToast("Đã xóa bài hát khỏi thư viện");
+                    } else {
+                        // Thêm bài hát vào thư viện
+                        favoritesRef.child(baiHat.getIdBaiHat()).setValue(true);
+                        img_iconHeart.setImageDrawable(ContextCompat.getDrawable(DSachBaiHatActivity.this, R.drawable.heart_pink));
+
+                        txt_addThuvien.setText(R.string.dathemvaothuvien);
+                        showCenteredToast("Đã thêm bài hát này vào thư viện");
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(DSachBaiHatActivity.this, "Lỗi khi tải trạng thái yêu thích!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        relative_addPlaylist.setOnClickListener(view -> {
+            dialog.dismiss();
+            openDialogAddPlaylistBaiHat(baiHat);
+
+        });
+
+        dialog.show();
+    }
+
+    private void openDialogAddPlaylistBaiHat(BaiHat baiHat) {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.layout_dialog_addplaylist);
+        Window window = dialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCancelable(false);
+
+
+        ImageView img_close = dialog.findViewById(R.id.img_close);
+        RelativeLayout relative_addPlaylist = dialog.findViewById(R.id.relativeLayout_addPlaylist);
+        RecyclerView rcv = dialog.findViewById(R.id.rcv);
+
+        img_close.setOnClickListener(view -> dialog.dismiss());
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        rcv.setLayoutManager(linearLayoutManager);
+        dialod_ds_playlist_adapter adapter = new dialod_ds_playlist_adapter(mListPlaylist, new dialod_ds_playlist_adapter.IClickListner() {
+            @Override
+            public void onClickItem(Playlist playlist) {
+                onClickAddBaihat(playlist, baiHat);
+            }
+        });
+        rcv.setLayoutManager(new LinearLayoutManager(this));
+        rcv.setAdapter(adapter);
+
+        //load playlist trong dialog
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String userId = user.getUid();
+        mData = FirebaseDatabase.getInstance().getReference().child("Playlist");
+        Query query = mData.orderByChild("userId").equalTo(userId);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                mListPlaylist.clear();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    Playlist playlist = dataSnapshot.getValue(Playlist.class);
+                    if (playlist != null) {
+                        mListPlaylist.add(playlist);
+                    }
+                }
+
+                adapter.notifyDataSetChanged(); // Cập nhật adapter
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Xử lý lỗi nếu cần
+            }
+        });
+
+        relative_addPlaylist.setOnClickListener(view -> {
+            openDialogCreatePlaylist(baiHat);
+        });
+
+        dialog.show();
+    }
+
+    private void onClickAddBaihat(Playlist playlist, BaiHat baiHat) {
+        if (playlist != null) {
+            // Khởi tạo danhSachBaiHat nếu null
+            if (playlist.getDanhSachBaiHat() == null) {
+                playlist.setDanhSachBaiHat(new HashMap<>());
+            }
+
+            // Thêm idBaiHat vào danh sách và gán giá trị true
+            playlist.getDanhSachBaiHat().put(baiHat.getIdBaiHat(), true);
+
+            // Cập nhật Playlist trong Firebase
+            DatabaseReference playlistRef = FirebaseDatabase.getInstance().getReference("Playlist");
+            playlistRef.child(playlist.getIdPlaylist())
+                    .setValue(playlist)
+                    .addOnSuccessListener(unused -> {
+                        Toast.makeText(this, "Thêm bài hát thành công", Toast.LENGTH_SHORT).show();
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(this, "Lỗi khi thêm bài hát", Toast.LENGTH_SHORT).show();
+                        Log.e("FirebaseError", e.getMessage());
+                    });
+        } else {
+            Toast.makeText(this, "Playlist không tồn tại", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void openDialogCreatePlaylist(BaiHat baiHat) {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.layout_dialog_createplaylist);
+        Window window = dialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCancelable(false);
+
+        EditText edt_tenplaylist = dialog.findViewById(R.id.edt_tenplaylist);
+        ImageView img_close = dialog.findViewById(R.id.img_close);
+        Button btn_tao_playlist = dialog.findViewById(R.id.btn_tao_playlist);
+
+        img_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+        btn_tao_playlist.setOnClickListener(view -> {
+            String tenPlaylist = edt_tenplaylist.getText().toString().trim();
+            if (tenPlaylist.isEmpty()) {
+                Toast.makeText(this, "Vui lòng nhập tên playlist!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            String idPlaylist = generateIdPlaylist(tenPlaylist);
+            FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+            String userId = currentUser.getUid();
+            DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+
+            // Tạo đối tượng Playlist
+            Playlist playlist = new Playlist(idPlaylist, tenPlaylist, userId);
+
+            // Lưu playlist vào node "Playlist"
+            database.child("Playlist").child(idPlaylist).setValue(playlist)
+                    .addOnSuccessListener(unused -> {
+                        // Đồng thời lưu playlist vào "Users -> playListYeuThich"
+                        database.child("Users").child(userId).child("playListYeuThich").child(idPlaylist).setValue(true)
+                                .addOnSuccessListener(unused1 -> {
+                                    addBaiHatToPlaylist(playlist, baiHat);
+                                    dialog.dismiss();
+                                })
+                                .addOnFailureListener(e -> {
+                                    Toast.makeText(this, "Không thể thêm vào danh sách yêu thích: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                });
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(this, "Không thể lưu playlist: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
+        });
+
+        dialog.show();
+    }
+
+    private void addBaiHatToPlaylist(Playlist playlist, BaiHat baiHat) {
+        if (playlist != null) {
+            // Khởi tạo danhSachBaiHat nếu null
+            if (playlist.getDanhSachBaiHat() == null) {
+                playlist.setDanhSachBaiHat(new HashMap<>());
+            }
+            // Thêm idBaiHat vào danh sách và gán giá trị true
+            playlist.getDanhSachBaiHat().put(baiHat.getIdBaiHat(), true);
+
+            // Cập nhật Playlist trong Firebase
+            DatabaseReference playlistRef = FirebaseDatabase.getInstance().getReference("Playlist");
+            playlistRef.child(playlist.getIdPlaylist())
+                    .setValue(playlist)
+                    .addOnSuccessListener(unused -> {
+                        Toast.makeText(this, "Thêm bài hát vào playList thành công", Toast.LENGTH_SHORT).show();
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(this, "Lỗi khi thêm bài hát", Toast.LENGTH_SHORT).show();
+                        Log.e("FirebaseError", e.getMessage());
+                    });
+        } else {
+            Toast.makeText(this, "Playlist không tồn tại", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // Phương thức loại bỏ dấu (chuyển các ký tự có dấu thành không dấu)
+    private String removeAccents(String input) {
+        String nfd = Normalizer.normalize(input, Normalizer.Form.NFD);
+        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+        return pattern.matcher(nfd).replaceAll("");
+    }
+
+    private String generateIdPlaylist(String tenPlaylist) {
+        if (tenPlaylist == null || tenPlaylist.trim().isEmpty()) {
+            return ""; // Trả về chuỗi rỗng nếu tên playlist không hợp lệ
+        }
+
+        // Chuyển tất cả ký tự về chữ thường
+        String normalized = tenPlaylist.toLowerCase();
+
+        // Loại bỏ dấu (chuyển các ký tự có dấu thành không dấu)
+        normalized = removeAccents(normalized);
+
+        // Thay khoảng trắng thành dấu gạch dưới
+        normalized = normalized.replaceAll("\\s+", "_");
+
+        // Loại bỏ các ký tự không phải là chữ cái, chữ số, hoặc dấu gạch dưới
+        normalized = normalized.replaceAll("[^a-z0-9_]", "");
+
+        return normalized;
     }
 
 

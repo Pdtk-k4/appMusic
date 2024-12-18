@@ -21,6 +21,7 @@ import com.example.dahitamusic.Adapter.ViewPager_ThuVien_Adapter;
 import com.example.dahitamusic.R;
 import com.example.dahitamusic.databinding.FragmentLibaryBinding;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -94,6 +95,8 @@ public class LibaryFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    private ViewPager_ThuVien_Adapter adapter;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -107,41 +110,26 @@ public class LibaryFragment extends Fragment {
             }
         }
 
-        setUpViewpager();
-        binding.bottomnavigation.setOnItemSelectedListener(item -> {
-            if (item.getItemId() == R.id.yeuthich) {
-                binding.viewPager.setCurrentItem(0);
-            } else if (item.getItemId() == R.id.playlist) {
-                binding.viewPager.setCurrentItem(1);
-            } else if (item.getItemId() == R.id.album) {
-                binding.viewPager.setCurrentItem(2);
+        adapter = new ViewPager_ThuVien_Adapter(requireActivity());
+        binding.viewPager.setAdapter(adapter);
+
+        new TabLayoutMediator(binding.tablayout, binding.viewPager, (tab, position) -> {
+            switch (position) {
+                case 0:
+                    tab.setText("Bài Hát");
+                    break;
+                case 1:
+                    tab.setText("Podcast");
+                    break;
+                case 2:
+                    tab.setText("Playlist");
+                    break;
+                case 3:
+                    tab.setText("Album");
+                    break;
             }
-            return true;
-        });
+        }).attach();
 
         return binding.getRoot();
-    }
-
-    private void setUpViewpager(){
-        ViewPager_ThuVien_Adapter viewPager_thuVien_adapter = new ViewPager_ThuVien_Adapter(getChildFragmentManager(),getLifecycle());
-        binding.viewPager.setAdapter(viewPager_thuVien_adapter);
-
-        binding.viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-                switch (position) {
-                    case 0:
-                        binding.bottomnavigation.setSelectedItemId(R.id.yeuthich);
-                        break;
-                    case 1:
-                        binding.bottomnavigation.setSelectedItemId(R.id.playlist);
-                        break;
-                    case 2:
-                        binding.bottomnavigation.setSelectedItemId(R.id.album);
-                        break;
-                }
-            }
-        });
     }
 }
